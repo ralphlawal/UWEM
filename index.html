@@ -831,7 +831,8 @@
   </form>
   <div style="text-align:center; margin-top:30px; color:#888;">
 
-    <p><i class="fa-solid fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6d05080101022d03181f0b1819181f0c000c1f06081904030a430e020043030a">[email&#160;protected]</a></p>
+    <p id="contact-email-line"><i class="fa-solid fa-envelope"></i> <a id="contact-email-a" href="#" style="color:#888;"></a></p>
+    <script>(function(){ var u="nurfuturamarketing",d="gmail.com",a=document.getElementById("contact-email-a"); a.href="mailto:"+u+"@"+d; a.textContent=u+"@"+d; })();</script>
 
     <p style="margin-top:5px;"><i class="fa-solid fa-phone"></i> +234 916 035 9275</p>
     <p style="margin-top:5px;"><i class="fa-solid fa-location-dot"></i> Lagos, Nigeria</p>
@@ -1200,7 +1201,7 @@ async function applyFirebase() {
 
   // CONTACT
   if(contact) {
-    const eEl=document.querySelector('#contact [href*="mailto"], #contact .fa-envelope')?.closest('p');
+    const eEl=document.getElementById('contact-email-line');
     if(eEl&&contact.email) eEl.innerHTML='<i class="fa-solid fa-envelope"></i> <a href="mailto:'+contact.email+'" style="color:#888;">'+contact.email+'</a>';
     const phEl=document.querySelector('#contact .fa-phone')?.parentElement;
     if(phEl&&contact.phone) phEl.innerHTML='<i class="fa-solid fa-phone"></i> '+contact.phone;
