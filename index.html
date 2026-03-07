@@ -304,6 +304,29 @@
   </div>
 </div>
 
+<script>
+// Preloader — plain script, runs immediately before Firebase loads
+var _preloaderDone = false;
+var loaderText=document.querySelector('.loader-text'), loaderProg=document.querySelector('.loader-progress');
+var cnt=0;
+var iv=setInterval(function(){
+  cnt+=Math.floor(Math.random()*10)+5;
+  if(cnt>100) cnt=100;
+  if(loaderText) loaderText.innerText=cnt+"%";
+  if(loaderProg) loaderProg.style.width=cnt+"%";
+  if(cnt===100){
+    clearInterval(iv);
+    setTimeout(function(){
+      document.body.classList.add("loaded");
+      var h=document.querySelector(".hero h2");
+      if(h) h.classList.add("active");
+      _preloaderDone=true;
+      if(window._siteReady) window._siteReady();
+    }, 500);
+  }
+},80);
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -499,15 +522,10 @@ window.closePopupFunc = ()=>document.getElementById('adPopup').classList.remove(
 // YEAR
 document.getElementById('year').textContent=new Date().getFullYear();
 
-// PRELOADER — always dismisses, Firebase errors never block it
-const loaderText=document.querySelector('.loader-text'), loaderProg=document.querySelector('.loader-progress');
-let cnt=0;
-const iv=setInterval(()=>{
-  cnt+=Math.floor(Math.random()*10)+5;
-  if(cnt>100) cnt=100;
-  loaderText.innerText=cnt+"%"; loaderProg.style.width=cnt+"%";
-  if(cnt===100){ clearInterval(iv); setTimeout(()=>{ document.body.classList.add("loaded"); const h=document.querySelector(".hero h2"); if(h) h.classList.add("active"); renderAll().catch(e=>console.error("render error",e)); },500); }
-},100);
+
+// Wire renderAll to preloader callback
+window._siteReady = function(){ renderAll().catch(function(e){ console.error('render error:',e); }); };
+if(window._preloaderDone) window._siteReady();
 </script>
 </body>
 </html>
