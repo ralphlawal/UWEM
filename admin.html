@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NUR FUTURA — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --brand:#8B2C00; --gold:#f5b041; --dark:#0a0a0a; --card:#141414;
+      --card2:#1c1c1c; --border:rgba(255,255,255,0.07); --light:#f4f4f4;
+      --success:#2ecc71; --danger:#e74c3c; --sidebar:260px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);min-height:100vh;display:flex;}
+
+    /* AUTH */
+    #auth-screen{position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;}
+    .auth-box{background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:48px 40px;width:100%;max-width:400px;text-align:center;}
+    .auth-logo{font-family:'Playfair Display',serif;font-size:30px;color:var(--gold);margin-bottom:4px;}
+    .auth-sub{color:#555;font-size:13px;margin-bottom:32px;text-transform:uppercase;letter-spacing:2px;}
+    .auth-box input{width:100%;padding:14px 16px;background:#0f0f0f;border:1px solid var(--border);border-radius:9px;color:#fff;font-size:14px;margin-bottom:12px;font-family:'Inter',sans-serif;transition:border-color .2s;}
+    .auth-box input:focus{outline:none;border-color:var(--gold);}
+    .auth-btn{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:9px;font-weight:700;font-size:15px;cursor:pointer;transition:.3s;font-family:'Inter',sans-serif;}
+    .auth-btn:hover{box-shadow:0 0 24px rgba(245,176,65,.4);}
+    .auth-error{color:var(--danger);font-size:13px;margin-top:10px;display:none;}
+
+    /* LAYOUT */
+    .sidebar{width:var(--sidebar);background:var(--card);border-right:1px solid var(--border);height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:100;}
+    .sidebar-logo{padding:26px 22px 20px;border-bottom:1px solid var(--border);}
+    .sidebar-logo .name{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold);}
+    .sidebar-logo .role{font-size:11px;color:#444;text-transform:uppercase;letter-spacing:2px;margin-top:2px;}
+    .sidebar-nav{flex:1;padding:14px 10px;overflow-y:auto;}
+    .nav-group-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#383838;padding:10px 12px 5px;}
+    .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:8px;cursor:pointer;color:#666;transition:.18s;font-size:13.5px;font-weight:500;margin-bottom:1px;border:none;background:none;width:100%;text-align:left;}
+    .nav-item i{width:17px;text-align:center;font-size:14px;}
+    .nav-item:hover{color:#ddd;background:rgba(255,255,255,.04);}
+    .nav-item.active{color:var(--gold);background:rgba(245,176,65,.08);}
+    .sidebar-footer{padding:14px 10px;border-top:1px solid var(--border);}
+    .logout-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);color:var(--danger);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;}
+    .logout-btn:hover{background:var(--danger);color:#fff;}
+
+    .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+    .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:15px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+    .topbar-left h2{font-size:17px;font-weight:700;}
+    .topbar-left h2 span{color:var(--gold);}
+    .topbar-right{display:flex;align-items:center;gap:14px;}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 7px var(--success);animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+    .topbar-right small{color:#555;font-size:12px;}
+    .view-site-btn{padding:8px 16px;background:rgba(245,176,65,.1);border:1px solid var(--gold);color:var(--gold);border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:.2s;}
+    .view-site-btn:hover{background:var(--gold);color:#000;}
+
+    .content{padding:26px;flex:1;}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;animation:fadeIn .3s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+    /* DASHBOARD */
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+    .stat-card .s-label{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+    .stat-card .s-val{font-size:30px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif;line-height:1;}
+    .stat-card .s-sub{font-size:11px;color:#444;margin-top:5px;}
+
+    .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+    .dash-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+    .dash-card h4{font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .dash-card h4 i{color:var(--gold);}
+    .recent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .recent-item:last-child{border-bottom:none;}
+    .recent-item .ri-name{color:#ccc;font-weight:500;}
+    .recent-item .ri-meta{color:#444;font-size:12px;}
+
+    /* FORM CARDS */
+    .section-header{margin-bottom:22px;}
+    .section-header h2{font-size:20px;font-weight:700;}
+    .section-header p{color:#555;font-size:13px;margin-top:3px;}
+
+    .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px;margin-bottom:20px;}
+    .form-card-title{font-size:14px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:9px;color:#ddd;}
+    .form-card-title i{color:var(--gold);}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+    .grid-1{display:grid;grid-template-columns:1fr;gap:14px;}
+    .fgroup{display:flex;flex-direction:column;gap:5px;}
+    .fgroup label{font-size:11px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+    .fgroup input,.fgroup textarea,.fgroup select{background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:11px 13px;font-size:13.5px;font-family:'Inter',sans-serif;transition:border-color .2s;width:100%;}
+    .fgroup input:focus,.fgroup textarea:focus,.fgroup select:focus{outline:none;border-color:var(--gold);}
+    .fgroup textarea{resize:vertical;min-height:80px;}
+    .fgroup select option{background:#1a1a1a;}
+    .form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+
+    .btn{padding:10px 20px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;transition:.2s;border:none;display:inline-flex;align-items:center;gap:7px;font-family:'Inter',sans-serif;}
+    .btn-gold{background:var(--gold);color:#000;}
+    .btn-gold:hover{box-shadow:0 0 16px rgba(245,176,65,.35);}
+    .btn-ghost{background:rgba(255,255,255,.05);color:#bbb;border:1px solid var(--border);}
+    .btn-ghost:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .btn-red{background:rgba(231,76,60,.1);color:var(--danger);border:1px solid rgba(231,76,60,.25);}
+    .btn-red:hover{background:var(--danger);color:#fff;}
+    .btn-sm{padding:6px 12px;font-size:12px;}
+    .btn-xs{padding:4px 10px;font-size:11px;}
+
+    /* TABLE */
+    .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;}
+    .table-top{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .table-top h3{font-size:14px;font-weight:700;color:#ddd;}
+    table{width:100%;border-collapse:collapse;}
+    thead th{padding:11px 16px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#444;border-bottom:1px solid var(--border);background:rgba(0,0,0,.25);}
+    tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+    tbody tr:last-child{border-bottom:none;}
+    tbody tr:hover{background:rgba(255,255,255,.018);}
+    tbody td{padding:12px 16px;font-size:13px;color:#bbb;vertical-align:middle;}
+    .td-actions{display:flex;gap:6px;}
+    .badge{display:inline-block;padding:3px 9px;border-radius:30px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+    .badge-gold{background:rgba(245,176,65,.13);color:var(--gold);}
+    .badge-green{background:rgba(46,204,113,.13);color:var(--success);}
+    .badge-gray{background:rgba(255,255,255,.06);color:#666;}
+    .td-img{width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--border);}
+
+    /* TOAST */
+    #toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 18px;display:flex;align-items:center;gap:11px;font-size:13.5px;box-shadow:0 12px 40px rgba(0,0,0,.7);z-index:99999;transform:translateY(80px);opacity:0;transition:.4s cubic-bezier(.175,.885,.32,1.275);min-width:240px;}
+    #toast.show{transform:translateY(0);opacity:1;}
+    #toast.success i{color:var(--success);}
+    #toast.error i{color:var(--danger);}
+
+    /* TOGGLE */
+    .toggle-wrap{display:flex;align-items:center;gap:10px;}
+    .toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
+    .toggle input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:#2a2a2a;border-radius:30px;cursor:pointer;transition:.3s;border:1px solid var(--border);}
+    .toggle-slider:before{content:'';position:absolute;width:16px;height:16px;left:2px;bottom:2px;background:#555;border-radius:50%;transition:.3s;}
+    .toggle input:checked + .toggle-slider{background:rgba(245,176,65,.2);border-color:var(--gold);}
+    .toggle input:checked + .toggle-slider:before{transform:translateX(18px);background:var(--gold);}
+
+    /* SECTION VISIBILITY */
+    .visibility-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+    .vis-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:15px;display:flex;align-items:center;justify-content:space-between;}
+    .vis-card .vi{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:500;}
+    .vis-card i{color:var(--gold);width:18px;text-align:center;}
+
+    /* POPUP EDITOR */
+    .popup-preview{border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:340px;}
+    .popup-preview img{width:100%;display:block;max-height:180px;object-fit:cover;background:#111;}
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .main{margin-left:0;}
+      .dash-grid{grid-template-columns:1fr;}
+      .grid-2,.grid-3{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">NUR FUTURA</div>
+    <div class="auth-sub">Admin Portal</div>
+    <input type="text" id="auth-user" placeholder="Username" autocomplete="off"/>
+    <input type="password" id="auth-pass" placeholder="Password"/>
+    <button class="auth-btn" onclick="doLogin()"><i class="fa-solid fa-lock-open"></i> Enter Panel</button>
+    <div class="auth-error" id="auth-error">Invalid credentials. Try again.</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="name">NUR FUTURA</div>
+    <div class="role">Content Management</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Overview</div>
+    <button class="nav-item active" onclick="showTab('dashboard',this)"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
+
+    <div class="nav-group-label">Content</div>
+    <button class="nav-item" onclick="showTab('hero',this)"><i class="fa-solid fa-star"></i> Hero Section</button>
+    <button class="nav-item" onclick="showTab('about',this)"><i class="fa-solid fa-circle-info"></i> About Us</button>
+    <button class="nav-item" onclick="showTab('services',this)"><i class="fa-solid fa-briefcase"></i> Services</button>
+    <button class="nav-item" onclick="showTab('artists',this)"><i class="fa-solid fa-music"></i> Hall of Fame</button>
+    <button class="nav-item" onclick="showTab('reviews',this)"><i class="fa-solid fa-quote-left"></i> Reviews</button>
+    <button class="nav-item" onclick="showTab('announcements',this)"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
+    <button class="nav-item" onclick="showTab('newsletter',this)"><i class="fa-solid fa-newspaper"></i> Newsletter Images</button>
+
+    <div class="nav-group-label">Site</div>
+    <button class="nav-item" onclick="showTab('popup',this)"><i class="fa-solid fa-rectangle-ad"></i> Popup Ad</button>
+    <button class="nav-item" onclick="showTab('contact',this)"><i class="fa-solid fa-phone"></i> Contact Info</button>
+    <button class="nav-item" onclick="showTab('visibility',this)"><i class="fa-solid fa-eye"></i> Section Visibility</button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2>Admin <span>Panel</span></h2>
+    </div>
+    <div class="topbar-right">
+      <div class="live-dot"></div>
+      <small>Saved locally</small>
+      <a href="index.html" target="_blank" class="view-site-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="section-header"><h2>Dashboard</h2><p>Overview of your site content</p></div>
+      <div class="stats-row" id="dash-stats"></div>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h4><i class="fa-solid fa-music"></i> Recent Artists</h4>
+          <div id="dash-artists"></div>
+        </div>
+        <div class="dash-card">
+          <h4><i class="fa-solid fa-quote-left"></i> Recent Reviews</h4>
+          <div id="dash-reviews"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="tab-panel" id="tab-hero">
+      <div class="section-header"><h2>Hero Section</h2><p>Edit the main banner headline, subtext and stats</p></div>
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa-solid fa-heading"></i> Headline & Subtext</div>
+        <div class="grid-1">
+          <div class="fgroup"><label>Headline Line 1</label><input type="text" id="hero-h1" placeholder="Perception is Reality,"></div>
+          <div class="fgroup"><label>Headline Line 2</label><input type="text" id="hero-h2" placeholder="Image is Everything"></div>
+          <div class="fgroup"><label>Subtext</label><textarea id="hero-sub" rows="2" placeholder="We don't just build campaigns..."></textarea></div>
+          <div class="fgroup"><label>Hero Background Image URL</label><input type="url" id="hero-bg" placeholder="images/hero.png or https://..."></div>
+        </div>
+        <div class="form-card-title" style="margin-top:22px;"><i class="fa-solid fa-chart-bar"></i> Stats</div>
+        <div class="grid-3">
+          <div class="fgroup"><label>Stat 1 Number</label><input type="text" id="stat1-num" placeholder="150+"></div>
+          <div class="fgroup"><label>Stat 1 Label</label><input type="text" id="stat1-lbl" placeholder="Artists Distributed"></div>
+          <div class="fgroup"><div style="height:22px;"></div></div>
+          <div class="fgroup"><label>Stat 2 Number</label><input type="text" id="stat2-num" placeholder="10M+"></div>
+          <div class="fgroup"><label>Stat 2 Label</label><input type="text" id="stat2-lbl" placeholder="Streams Generated"></div>
+          <div class="fgroup"><div style="height:22px;"></div></div>
+          <div class="fgroup"><label>Stat 3 Number</label><input type="text" id="stat3-num" placeholder="24/7"></div>
+          <div class="fgroup"><label>Stat 3 Label</label><input type="text" id="stat3-lbl" placeholder="Global Support"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveHero()"><i class="fa-solid fa-floppy-disk"></i> Save Hero</button>
+          <button class="btn btn-ghost" onclick="resetHero()"><i class="fa-solid fa-rotate-left"></i> Reset Defaults</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="tab-panel" id="tab-about">
+      <div class="section-header"><h2>About Us</h2><p>Edit mission, vision and who we are</p></div>
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa-solid fa-circle-info"></i> About Content</div>
+        <div class="grid-1">
+          <div class="fgroup"><label>Mission Statement</label><textarea id="about-mission" rows="3"></textarea></div>
+          <div class="fgroup"><label>Vision Statement</label><textarea id="about-vision" rows="3"></textarea></div>
+          <div class="fgroup"><label>Who We Are</label><textarea id="about-who" rows="3"></textarea></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveAbout()"><i class="fa-solid fa-floppy-disk"></i> Save About</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="tab-panel" id="tab-services">
+      <div class="section-header"><h2>Services</h2><p>Manage the 7-Fold Package services</p></div>
+      <div class="table-wrap">
+        <div class="table-top">
+          <h3>Services List</h3>
+          <button class="btn btn-gold btn-sm" onclick="openServiceModal()"><i class="fa-solid fa-plus"></i> Add Service</button>
+        </div>
+        <table>
+          <thead><tr><th>Icon</th><th>Title</th><th>Description</th><th>Tags</th><th>Actions</th></tr></thead>
+          <tbody id="services-tbody"></tbody>
+        </table>
+      </div>
+      <!-- Service Modal -->
+      <div id="service-modal" style="display:none;" class="form-card">
+        <div class="form-card-title" id="svc-modal-title"><i class="fa-solid fa-plus"></i> Add Service</div>
+        <input type="hidden" id="svc-edit-idx" value="-1">
+        <div class="grid-2">
+          <div class="fgroup"><label>Service Title</label><input type="text" id="svc-title" placeholder="Brand Management"></div>
+          <div class="fgroup"><label>Font Awesome Icon class</label><input type="text" id="svc-icon" placeholder="fa-solid fa-briefcase"></div>
+        </div>
+        <div class="grid-1" style="margin-top:12px;">
+          <div class="fgroup"><label>Description</label><textarea id="svc-desc" rows="2" placeholder="Full brand strategy, visual identity..."></textarea></div>
+          <div class="fgroup"><label>Tags (comma separated)</label><input type="text" id="svc-tags" placeholder="Identity Refresh, Creative Direction"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveService()"><i class="fa-solid fa-floppy-disk"></i> Save Service</button>
+          <button class="btn btn-ghost" onclick="cancelServiceModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTISTS -->
+    <div class="tab-panel" id="tab-artists">
+      <div class="section-header"><h2>Hall of Fame</h2><p>Manage artists in the bento grid</p></div>
+      <div class="table-wrap">
+        <div class="table-top">
+          <h3>Artists</h3>
+          <button class="btn btn-gold btn-sm" onclick="openArtistModal()"><i class="fa-solid fa-plus"></i> Add Artist</button>
+        </div>
+        <table>
+          <thead><tr><th>Photo</th><th>Name</th><th>Instagram</th><th>Spotify</th><th>Actions</th></tr></thead>
+          <tbody id="artists-tbody"></tbody>
+        </table>
+      </div>
+      <div id="artist-modal" style="display:none;" class="form-card">
+        <div class="form-card-title" id="art-modal-title"><i class="fa-solid fa-plus"></i> Add Artist</div>
+        <input type="hidden" id="art-edit-idx" value="-1">
+        <div class="grid-2">
+          <div class="fgroup"><label>Artist Name</label><input type="text" id="art-name" placeholder="GOSHEN"></div>
+          <div class="fgroup"><label>Photo URL</label><input type="url" id="art-img" placeholder="images/goshen.png or https://..."></div>
+          <div class="fgroup"><label>Instagram URL</label><input type="url" id="art-ig" placeholder="https://instagram.com/..."></div>
+          <div class="fgroup"><label>Spotify URL</label><input type="url" id="art-spotify" placeholder="https://open.spotify.com/..."></div>
+          <div class="fgroup"><label>Audio Snippet URL (optional)</label><input type="text" id="art-audio" placeholder="mp3/artist_snippet.mp3"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveArtist()"><i class="fa-solid fa-floppy-disk"></i> Save Artist</button>
+          <button class="btn btn-ghost" onclick="cancelArtistModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="tab-panel" id="tab-reviews">
+      <div class="section-header"><h2>Client Reviews</h2><p>Manage testimonials shown on site</p></div>
+      <div class="table-wrap">
+        <div class="table-top">
+          <h3>Reviews</h3>
+          <button class="btn btn-gold btn-sm" onclick="openReviewModal()"><i class="fa-solid fa-plus"></i> Add Review</button>
+        </div>
+        <table>
+          <thead><tr><th>Quote</th><th>Client Name</th><th>Actions</th></tr></thead>
+          <tbody id="reviews-tbody"></tbody>
+        </table>
+      </div>
+      <div id="review-modal" style="display:none;" class="form-card">
+        <div class="form-card-title" id="rev-modal-title"><i class="fa-solid fa-plus"></i> Add Review</div>
+        <input type="hidden" id="rev-edit-idx" value="-1">
+        <div class="grid-1">
+          <div class="fgroup"><label>Quote / Review Text</label><textarea id="rev-quote" rows="3" placeholder="Nur Futura made us a household name..."></textarea></div>
+          <div class="fgroup"><label>Client Name</label><input type="text" id="rev-client" placeholder="YMX"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveReview()"><i class="fa-solid fa-floppy-disk"></i> Save Review</button>
+          <button class="btn btn-ghost" onclick="cancelReviewModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="tab-panel" id="tab-announcements">
+      <div class="section-header"><h2>Announcements</h2><p>Edit the main announcement / distribution section</p></div>
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa-solid fa-bullhorn"></i> Main Announcement</div>
+        <div class="grid-2">
+          <div class="fgroup"><label>Badge Text</label><input type="text" id="ann-badge" placeholder="Major Launch"></div>
+          <div class="fgroup"><label>Headline</label><input type="text" id="ann-title" placeholder="Introducing: Nur Futura Distribution"></div>
+        </div>
+        <div class="grid-1" style="margin-top:12px;">
+          <div class="fgroup"><label>Body Text</label><textarea id="ann-body" rows="4" placeholder="We don't just manage artists..."></textarea></div>
+          <div class="fgroup"><label>Features (comma-separated)</label><input type="text" id="ann-features" placeholder="Transparent Royalties, Playlist Pitching, Global Reach"></div>
+          <div class="fgroup"><label>Link Text (optional)</label><input type="text" id="ann-link-text" placeholder="Distribution Terms & FAQ"></div>
+          <div class="fgroup"><label>Link URL (optional)</label><input type="url" id="ann-link-url" placeholder="https://..."></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveAnnouncement()"><i class="fa-solid fa-floppy-disk"></i> Save Announcement</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER IMAGES -->
+    <div class="tab-panel" id="tab-newsletter">
+      <div class="section-header"><h2>Newsletter Images</h2><p>The 3 highlight images shown in the newsletter section</p></div>
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa-solid fa-images"></i> Highlight Images</div>
+        <div class="grid-3">
+          <div class="fgroup"><label>Image 1 URL</label><input type="url" id="nl-img1" placeholder="images/pla2.png"></div>
+          <div class="fgroup"><label>Image 2 URL</label><input type="url" id="nl-img2" placeholder="images/pla1.png"></div>
+          <div class="fgroup"><label>Image 3 URL</label><input type="url" id="nl-img3" placeholder="images/pla.png"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveNewsletter()"><i class="fa-solid fa-floppy-disk"></i> Save Images</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POPUP -->
+    <div class="tab-panel" id="tab-popup">
+      <div class="section-header"><h2>Popup Ad</h2><p>The ad that appears 3 seconds after the site loads</p></div>
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa-solid fa-rectangle-ad"></i> Popup Settings</div>
+        <div class="grid-2">
+          <div>
+            <div class="fgroup"><label>Popup Image URL</label><input type="url" id="popup-img" placeholder="https://res.cloudinary.com/..."></div>
+            <div class="fgroup" style="margin-top:12px;"><label>Popup Headline</label><input type="text" id="popup-title" placeholder="Amplify Your Sounds"></div>
+            <div class="fgroup" style="margin-top:12px;"><label>Popup Subtext</label><input type="text" id="popup-sub" placeholder="Distribute on all platforms today."></div>
+            <div class="fgroup" style="margin-top:12px;"><label>Popup Link (click destination)</label><input type="text" id="popup-link" placeholder="#announcements or https://..."></div>
+            <div class="fgroup" style="margin-top:12px;">
+              <label>Enable Popup</label>
+              <div class="toggle-wrap">
+                <label class="toggle"><input type="checkbox" id="popup-enabled" checked><span class="toggle-slider"></span></label>
+                <span style="font-size:13px;color:#888;">Show popup on page load</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-card-title"><i class="fa-solid fa-eye"></i> Preview</div>
+            <div class="popup-preview">
+              <img id="popup-img-preview" src="" style="width:100%;display:block;min-height:120px;background:#111;object-fit:cover;">
+              <div style="padding:14px;background:#141414;">
+                <div id="popup-title-prev" style="color:var(--gold);font-family:'Playfair Display',serif;font-size:16px;"></div>
+                <div id="popup-sub-prev" style="color:#999;font-size:12px;margin-top:4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="savePopup()"><i class="fa-solid fa-floppy-disk"></i> Save Popup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="tab-panel" id="tab-contact">
+      <div class="section-header"><h2>Contact Info</h2><p>Update the contact details shown on the site</p></div>
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa-solid fa-address-card"></i> Contact Details</div>
+        <div class="grid-2">
+          <div class="fgroup"><label>Email Address</label><input type="email" id="contact-email" placeholder="nurfuturamarketing@gmail.com"></div>
+          <div class="fgroup"><label>Phone Number</label><input type="text" id="contact-phone" placeholder="+234 916 035 9275"></div>
+          <div class="fgroup"><label>Location</label><input type="text" id="contact-location" placeholder="Lagos, Nigeria"></div>
+          <div class="fgroup"><label>Facebook URL</label><input type="url" id="social-fb" placeholder="https://facebook.com/..."></div>
+          <div class="fgroup"><label>Twitter / X URL</label><input type="url" id="social-tw" placeholder="https://twitter.com/..."></div>
+          <div class="fgroup"><label>Instagram URL</label><input type="url" id="social-ig" placeholder="https://instagram.com/..."></div>
+          <div class="fgroup"><label>LinkedIn URL</label><input type="url" id="social-li" placeholder="https://linkedin.com/..."></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" onclick="saveContact()"><i class="fa-solid fa-floppy-disk"></i> Save Contact</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISIBILITY -->
+    <div class="tab-panel" id="tab-visibility">
+      <div class="section-header"><h2>Section Visibility</h2><p>Show or hide entire sections on the site</p></div>
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa-solid fa-eye"></i> Toggle Sections</div>
+        <div class="visibility-grid">
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-star"></i>Hero / Banner</div><label class="toggle"><input type="checkbox" id="vis-hero" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-circle-info"></i>About Us</div><label class="toggle"><input type="checkbox" id="vis-about" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-briefcase"></i>Services</div><label class="toggle"><input type="checkbox" id="vis-services" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-bullhorn"></i>Announcements</div><label class="toggle"><input type="checkbox" id="vis-announcements" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-music"></i>Hall of Fame</div><label class="toggle"><input type="checkbox" id="vis-hall" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-quote-left"></i>Reviews</div><label class="toggle"><input type="checkbox" id="vis-reviews" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-phone"></i>Contact</div><label class="toggle"><input type="checkbox" id="vis-contact" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+        </div>
+        <p style="margin-top:16px;color:#444;font-size:12px;"><i class="fa-solid fa-circle-info"></i> Changes apply instantly — no save button needed.</p>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<div id="toast"><i class="fa-solid fa-check-circle"></i> <span id="toast-msg">Saved!</span></div>
+
+<script>
+// ============================================================
+// DEFAULTS
+// ============================================================
+const DEFAULTS = {
+  hero: { h1:'Perception is Reality,', h2:'Image is Everything', sub:"We don't just build campaigns — we build unforgettable brands.", bg:'images/hero.png', stat1n:'150+', stat1l:'Artists Distributed', stat2n:'10M+', stat2l:'Streams Generated', stat3n:'24/7', stat3l:'Global Support' },
+  about: { mission:'Our mission is to bring brands, artistes, and individuals into the limelight.', vision:'Illuminating paths of our clients, unlocking full potentials, and redefining the marketing landscape.', who:'We are a revolutionary force in 2026. With expertise in strategy, creativity & technology, we drive real results.' },
+  services: [
+    { icon:'fa-solid fa-briefcase', title:'Brand Management', desc:'Full brand strategy, visual identity, positioning, and campaign playbooks.', tags:'Identity Refresh,Creative Direction' },
+    { icon:'fa-solid fa-user-tie', title:'Artist Management', desc:'Career strategy, release planning, bookings, PR & sponsorship matchmaking.', tags:'Release Roadmap,Tour Support' },
+    { icon:'fa-solid fa-calendar-days', title:'Event Management', desc:'End-to-end event planning, stage design, logistics and activation.', tags:'Logistics,Activation' },
+    { icon:'fa-solid fa-shield-halved', title:'Reputation Management', desc:'Protect and elevate public image through proactive narrative control.', tags:'Crisis Response,Media Training' },
+    { icon:'fa-solid fa-bullhorn', title:'Digital Marketing', desc:'Data-driven campaigns across social, search and programmatic channels.', tags:'Paid Ads,SEO & Content' },
+    { icon:'fa-solid fa-comments', title:'Public Relations', desc:'Local and international press outreach and storytelling.', tags:'Media Relations,Press Kits' },
+    { icon:'fa-solid fa-handshake', title:'Consulting', desc:'Tailored advisory on monetization, growth strategy, and partnerships.', tags:'Growth Strategy,Workshops' }
+  ],
+  artists: [
+    { name:'GOSHEN', img:'./images/goshen.png', ig:'https://www.instagram.com/goshen_dt', spotify:'#', audio:'mp3/goshen_snippet.mp3' },
+    { name:'TYIRA', img:'images/tyira.png', ig:'https://www.instagram.com/tyira_', spotify:'#', audio:'mp3/tyira_snippet.mp3' },
+    { name:'KVNGVIDARR', img:'images/vidarr.jpg', ig:'https://www.instagram.com/kvngvidarr', spotify:'#', audio:'mp3/vidarr_snippet.mp3' },
+    { name:'REECHDEE', img:'https://res.cloudinary.com/dco9drzzp/image/upload/v1768554541/Reechdee_a_unique_nigerian_songwriter_and_afro_pop_artiste_recently_dropped_a_double_single_SO_nfhpa9.jpg', ig:'#', spotify:'#', audio:'mp3/reechdee_snippet.mp3' },
+    { name:'PITA', img:'https://res.cloudinary.com/dco9drzzp/image/upload/v1768554622/PRAISE_IN_THIS_AGE_pitasings_releases_a_12_tracks_album_that_celebrates_gratitude_God_s_Lo_q08icy.jpg', ig:'#', spotify:'#', audio:'mp3/pita_snippet.mp3' },
+    { name:'SUNNYNINE', img:'https://res.cloudinary.com/dco9drzzp/image/upload/v1768554790/SUNNYNINE_RELEASES_LATEST_PROJECT_SON_OF_THE_SUN_THE_EP_thesunnynine_represents_a_refreshing_ouldik.jpg', ig:'#', spotify:'#', audio:'mp3/sunnynine_snippet.mp3' },
+    { name:'CLEMZ', img:'https://res.cloudinary.com/dco9drzzp/image/upload/v1768554832/artistically_inspired_by_the_Big_3_official__clemz_music_drops_his_second_single_GRATITUDE_wh_zrgypp.jpg', ig:'#', spotify:'#', audio:'mp3/clemz_snippet.mp3' }
+  ],
+  reviews: [
+    { quote:'Nur Futura made us a household name with bold campaigns.', client:'YMX' },
+    { quote:'From ideas to execution, they are simply the best.', client:'Babatunde' },
+    { quote:'Our billboard launch was unforgettable — thanks to Nur Futura.', client:'Mora' }
+  ],
+  announcement: { badge:'Major Launch', title:'Introducing: Nur Futura Distribution', body:"We don't just manage artists; we power them. We are proud to launch our dedicated Music Distribution Arm. Get your music on Spotify, Apple Music, Boomplay, and 150+ stores worldwide.", features:'Transparent Royalties,Playlist Pitching,Global Reach', linkText:'Distribution Terms & FAQ', linkUrl:'#' },
+  newsletter: { img1:'images/pla2.png', img2:'images/pla1.png', img3:'images/pla.png' },
+  popup: { img:'https://res.cloudinary.com/dco9drzzp/image/upload/v1770817840/AMPLYFY_yjtdve.jpg', title:'Amplify Your Sounds', sub:'Distribute on all platforms today.', link:'#announcements', enabled:true },
+  contact: { email:'nurfuturamarketing@gmail.com', phone:'+234 916 035 9275', location:'Lagos, Nigeria', fb:'https://www.facebook.com/share/1GsZFKot85/', tw:'https://twitter.com/nurfutura', ig:'https://instagram.com/nur.futura', li:'https://www.linkedin.com/in/nur-futura-marketing-558a85356' },
+  visibility: { hero:true, about:true, services:true, announcements:true, hall:true, reviews:true, contact:true }
+};
+
+// ============================================================
+// AUTH
+// ============================================================
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'nurfutura2026';
+
+function doLogin() {
+  const u = document.getElementById('auth-user').value.trim();
+  const p = document.getElementById('auth-pass').value;
+  if(u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('auth-screen').style.display = 'none';
+    loadAll();
+  } else {
+    const err = document.getElementById('auth-error');
+    err.style.display = 'block';
+    err.textContent = 'Invalid credentials. Try again.';
+  }
+}
+document.getElementById('auth-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function doLogout() {
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('auth-user').value = '';
+  document.getElementById('auth-pass').value = '';
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.topbar-left h2').innerHTML = btn.textContent.trim().replace(/^\S+\s*/,'') + ' <span>Editor</span>';
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icon = t.querySelector('i');
+  t.className = type;
+  icon.className = type==='success' ? 'fa-solid fa-check-circle' : 'fa-solid fa-circle-xmark';
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// STORAGE HELPERS
+// ============================================================
+function load(key) {
+  try { return JSON.parse(localStorage.getItem('nf_'+key)); } catch { return null; }
+}
+function save(key, val) {
+  localStorage.setItem('nf_'+key, JSON.stringify(val));
+}
+function get(key) { return load(key) || JSON.parse(JSON.stringify(DEFAULTS[key])); }
+
+// ============================================================
+// LOAD ALL
+// ============================================================
+function loadAll() {
+  loadHeroForm();
+  loadAboutForm();
+  loadServicesTable();
+  loadArtistsTable();
+  loadReviewsTable();
+  loadAnnouncementForm();
+  loadNewsletterForm();
+  loadPopupForm();
+  loadContactForm();
+  loadVisibility();
+  loadDashboard();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function loadDashboard() {
+  const artists = get('artists');
+  const reviews = get('reviews');
+  const services = get('services');
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card"><div class="s-label">Artists</div><div class="s-val">${artists.length}</div><div class="s-sub">in Hall of Fame</div></div>
+    <div class="stat-card"><div class="s-label">Services</div><div class="s-val">${services.length}</div><div class="s-sub">in 7-Fold Package</div></div>
+    <div class="stat-card"><div class="s-label">Reviews</div><div class="s-val">${reviews.length}</div><div class="s-sub">client testimonials</div></div>
+    <div class="stat-card"><div class="s-label">Storage</div><div class="s-val" style="font-size:20px;">Local</div><div class="s-sub">browser localStorage</div></div>
+  `;
+  document.getElementById('dash-artists').innerHTML = artists.slice(0,5).map(a=>`
+    <div class="recent-item"><span class="ri-name">${a.name}</span><span class="ri-meta badge badge-gold">Artist</span></div>`).join('');
+  document.getElementById('dash-reviews').innerHTML = reviews.slice(0,5).map(r=>`
+    <div class="recent-item"><span class="ri-name" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.quote.substring(0,50)}...</span><span class="ri-meta">— ${r.client}</span></div>`).join('');
+}
+
+// ============================================================
+// HERO
+// ============================================================
+function loadHeroForm() {
+  const d = get('hero');
+  document.getElementById('hero-h1').value = d.h1;
+  document.getElementById('hero-h2').value = d.h2;
+  document.getElementById('hero-sub').value = d.sub;
+  document.getElementById('hero-bg').value = d.bg;
+  document.getElementById('stat1-num').value = d.stat1n;
+  document.getElementById('stat1-lbl').value = d.stat1l;
+  document.getElementById('stat2-num').value = d.stat2n;
+  document.getElementById('stat2-lbl').value = d.stat2l;
+  document.getElementById('stat3-num').value = d.stat3n;
+  document.getElementById('stat3-lbl').value = d.stat3l;
+}
+function saveHero() {
+  save('hero', {
+    h1: document.getElementById('hero-h1').value,
+    h2: document.getElementById('hero-h2').value,
+    sub: document.getElementById('hero-sub').value,
+    bg: document.getElementById('hero-bg').value,
+    stat1n: document.getElementById('stat1-num').value,
+    stat1l: document.getElementById('stat1-lbl').value,
+    stat2n: document.getElementById('stat2-num').value,
+    stat2l: document.getElementById('stat2-lbl').value,
+    stat3n: document.getElementById('stat3-num').value,
+    stat3l: document.getElementById('stat3-lbl').value,
+  });
+  toast('Hero section saved!');
+}
+function resetHero() { save('hero', DEFAULTS.hero); loadHeroForm(); toast('Hero reset to defaults.'); }
+
+// ============================================================
+// ABOUT
+// ============================================================
+function loadAboutForm() {
+  const d = get('about');
+  document.getElementById('about-mission').value = d.mission;
+  document.getElementById('about-vision').value = d.vision;
+  document.getElementById('about-who').value = d.who;
+}
+function saveAbout() {
+  save('about', { mission: document.getElementById('about-mission').value, vision: document.getElementById('about-vision').value, who: document.getElementById('about-who').value });
+  toast('About section saved!');
+}
+
+// ============================================================
+// SERVICES
+// ============================================================
+function loadServicesTable() {
+  const items = get('services');
+  document.getElementById('services-tbody').innerHTML = items.map((s,i) => `
+    <tr>
+      <td><i class="${s.icon}" style="color:var(--gold);font-size:18px;"></i></td>
+      <td style="font-weight:600;color:#ddd;">${s.title}</td>
+      <td style="max-width:220px;color:#888;font-size:12px;">${s.desc.substring(0,60)}…</td>
+      <td>${s.tags.split(',').map(t=>`<span class="badge badge-gray" style="margin:2px;">${t.trim()}</span>`).join('')}</td>
+      <td class="td-actions">
+        <button class="btn btn-ghost btn-xs" onclick="editService(${i})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-red btn-xs" onclick="deleteService(${i})"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+}
+function openServiceModal(){ document.getElementById('service-modal').style.display='block'; document.getElementById('svc-modal-title').innerHTML='<i class="fa-solid fa-plus"></i> Add Service'; document.getElementById('svc-edit-idx').value='-1'; document.getElementById('svc-title').value=''; document.getElementById('svc-icon').value=''; document.getElementById('svc-desc').value=''; document.getElementById('svc-tags').value=''; }
+function cancelServiceModal(){ document.getElementById('service-modal').style.display='none'; }
+function editService(i) {
+  const s = get('services')[i];
+  document.getElementById('service-modal').style.display='block';
+  document.getElementById('svc-modal-title').innerHTML='<i class="fa-solid fa-pen"></i> Edit Service';
+  document.getElementById('svc-edit-idx').value=i;
+  document.getElementById('svc-title').value=s.title;
+  document.getElementById('svc-icon').value=s.icon;
+  document.getElementById('svc-desc').value=s.desc;
+  document.getElementById('svc-tags').value=s.tags;
+}
+function saveService() {
+  const idx = parseInt(document.getElementById('svc-edit-idx').value);
+  const items = get('services');
+  const obj = { icon: document.getElementById('svc-icon').value || 'fa-solid fa-star', title: document.getElementById('svc-title').value, desc: document.getElementById('svc-desc').value, tags: document.getElementById('svc-tags').value };
+  if(!obj.title){ toast('Title is required','error'); return; }
+  if(idx>=0) items[idx]=obj; else items.push(obj);
+  save('services', items); loadServicesTable(); cancelServiceModal(); toast('Service saved!');
+}
+function deleteService(i) {
+  if(!confirm('Delete this service?')) return;
+  const items = get('services'); items.splice(i,1); save('services',items); loadServicesTable(); toast('Service deleted.');
+}
+
+// ============================================================
+// ARTISTS
+// ============================================================
+function loadArtistsTable() {
+  const items = get('artists');
+  document.getElementById('artists-tbody').innerHTML = items.map((a,i) => `
+    <tr>
+      <td><img class="td-img" src="${a.img}" onerror="this.src='https://via.placeholder.com/48x48/141414/f5b041?text=?'"></td>
+      <td style="font-weight:700;color:var(--gold);letter-spacing:1px;">${a.name}</td>
+      <td style="font-size:12px;color:#666;">${a.ig && a.ig!='#' ? '<span class="badge badge-green">Set</span>' : '<span class="badge badge-gray">—</span>'}</td>
+      <td style="font-size:12px;color:#666;">${a.spotify && a.spotify!='#' ? '<span class="badge badge-green">Set</span>' : '<span class="badge badge-gray">—</span>'}</td>
+      <td class="td-actions">
+        <button class="btn btn-ghost btn-xs" onclick="editArtist(${i})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-red btn-xs" onclick="deleteArtist(${i})"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+}
+function openArtistModal(){ document.getElementById('artist-modal').style.display='block'; document.getElementById('art-modal-title').innerHTML='<i class="fa-solid fa-plus"></i> Add Artist'; document.getElementById('art-edit-idx').value='-1'; ['art-name','art-img','art-ig','art-spotify','art-audio'].forEach(id=>document.getElementById(id).value=''); }
+function cancelArtistModal(){ document.getElementById('artist-modal').style.display='none'; }
+function editArtist(i) {
+  const a = get('artists')[i];
+  document.getElementById('artist-modal').style.display='block';
+  document.getElementById('art-modal-title').innerHTML='<i class="fa-solid fa-pen"></i> Edit Artist';
+  document.getElementById('art-edit-idx').value=i;
+  document.getElementById('art-name').value=a.name;
+  document.getElementById('art-img').value=a.img;
+  document.getElementById('art-ig').value=a.ig;
+  document.getElementById('art-spotify').value=a.spotify;
+  document.getElementById('art-audio').value=a.audio||'';
+}
+function saveArtist() {
+  const idx = parseInt(document.getElementById('art-edit-idx').value);
+  const items = get('artists');
+  const obj = { name: document.getElementById('art-name').value.toUpperCase(), img: document.getElementById('art-img').value, ig: document.getElementById('art-ig').value||'#', spotify: document.getElementById('art-spotify').value||'#', audio: document.getElementById('art-audio').value };
+  if(!obj.name){ toast('Name is required','error'); return; }
+  if(idx>=0) items[idx]=obj; else items.push(obj);
+  save('artists',items); loadArtistsTable(); cancelArtistModal(); toast('Artist saved!'); loadDashboard();
+}
+function deleteArtist(i) {
+  if(!confirm('Remove this artist?')) return;
+  const items = get('artists'); items.splice(i,1); save('artists',items); loadArtistsTable(); toast('Artist removed.'); loadDashboard();
+}
+
+// ============================================================
+// REVIEWS
+// ============================================================
+function loadReviewsTable() {
+  const items = get('reviews');
+  document.getElementById('reviews-tbody').innerHTML = items.map((r,i) => `
+    <tr>
+      <td style="max-width:300px;color:#ccc;">"${r.quote.substring(0,70)}${r.quote.length>70?'…':''}"</td>
+      <td style="color:var(--gold);font-weight:600;">— ${r.client}</td>
+      <td class="td-actions">
+        <button class="btn btn-ghost btn-xs" onclick="editReview(${i})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-red btn-xs" onclick="deleteReview(${i})"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+}
+function openReviewModal(){ document.getElementById('review-modal').style.display='block'; document.getElementById('rev-modal-title').innerHTML='<i class="fa-solid fa-plus"></i> Add Review'; document.getElementById('rev-edit-idx').value='-1'; document.getElementById('rev-quote').value=''; document.getElementById('rev-client').value=''; }
+function cancelReviewModal(){ document.getElementById('review-modal').style.display='none'; }
+function editReview(i) {
+  const r = get('reviews')[i];
+  document.getElementById('review-modal').style.display='block';
+  document.getElementById('rev-modal-title').innerHTML='<i class="fa-solid fa-pen"></i> Edit Review';
+  document.getElementById('rev-edit-idx').value=i;
+  document.getElementById('rev-quote').value=r.quote;
+  document.getElementById('rev-client').value=r.client;
+}
+function saveReview() {
+  const idx = parseInt(document.getElementById('rev-edit-idx').value);
+  const items = get('reviews');
+  const obj = { quote: document.getElementById('rev-quote').value, client: document.getElementById('rev-client').value };
+  if(!obj.quote||!obj.client){ toast('All fields required','error'); return; }
+  if(idx>=0) items[idx]=obj; else items.push(obj);
+  save('reviews',items); loadReviewsTable(); cancelReviewModal(); toast('Review saved!'); loadDashboard();
+}
+function deleteReview(i) {
+  if(!confirm('Delete this review?')) return;
+  const items = get('reviews'); items.splice(i,1); save('reviews',items); loadReviewsTable(); toast('Review deleted.');
+}
+
+// ============================================================
+// ANNOUNCEMENTS
+// ============================================================
+function loadAnnouncementForm() {
+  const d = get('announcement');
+  document.getElementById('ann-badge').value = d.badge;
+  document.getElementById('ann-title').value = d.title;
+  document.getElementById('ann-body').value = d.body;
+  document.getElementById('ann-features').value = d.features;
+  document.getElementById('ann-link-text').value = d.linkText;
+  document.getElementById('ann-link-url').value = d.linkUrl;
+}
+function saveAnnouncement() {
+  save('announcement', { badge: document.getElementById('ann-badge').value, title: document.getElementById('ann-title').value, body: document.getElementById('ann-body').value, features: document.getElementById('ann-features').value, linkText: document.getElementById('ann-link-text').value, linkUrl: document.getElementById('ann-link-url').value });
+  toast('Announcement saved!');
+}
+
+// ============================================================
+// NEWSLETTER
+// ============================================================
+function loadNewsletterForm() {
+  const d = get('newsletter');
+  document.getElementById('nl-img1').value = d.img1;
+  document.getElementById('nl-img2').value = d.img2;
+  document.getElementById('nl-img3').value = d.img3;
+}
+function saveNewsletter() {
+  save('newsletter', { img1: document.getElementById('nl-img1').value, img2: document.getElementById('nl-img2').value, img3: document.getElementById('nl-img3').value });
+  toast('Newsletter images saved!');
+}
+
+// ============================================================
+// POPUP
+// ============================================================
+function loadPopupForm() {
+  const d = get('popup');
+  document.getElementById('popup-img').value = d.img;
+  document.getElementById('popup-title').value = d.title;
+  document.getElementById('popup-sub').value = d.sub;
+  document.getElementById('popup-link').value = d.link;
+  document.getElementById('popup-enabled').checked = d.enabled;
+  updatePopupPreview();
+}
+function updatePopupPreview() {
+  document.getElementById('popup-img-preview').src = document.getElementById('popup-img').value;
+  document.getElementById('popup-title-prev').textContent = document.getElementById('popup-title').value;
+  document.getElementById('popup-sub-prev').textContent = document.getElementById('popup-sub').value;
+}
+document.getElementById('popup-img').addEventListener('input', updatePopupPreview);
+document.getElementById('popup-title').addEventListener('input', updatePopupPreview);
+document.getElementById('popup-sub').addEventListener('input', updatePopupPreview);
+function savePopup() {
+  save('popup', { img: document.getElementById('popup-img').value, title: document.getElementById('popup-title').value, sub: document.getElementById('popup-sub').value, link: document.getElementById('popup-link').value, enabled: document.getElementById('popup-enabled').checked });
+  toast('Popup settings saved!');
+}
+
+// ============================================================
+// CONTACT
+// ============================================================
+function loadContactForm() {
+  const d = get('contact');
+  document.getElementById('contact-email').value = d.email;
+  document.getElementById('contact-phone').value = d.phone;
+  document.getElementById('contact-location').value = d.location;
+  document.getElementById('social-fb').value = d.fb;
+  document.getElementById('social-tw').value = d.tw;
+  document.getElementById('social-ig').value = d.ig;
+  document.getElementById('social-li').value = d.li;
+}
+function saveContact() {
+  save('contact', { email: document.getElementById('contact-email').value, phone: document.getElementById('contact-phone').value, location: document.getElementById('contact-location').value, fb: document.getElementById('social-fb').value, tw: document.getElementById('social-tw').value, ig: document.getElementById('social-ig').value, li: document.getElementById('social-li').value });
+  toast('Contact info saved!');
+}
+
+// ============================================================
+// VISIBILITY
+// ============================================================
+function loadVisibility() {
+  const d = get('visibility');
+  Object.keys(d).forEach(k => {
+    const el = document.getElementById('vis-'+k);
+    if(el) el.checked = d[k];
+  });
+}
+function saveVisibility() {
+  const keys = ['hero','about','services','announcements','hall','reviews','contact'];
+  const obj = {};
+  keys.forEach(k => { const el = document.getElementById('vis-'+k); if(el) obj[k] = el.checked; });
+  save('visibility', obj);
+  toast('Visibility updated!');
+}
+</script>
+</body>
+</html>
