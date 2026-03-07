@@ -138,6 +138,7 @@
       .showcase-img-wrap{min-height:320px;}
       .showcase-glow{background:linear-gradient(180deg,var(--card-bg) 0%,transparent 25%);}
     }
+    .floating-newsletter{position:fixed;bottom:25px;right:25px;z-index:1001;}
     .floating-newsletter a i{background:var(--brand);color:#fff;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:22px;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .2s;}
     .floating-newsletter a i:hover{transform:scale(1.1);background:var(--gold);color:#000;}
   </style>
@@ -323,8 +324,14 @@ const D = {
   visibility:{ hero:true, about:true, services:true, announcements:true, hall:true, reviews:true, contact:true }
 };
 
-async function fsGet(p){ try{ const s=await getDoc(doc(db,...p.split('/'))); return s.exists()?s.data():null; }catch(e){ return null; } }
-async function fsList(c){ try{ const s=await getDocs(collection(db,c)); return s.docs.map(d=>({id:d.id,...d.data()})); }catch(e){ return []; } }
+async function fsGet(p){ 
+  try{ const s=await getDoc(doc(db,...p.split('/'))); return s.exists()?s.data():null; }
+  catch(e){ console.warn('Firebase read failed:',p,e.message); return null; } 
+}
+async function fsList(c){ 
+  try{ const s=await getDocs(collection(db,c)); return s.docs.map(d=>({id:d.id,...d.data()})); }
+  catch(e){ console.warn('Firebase list failed:',c,e.message); return []; } 
+}
 
 async function renderAll(){
   const [hero,about,services,artists,reviews,ann,nl,popup,contact,vis] = await Promise.all([

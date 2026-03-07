@@ -458,9 +458,18 @@ const D = {
   visibility:{ hero:true, about:true, services:true, announcements:true, hall:true, reviews:true, contact:true }
 };
 
-async function fsGet(p){ const s=await getDoc(doc(db,...p.split('/'))); return s.exists()?s.data():null; }
-async function fsSet(p,d){ await setDoc(doc(db,...p.split('/')),d,{merge:true}); }
-async function fsList(c){ const s=await getDocs(collection(db,c)); return s.docs.map(d=>({id:d.id,...d.data()})); }
+async function fsGet(p){ 
+  try{ const s=await getDoc(doc(db,...p.split('/'))); return s.exists()?s.data():null; }
+  catch(e){ console.warn('Read failed:',p,e.message); return null; } 
+}
+async function fsSet(p,d){ 
+  try{ await setDoc(doc(db,...p.split('/')),d,{merge:true}); }
+  catch(e){ toast('Save failed — check Firestore rules: '+e.message,'error'); throw e; } 
+}
+async function fsList(c){ 
+  try{ const s=await getDocs(collection(db,c)); return s.docs.map(d=>({id:d.id,...d.data()})); }
+  catch(e){ console.warn('List failed:',c,e.message); return []; } 
+}
 
 window.toast = function(msg,type='success'){
   const t=document.getElementById('toast');
