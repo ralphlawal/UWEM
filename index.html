@@ -1,465 +1,636 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-<title>SKY-LIGHT MODEL COLLEGE — Education is Light, Light is Power</title>
-<meta name="description" content="Sky-Light Model College. Government approved. Creche to College. Igbo Olomu, Lagos."/>
-<link rel="icon" type="image/png" href="logo.png"> 
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<style>
-  :root{
-    /* Brand Colors */
-    --blue: #00264d;
-    --blue-dark: #001a33;
-    --gold: #ffcc00;
-    --gold-dark: #e6b800;
-    --text-main: #1e293b;
-    --text-light: #64748b;
-    --white: #ffffff;
-    --bg-light: #f8fafc;
-    
-    /* Layout */
-    --container: 1200px;
-    --header-h: 70px;
-    --radius: 12px;
-    --shadow: 0 10px 30px -10px rgba(0, 38, 77, 0.15);
-  }
-
-  /* --- 1. RESET & BASE --- */
-  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0; font-family:'Manrope', sans-serif;
-    background:var(--bg-light); color:var(--text-main);
-    line-height:1.6; overflow-x:hidden; font-size: 16px;
-  }
-  h1,h2,h3,h4{line-height:1.2; margin:0 0 1rem 0; color:var(--blue-dark);}
-  p{margin-bottom:1.5rem;}
-  a{text-decoration:none; color:inherit; transition:0.3s;}
-  /* IMPORTANT: Object-fit cover ensures images don't stretch */
-  img{display:block; max-width:100%; height:auto; border-radius:var(--radius);}
-  
-  /* Utilities */
-  .container{max-width:var(--container); margin:0 auto; padding:0 20px;}
-  .section{padding:60px 0;} 
-  @media(max-width:768px){ .section{padding:40px 0;} }
-  .text-center{text-align:center;}
-  .highlight{color:var(--gold-dark);}
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center;
-    padding:14px 28px; border-radius:8px; font-weight:700; cursor:pointer;
-    border:none; font-size:16px; transition:transform 0.2s;
-  }
-  .btn:active{transform:scale(0.96);}
-  .btn-primary{background:var(--gold); color:var(--blue-dark); box-shadow:0 4px 12px rgba(255, 204, 0, 0.3);}
-  .btn-outline{border:2px solid rgba(255,255,255,0.3); color:#fff; backdrop-filter:blur(4px);}
-
-  /* --- 2. NAVIGATION (Mobile Optimized) --- */
-  .navbar{
-    position:fixed; top:0; left:0; right:0; height:var(--header-h);
-    background:rgba(255,255,255,0.98); backdrop-filter:blur(12px);
-    z-index:1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    display:flex; align-items:center;
-  }
-  .nav-inner{display:flex; justify-content:space-between; align-items:center; width:100%;}
-  .logo{display:flex; align-items:center; gap:10px; font-weight:800; color:var(--blue); font-size:18px;}
-  .logo img{height:40px; width:auto;}
-
-  /* Desktop Menu */
-  .desktop-menu{display:flex; gap:25px; align-items:center; list-style:none; margin:0;}
-  .desktop-menu a{font-size:15px; font-weight:600; color:var(--blue);}
-  .portal-btn{background:var(--blue-dark); color:var(--gold) !important; padding:8px 16px; border-radius:6px;}
-  
-  /* Mobile Hamburger */
-  .hamburger{display:none; font-size:28px; background:none; border:none; color:var(--blue); cursor:pointer;}
-  
-  /* Mobile Drawer */
-  .mobile-drawer{
-    position:fixed; top:0; right:0; width:80%; max-width:300px; height:100vh;
-    background:var(--blue); padding:80px 30px; z-index:1001;
-    transform:translateX(100%); transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow:-5px 0 20px rgba(0,0,0,0.2);
-  }
-  .mobile-drawer.open{transform:translateX(0);}
-  .mobile-drawer ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:20px;}
-  .mobile-drawer a{color:#fff; font-size:18px; font-weight:600; display:block; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.1);}
-  .mobile-overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
-    opacity:0; pointer-events:none; transition:opacity 0.3s;
-  }
-  .mobile-overlay.open{opacity:1; pointer-events:auto;}
-  .close-menu{position:absolute; top:20px; right:20px; color:#fff; font-size:30px; background:none; border:none;}
-
-  @media(max-width:900px){
-    .desktop-menu{display:none;}
-    .hamburger{display:block;}
-  }
-
-  /* --- 3. HERO & TICKER --- */
-  .hero{
-    margin-top:var(--header-h); min-height:85vh;
-    /* Hero Image Background */
-    background:linear-gradient(rgba(0, 38, 77, 0.85), rgba(0, 38, 77, 0.7)), url('hero-school.jpg') center/cover;
-    display:flex; align-items:center; justify-content:center; text-align:center; color:#fff;
-    padding:40px 20px;
-  }
-  .hero h1{font-size:clamp(32px, 5vw, 56px); font-weight:800; margin-bottom:20px;}
-  .hero p{font-size:18px; opacity:0.9; max-width:600px; margin:0 auto 30px;}
-  
-  .ticker-wrap{background:#fff; border-bottom:1px solid #ddd; height:40px; overflow:hidden;}
-  .ticker{display:inline-block; white-space:nowrap; padding-left:100%; animation:ticker 25s linear infinite; line-height:40px; font-size:14px;}
-  @keyframes ticker{0%{transform:translateX(0);} 100%{transform:translateX(-100%);}}
-
-  /* --- 4. FLIP CARDS (Optimized for 4 Staff) --- */
-  .staff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-  .flip-card { background-color: transparent; width: 100%; height: 380px; perspective: 1000px; }
-  .flip-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; border-radius: 16px; box-shadow: var(--shadow); }
-  .flip-card:hover .flip-inner { transform: rotateY(180deg); }
-  .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 16px; overflow: hidden; }
-  .flip-front { background-color: #fff; }
-  
-  /* Key Fix: Ensures photos don't stretch */
-  .flip-front img { width: 100%; height: 100%; object-fit: cover; }
-  
-  .name-tag { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0, 38, 77, 0.95); color: #fff; padding: 15px; }
-  .flip-back { background: var(--blue); color: white; transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-  .flip-back h4 { color: var(--gold); margin-bottom: 5px; }
-
-  /* --- 5. TESTIMONIALS & GRIDS --- */
-  .review-card { background: #fff; padding: 25px; border-radius: 12px; border-left: 4px solid var(--gold); box-shadow: var(--shadow); }
-  .stars { color: var(--gold); letter-spacing: 2px; margin-bottom: 10px; }
-  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;}
-  .grid-3{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:30px;}
-  @media(max-width:700px){ .grid-2{grid-template-columns:1fr;} }
-  .card{background:#fff; padding:30px; border-radius:16px; box-shadow:var(--shadow);}
-  
-  /* --- 6. GALLERY --- */
-  .gallery-nav{display:flex; justify-content:center; gap:10px; margin-bottom:20px; flex-wrap:wrap;}
-  .g-btn{padding:8px 20px; border:1px solid #ddd; border-radius:20px; background:none; cursor:pointer;}
-  .g-btn.active{background:var(--blue); color:#fff; border-color:var(--blue);}
-  .gallery-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:15px;}
-  /* Key Fix: Uniform squares for gallery */
-  .gallery-img{width:100%; height:180px; object-fit:cover; border-radius:8px; cursor:zoom-in; transition:0.3s;}
-  .gallery-img:hover{transform:scale(1.03);}
-  
-  /* --- 7. LIGHTBOX --- */
-  .lightbox{
-    position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:2000;
-    display:none; align-items:center; justify-content:center; padding:20px;
-  }
-  .lightbox.active{display:flex;}
-  .lightbox img{max-height:90vh; max-width:100%; object-fit:contain;}
-  .lb-close{position:absolute; top:20px; right:20px; color:#fff; font-size:40px; cursor:pointer;}
-  
-  /* Form & Footer */
-  input, select, textarea{width:100%; padding:14px; margin-bottom:15px; border:1px solid #cbd5e1; border-radius:8px; font-family:inherit;}
-  .footer{background:var(--blue-dark); color:#fff; padding:60px 0 20px;}
-  .footer a{opacity:0.7;} .footer a:hover{color:var(--gold); opacity:1;}
-  .wa-float{position:fixed; bottom:20px; right:20px; width:60px; height:60px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 15px rgba(0,0,0,0.3); z-index:900;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Nur Futura Marketing - Illuminating brands & Music Distribution 2026.">
+  <title>NUR FUTURA MARKETING | 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root { --brand:#8B2C00; --gold:#f5b041; --dark:#0a0a0a; --card-bg:#141414; --light:#f4f4f4; --border:rgba(255,255,255,0.05); }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);line-height:1.7;font-size:1.05rem;overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:auto;}
+    .noise-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:900;opacity:.07;background:url('https://grainy-gradients.vercel.app/noise.svg');}
+    .preloader{position:fixed;inset:0;background:#000;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .8s cubic-bezier(0.7,0,0.3,1);}
+    .loader-text{font-family:'Playfair Display',serif;font-size:40px;color:var(--gold);margin-bottom:10px;}
+    .loader-bar{width:200px;height:2px;background:#333;position:relative;overflow:hidden;}
+    .loader-progress{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--gold);transition:width .1s;}
+    body.loaded .preloader{transform:translateY(-100%);}
+    .popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:11000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s ease;backdrop-filter:blur(5px);}
+    .popup-overlay.active{opacity:1;pointer-events:all;}
+    .popup-content{position:relative;max-width:500px;width:90%;background:var(--card-bg);border:1px solid var(--gold);border-radius:12px;overflow:hidden;transform:scale(.8);transition:transform .4s cubic-bezier(0.175,.885,.32,1.275);box-shadow:0 20px 50px rgba(0,0,0,.8);}
+    .popup-overlay.active .popup-content{transform:scale(1);}
+    .popup-close{position:absolute;top:15px;right:15px;width:32px;height:32px;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(255,255,255,.2);transition:.3s;z-index:10;font-size:18px;}
+    .popup-close:hover{background:var(--brand);transform:rotate(90deg);border-color:var(--brand);}
+    .popup-img{width:100%;display:block;object-fit:cover;}
+    .popup-cta{padding:20px;text-align:center;}
+    @media(hover:hover) and (pointer:fine){
+      body{cursor:none;}
+      .cursor-dot,.cursor-outline{position:fixed;top:0;left:0;transform:translate(-50%,-50%);border-radius:50%;z-index:9999;pointer-events:none;display:block;}
+      .cursor-dot{width:8px;height:8px;background:var(--gold);}
+      .cursor-outline{width:40px;height:40px;border:1px solid rgba(245,176,65,.5);transition:width .2s,height .2s,background .2s;}
+      body:has(a:hover,button:hover,.service-header:hover,.tilt-card:hover,.popup-close:hover) .cursor-outline{width:60px;height:60px;background:rgba(245,176,65,.1);border-color:var(--gold);}
+    }
+    @media(hover:none){.cursor-dot,.cursor-outline{display:none!important;}}
+    img{max-width:100%;border-radius:10px;display:block;}
+    header{background:rgba(10,10,10,.85);backdrop-filter:blur(12px);padding:15px 30px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:999;border-bottom:1px solid var(--border);}
+    header h1{font-family:'Playfair Display',serif;font-size:24px;display:flex;align-items:center;gap:12px;color:#fff;}
+    .menu-toggle{font-size:24px;cursor:pointer;display:none;color:var(--gold);}
+    nav{display:flex;gap:20px;align-items:center;}
+    nav a{color:#ccc;text-decoration:none;font-weight:500;font-size:.95rem;transition:color .3s;}
+    nav a:hover{color:var(--gold);}
+    nav a.btn-announce{background:rgba(245,176,65,.1);border:1px solid var(--gold);color:var(--gold);padding:8px 16px;border-radius:50px;font-weight:600;display:flex;gap:8px;align-items:center;}
+    nav a.btn-announce:hover{background:var(--gold);color:#000;box-shadow:0 0 15px rgba(245,176,65,.4);}
+    .btn-portal{background:rgba(139,44,0,.15);border:1px solid var(--brand);color:#e88a5a;padding:8px 16px;border-radius:50px;font-weight:600;display:flex;gap:8px;align-items:center;text-decoration:none;transition:.3s;font-size:.9rem;}
+    .btn-portal:hover{background:var(--brand);color:#fff;}
+    @media(max-width:520px){.portal-label{display:none;}}
+    @media(max-width:900px){
+      nav{display:none;flex-direction:column;background:#000;position:absolute;top:70px;right:20px;padding:20px;border-radius:12px;border:1px solid var(--border);box-shadow:0 10px 40px rgba(0,0,0,.8);}
+      nav.active{display:flex;}
+      .menu-toggle{display:block;}
+      .btn-announce{justify-content:center;}
+    }
+    .marquee-container{background:var(--gold);color:#000;padding:10px 0;overflow:hidden;position:relative;transform:rotate(-1deg);margin-top:20px;margin-bottom:20px;width:105%;left:-2.5%;box-shadow:0 0 20px rgba(245,176,65,.3);}
+    .marquee-content{display:flex;gap:50px;width:max-content;animation:scrollText 25s linear infinite;}
+    .marquee-content span{font-weight:800;text-transform:uppercase;font-size:16px;letter-spacing:1px;}
+    @keyframes scrollText{to{transform:translateX(-50%);}}
+    .hero{background:url('images/hero.png') center/cover no-repeat;color:#fff;padding:120px 20px 100px;text-align:center;position:relative;}
+    .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.4),rgba(10,10,10,.95));}
+    .hero-content{position:relative;z-index:2;max-width:800px;margin:0 auto;}
+    .hero h2{font-size:clamp(2.5rem,5vw,4rem);margin-bottom:20px;font-family:'Playfair Display',serif;line-height:1.1;opacity:0;transform:translateY(30px);transition:all 1s ease;}
+    .hero h2.active{opacity:1;transform:translateY(0);}
+    .hero p{font-size:1.2rem;margin-bottom:30px;color:#ddd;}
+    .btn{padding:14px 28px;border:none;border-radius:50px;font-weight:600;cursor:pointer;margin:8px;transition:.3s;display:inline-block;text-decoration:none;position:relative;overflow:hidden;}
+    .btn-primary{background:var(--gold);color:#000;}
+    .btn-primary:hover{box-shadow:0 10px 20px rgba(245,176,65,.3);}
+    .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);}
+    .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+    .stats-row{display:flex;flex-wrap:wrap;justify-content:center;gap:40px;max-width:900px;margin:40px auto 0;position:relative;z-index:2;}
+    .stat-item{text-align:center;}
+    .stat-number{font-size:2.5rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif;display:block;}
+    .stat-label{font-size:.9rem;text-transform:uppercase;letter-spacing:1px;color:#888;}
+    section{padding:90px 20px;max-width:1200px;margin:auto;}
+    .section-title{text-align:center;font-size:32px;color:var(--gold);margin-bottom:50px;font-family:'Playfair Display',serif;cursor:default;}
+    .section-title::after{content:'';display:block;width:60px;height:3px;background:var(--brand);margin:15px auto;}
+    .card{background:var(--card-bg);padding:30px;border-radius:16px;border:1px solid var(--border);transition:.4s;}
+    .reveal-text{opacity:0;transform:translateY(50px);filter:blur(5px);transition:all .8s ease-out;}
+    .reveal-text.active{opacity:1;transform:translateY(0);filter:blur(0);}
+    #about .card p{margin-bottom:20px;color:#ccc;}
+    #about strong{color:var(--gold);font-family:'Playfair Display',serif;font-size:1.2rem;display:block;margin-bottom:8px;}
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+    .service-card{background:var(--card-bg);border-radius:12px;border:1px solid var(--border);overflow:hidden;transition:transform .3s,border-color .3s;}
+    .service-header{display:flex;gap:15px;align-items:center;padding:20px;cursor:pointer;background:transparent;}
+    .service-header i{font-size:24px;color:var(--gold);width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(245,176,65,.1);border-radius:8px;}
+    .service-header h4{font-size:18px;margin:0;flex:1;}
+    .service-toggle{font-size:12px;text-transform:uppercase;font-weight:700;color:#666;}
+    .service-body-wrapper{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease;}
+    .service-body-wrapper.open{grid-template-rows:1fr;}
+    .service-body{overflow:hidden;}
+    .service-content-inner{padding:0 20px 20px;opacity:0;transform:translateY(-10px);transition:.4s;}
+    .service-body-wrapper.open .service-content-inner{opacity:1;transform:translateY(0);}
+    .service-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px;}
+    .service-option{background:rgba(255,255,255,.03);padding:6px 12px;border-radius:6px;font-size:13px;border:1px solid var(--border);}
+    #announcements .card{text-align:center;}
+    .distro-badge{background:var(--gold);color:#000;padding:6px 14px;border-radius:30px;font-weight:700;font-size:12px;text-transform:uppercase;display:inline-block;margin-bottom:15px;}
+    .distro-icons{font-size:28px;display:flex;justify-content:center;gap:20px;margin:20px 0;color:#fff;}
+    .newsletter-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin:40px 0 20px;}
+    .placeholder-img{width:100%;height:200px;object-fit:cover;background:#222;border-radius:8px;border:1px solid var(--border);transition:.3s;transform-style:preserve-3d;transform:perspective(1000px);}
+    .placeholder-img:hover{filter:brightness(1.2);border-color:var(--gold);transform:scale(1.03);z-index:5;}
+    .hall{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;grid-auto-rows:250px;}
+    @media(min-width:768px){.hall{grid-template-columns:repeat(3,1fr);}.artist:nth-child(1){grid-column:span 2;grid-row:span 2;}}
+    .artist{position:relative;overflow:hidden;border-radius:12px;height:100%;transition:transform .1s;background:#000;cursor:pointer;}
+    .tilt-card{transform-style:preserve-3d;transform:perspective(1000px);}
+    .tilt-card:hover{z-index:10;}
+    .artist img{width:100%;height:100%;object-fit:cover;transition:.5s;}
+    .artist:hover img{filter:brightness(.4);transform:scale(1.05);}
+    .artist .overlay{position:absolute;inset:0;background:transparent;opacity:0;transition:.3s;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translateZ(20px);gap:15px;}
+    .artist:hover .overlay{opacity:1;}
+    .artist-name{font-family:'Playfair Display',serif;color:var(--gold);letter-spacing:1px;font-size:1.2rem;margin-top:10px;}
+    .artist-actions{display:flex;gap:12px;}
+    .btn-icon{background:var(--brand);color:#fff;width:45px;height:45px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:.3s;}
+    .btn-icon:hover{background:var(--gold);color:#000;transform:scale(1.1);}
+    .audio-visualizer{display:flex;gap:4px;align-items:flex-end;height:20px;margin-top:10px;opacity:0;transition:.3s;}
+    .artist:hover .audio-visualizer{opacity:1;}
+    .bar{width:4px;background:var(--gold);border-radius:2px;animation:sound .5s infinite alternate;}
+    .bar:nth-child(1){height:60%;animation-delay:.1s;}
+    .bar:nth-child(2){height:100%;animation-delay:.3s;}
+    .bar:nth-child(3){height:80%;animation-delay:.5s;}
+    .bar:nth-child(4){height:50%;animation-delay:.2s;}
+    @keyframes sound{0%{height:20%;opacity:.5;}100%{height:100%;opacity:1;}}
+    .reviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
+    .review{background:var(--card-bg);padding:30px;border-radius:12px;border:1px solid var(--border);}
+    .review i{color:var(--gold);font-size:24px;margin-bottom:15px;}
+    .contact form{display:grid;gap:15px;max-width:500px;margin:0 auto;}
+    input,textarea,select{width:100%;padding:16px;border-radius:8px;border:1px solid var(--border);background:#1a1a1a;color:#fff;font-family:'Inter',sans-serif;appearance:none;font-size:16px;}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);}
+    footer{text-align:center;background:#000;color:#666;padding:40px 20px;margin-top:80px;border-top:1px solid var(--border);}
+    footer .socials{margin-top:20px;}
+    footer .socials a{color:#888;margin:0 10px;font-size:20px;transition:.3s;}
+    footer .socials a:hover{color:var(--gold);}
+    .floating-newsletter{position:fixed;bottom:25px;right:25px;z-index:1001;}
+    .floating-newsletter a i{background:var(--brand);color:#fff;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:22px;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .2s;}
+    .floating-newsletter a i:hover{transform:scale(1.1);background:var(--gold);color:#000;}
+    .services-showcase{background:var(--card-bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;}
+    .showcase-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:460px;}
+    .showcase-label{padding:60px 50px;display:flex;flex-direction:column;align-items:flex-start;}
+    .showcase-tag{font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--gold);background:rgba(245,176,65,.08);border:1px solid rgba(245,176,65,.2);padding:6px 14px;border-radius:30px;margin-bottom:20px;display:inline-block;}
+    .showcase-label h3{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.2;color:#fff;}
+    .showcase-label h3 em{color:var(--gold);font-style:italic;}
+    .showcase-img-wrap{position:relative;height:100%;min-height:460px;overflow:hidden;}
+    .showcase-img{width:100%;height:100%;object-fit:cover;border-radius:0;transition:transform .6s ease;display:block;}
+    .showcase-img-wrap:hover .showcase-img{transform:scale(1.04);}
+    .showcase-glow{position:absolute;inset:0;background:linear-gradient(90deg,var(--card-bg) 0%,transparent 30%);pointer-events:none;}
+    @media(max-width:768px){
+      .showcase-inner{grid-template-columns:1fr;}
+      .showcase-label{padding:36px 24px 24px;}
+      .showcase-img-wrap{min-height:280px;}
+      .showcase-glow{background:linear-gradient(180deg,var(--card-bg) 0%,transparent 25%);}
+    }
+  </style>
 </head>
 <body>
 
-<div class="mobile-overlay" id="overlay"></div>
-<div class="mobile-drawer" id="drawer">
-  <button class="close-menu" id="closeMenu">×</button>
-  <ul>
-    <li><a href="#about" onclick="toggleMenu()">About</a></li>
-    <li><a href="#academics" onclick="toggleMenu()">Academics</a></li>
-    <li><a href="#staff" onclick="toggleMenu()">Leadership</a></li>
-    <li><a href="#gallery" onclick="toggleMenu()">Gallery</a></li>
-    <li><a href="#portal" onclick="toggleMenu()">Check Results</a></li>
-    <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
-  </ul>
+<div class="preloader">
+  <div class="loader-text">0%</div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
 </div>
 
-<nav class="navbar">
-  <div class="container nav-inner">
-    <a href="#" class="logo">
-      <img src="logo.png" alt="Logo">
-      <span>SKY-LIGHT</span>
-    </a>
-    <ul class="desktop-menu">
-      <li><a href="#about">About</a></li>
-      <li><a href="#academics">Academics</a></li>
-      <li><a href="#staff">Staff</a></li>
-      <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#portal" class="portal-btn">🔒 Parent Portal</a></li>
-      <li><a href="#contact" style="font-weight:700">Contact</a></li>
-    </ul>
-    <button class="hamburger" id="openMenu">☰</button>
-  </div>
-</nav>
+<div class="noise-overlay"></div>
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
 
-<header class="hero">
-  <div>
-    <div style="margin-bottom:20px; font-weight:700; color:var(--gold); letter-spacing:1px;">EST. 2009 • GOVERNMENT APPROVED</div>
-    <h1>Igniting Potential,<br><span style="color:var(--gold)">Building Future Leaders</span></h1>
-    <p>We provide holistic, value-driven learning from Creche to College in a secure environment.</p>
-    <div style="display:flex; gap:10px; justify-content:center;">
-      <a href="#contact" class="btn btn-primary">Apply Now</a>
-      <a href="#about" class="btn btn-outline">Learn More</a>
-    </div>
+<header>
+  <h1><img src="images/logo.png" alt="NUR Futura Logo" height="42"> NUR FUTURA</h1>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="portal.html" class="btn-portal" style="font-size:12px;padding:7px 14px;white-space:nowrap;"><i class="fa-solid fa-user-circle"></i> <span class="portal-label">Client Portal</span></a>
+    <i class="fa-solid fa-bars menu-toggle" aria-hidden="true"></i>
   </div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#hall">Hall of Fame</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#contact">Contact</a>
+    <a href="#announcements" class="btn-announce"><i class="fa-solid fa-music"></i> New: Music Distro</a>
+  </nav>
 </header>
 
-<div class="ticker-wrap">
-  <div class="ticker">
-    🔔 <strong>Latest News:</strong> Resumption for 2nd Term: Jan 8th, 2024. • 📝 <strong>Entrance Exam:</strong> Saturday, 15th Feb at 10am. • 🏆 <strong>Sports:</strong> Inter-house Sports coming up in March!
+<div class="marquee-container">
+  <div class="marquee-content">
+    <span>Music Distribution</span> • <span>Brand Strategy</span> • <span>Visual Identity</span> •
+    <span>Crisis Management</span> • <span>Artist Development</span> • <span>Global PR</span> •
+    <span>Music Distribution</span> • <span>Brand Strategy</span> • <span>Visual Identity</span> •
+    <span>Crisis Management</span> • <span>Artist Development</span> • <span>Global PR</span>
   </div>
 </div>
 
-<section class="section" style="background:#fff">
-  <div class="container">
-    <div class="grid-3 text-center">
-      <div><h2 style="color:var(--gold); font-size:40px; margin:0;">16+</h2><p>Years of Service</p></div>
-      <div><h2 style="color:var(--gold); font-size:40px; margin:0;">100%</h2><p>WAEC Success</p></div>
-      <div><h2 style="color:var(--gold); font-size:40px; margin:0;">Safe</h2><p>Secure Environment</p></div>
+<div class="hero">
+  <div class="hero-content">
+    <h2>Perception is Reality,<br> Image is Everything</h2>
+    <p class="reveal-text">We don't just build campaigns — we build unforgettable brands.</p>
+    <a href="#services" class="btn btn-primary">Start Project</a>
+    <a href="#announcements" class="btn btn-ghost">Distribute Music</a>
+  </div>
+  <div class="stats-row reveal-text">
+    <div class="stat-item"><span class="stat-number">150+</span><span class="stat-label">Artists Distributed</span></div>
+    <div class="stat-item"><span class="stat-number">10M+</span><span class="stat-label">Streams Generated</span></div>
+    <div class="stat-item"><span class="stat-number">24/7</span><span class="stat-label">Global Support</span></div>
+  </div>
+</div>
+
+<section id="about">
+  <h3 class="section-title">About Us</h3>
+  <div class="card tilt-card reveal-text">
+    <div style="display:grid;gap:20px;">
+      <div><strong>Mission Statement</strong><p>Our mission is to bring brands, artistes, and individuals into the limelight.</p></div>
+      <div><strong>Vision Statement</strong><p>Illuminating paths of our clients, unlocking full potentials, and redefining the marketing landscape.</p></div>
+      <div><strong>Who We Are</strong><p>We are a revolutionary force in 2026. With expertise in strategy, creativity & technology, we drive real results.</p></div>
     </div>
   </div>
 </section>
 
-<section id="about" class="section">
-  <div class="container">
-    <div class="grid-2">
-      <div>
-        <h4>WHO WE ARE</h4>
-        <h2>About Sky-Light</h2>
-        <p>Established in 2009, Sky-Light Model College offers continuous education from Creche through College. Our mission is to provide holistic learning that builds character, academic excellence, and practical skills.</p>
-        <p><strong>Our Mission:</strong> To nurture well-rounded students through quality education, discipline and moral values, preparing them to excel academically and socially.</p>
-        <ul style="list-style:none; padding:0; color:var(--text-light);">
-          <li>✅ Equipped Science & ICT Labs</li>
-          <li>✅ Interactive Smart Classes</li>
-          <li>✅ Secure, Gated Environment</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Admission Requirements</h3>
-        <ul style="padding-left:20px; margin-bottom:20px;">
-          <li>Completed Admission Form</li>
-          <li>2 Recent Passport Photographs</li>
-          <li>Birth Certificate</li>
-          <li>Last Academic Result</li>
-        </ul>
-        <a href="#contact" class="btn btn-primary" style="width:100%">Download Prospectus</a>
-      </div>
-    </div>
+<section id="services">
+  <h3 class="section-title">7-Fold Package</h3>
+  <div class="services-grid">
+    <div class="service-card tilt-card reveal-text"><div class="service-header"><i class="fa-solid fa-briefcase"></i><h4>Brand Management</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">Full brand strategy, visual identity, positioning, and campaign playbooks.</p><div class="service-options"><span class="service-option">Identity Refresh</span><span class="service-option">Creative Direction</span></div></div></div></div></div>
+    <div class="service-card tilt-card reveal-text"><div class="service-header"><i class="fa-solid fa-user-tie"></i><h4>Artist Management</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">Career strategy, release planning, bookings, PR & sponsorship matchmaking.</p><div class="service-options"><span class="service-option">Release Roadmap</span><span class="service-option">Tour Support</span></div></div></div></div></div>
+    <div class="service-card tilt-card reveal-text"><div class="service-header"><i class="fa-solid fa-calendar-days"></i><h4>Event Management</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">End-to-end event planning, stage design, logistics and activation.</p><div class="service-options"><span class="service-option">Logistics</span><span class="service-option">Activation</span></div></div></div></div></div>
+    <div class="service-card tilt-card reveal-text"><div class="service-header"><i class="fa-solid fa-shield-halved"></i><h4>Reputation Management</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">Protect and elevate public image through proactive narrative control.</p><div class="service-options"><span class="service-option">Crisis Response</span><span class="service-option">Media Training</span></div></div></div></div></div>
+    <div class="service-card tilt-card reveal-text"><div class="service-header"><i class="fa-solid fa-bullhorn"></i><h4>Digital Marketing</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">Data-driven campaigns across social, search and programmatic channels.</p><div class="service-options"><span class="service-option">Paid Ads</span><span class="service-option">SEO & Content</span></div></div></div></div></div>
+    <div class="service-card tilt-card reveal-text"><div class="service-header"><i class="fa-solid fa-comments"></i><h4>Public Relations</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">Local and international press outreach and storytelling.</p><div class="service-options"><span class="service-option">Media Relations</span><span class="service-option">Press Kits</span></div></div></div></div></div>
+    <div class="service-card tilt-card reveal-text"><div class="service-header"><i class="fa-solid fa-handshake"></i><h4>Consulting</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">Tailored advisory on monetization, growth strategy, and partnerships.</p><div class="service-options"><span class="service-option">Growth Strategy</span><span class="service-option">Workshops</span></div></div></div></div></div>
   </div>
 </section>
 
-<section id="staff" class="section" style="background:#fff">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:50px">
-      <h2>Meet Our Leadership</h2>
-      <p>Click or hover over the cards to see details.</p>
+<!-- SERVICES SHOWCASE IMAGE -->
+<div class="services-showcase" id="services-showcase">
+  <div class="showcase-inner">
+    <div class="showcase-label">
+      <span class="showcase-tag">Our Expertise</span>
+      <h3>Everything Your Brand Needs,<br><em>Under One Roof</em></h3>
+      <a href="#contact" class="btn btn-primary" style="margin-top:22px;">Work With Us</a>
     </div>
-    
-    <div class="staff-grid">
-      <div class="flip-card">
-        <div class="flip-inner">
-          <div class="flip-front">
-            <img src="princess.jpg" alt="Princess Kikelomo">
-            <div class="name-tag">Princess Kikelomo A. Efunkomaya</div>
-          </div>
-          <div class="flip-back">
-            <h4>Proprietress</h4>
-            <p>B.Sc Ed, M.Ed</p>
-            <p>"Committed to raising future leaders with the fear of God."</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flip-card">
-        <div class="flip-inner">
-          <div class="flip-front">
-             <img src="owner1.jpg" alt="Prince Stephen">
-            <div class="name-tag">Prince Stephen O. Efunkomaya</div>
-          </div>
-          <div class="flip-back">
-            <h4>Director of Studies</h4>
-            <p>B.Sc, PGDE</p>
-            <p>"Ensuring academic excellence across all levels."</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flip-card">
-        <div class="flip-inner">
-          <div class="flip-front">
-            <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1769414231/IMG_20251006_102055_884_b66ix5.jpg" alt="Mr Badmus">
-            <div class="name-tag">Mr. Badmus Lanre</div>
-          </div>
-          <div class="flip-back">
-            <h4>Principal</h4>
-            <p>B.Ed Physics</p>
-            <p>"Head of Administration and Discipline."</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flip-card">
-        <div class="flip-inner">
-          <div class="flip-front">
-            <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1769414466/IMG_20251006_104307_913_qclnjj.jpg" alt="Mr Godwin">
-            <div class="name-tag">Mr. Godwin Erigbe</div>
-          </div>
-          <div class="flip-back">
-            <h4>Vice Principal</h4>
-            <p>Academic Coordinator</p>
-            <p>"Fostering a supportive learning environment for all students."</p>
-          </div>
-        </div>
-      </div>
-      
+    <div class="showcase-img-wrap">
+      <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1772922780/IMG_20260307_233230_kcazxt.jpg" alt="Nur Futura Services" class="showcase-img">
+      <div class="showcase-glow"></div>
     </div>
+  </div>
+</div>
+
+<section id="announcements">
+  <h3 class="section-title">Announcements & Highlights</h3>
+  <div class="card tilt-card reveal-text" style="margin-bottom:40px;border:1px solid var(--gold);box-shadow:0 0 20px rgba(245,176,65,.05);">
+    <span class="distro-badge">Major Launch</span>
+    <h2 style="font-family:'Playfair Display',serif;color:#fff;margin-bottom:15px;">Introducing: Nur Futura Distribution</h2>
+    <p style="max-width:600px;margin:auto;color:#ccc;">We don't just manage artists; we power them. We are proud to launch our dedicated Music Distribution Arm. Get your music on <strong>Spotify, Apple Music, Boomplay, and 150+ stores</strong> worldwide.</p>
+    <div class="distro-icons">
+      <i class="fa-brands fa-spotify"></i><i class="fa-brands fa-apple"></i>
+      <i class="fa-brands fa-youtube"></i><i class="fa-solid fa-music"></i>
+    </div>
+    <p style="font-size:14px;color:#888;">
+      <i class="fa-solid fa-check" style="color:var(--gold)"></i> Transparent Royalties &nbsp;
+      <i class="fa-solid fa-check" style="color:var(--gold)"></i> Playlist Pitching &nbsp;
+      <i class="fa-solid fa-check" style="color:var(--gold)"></i> Global Reach
+    </p>
+    <a href="#" style="display:block;margin-top:10px;font-size:12px;color:#666;text-decoration:underline;">Distribution Terms & FAQ</a>
+  </div>
+  <div class="card reveal-text">
+    <h4 style="color:var(--gold);font-family:'Playfair Display',serif;font-size:20px;text-align:center;margin-bottom:20px;">NEWSLETTER</h4>
+    <div class="newsletter-row">
+      <a href="#"><img src="images/pla2.png" alt="Highlight 1" class="placeholder-img"></a>
+      <a href="#"><img src="images/pla1.png" alt="Highlight 2" class="placeholder-img"></a>
+      <a href="#"><img src="images/pla.png" alt="Highlight 3" class="placeholder-img"></a>
+    </div>
+    <form action="https://formspree.io/f/xnnbykjd" method="POST" style="margin-top:25px;max-width:400px;margin-inline:auto;display:flex;gap:10px;">
+      <input type="text" name="_gotcha" style="display:none!important">
+      <input type="email" name="newsletter" placeholder="Enter email for updates" required style="background:#222;">
+      <button type="submit" class="btn-primary" style="border:none;border-radius:8px;padding:0 20px;font-weight:700;white-space:nowrap;cursor:pointer;">Subscribe</button>
+    </form>
+    <p style="margin-top:15px;font-size:13px;color:#666;text-align:center;">By subscribing you accept our privacy policy.</p>
   </div>
 </section>
 
-<section class="section" style="background:var(--bg-light)">
-  <div class="container">
-    <h2 class="text-center" style="margin-bottom:40px">What Parents Say</h2>
-    <div class="grid-3">
-      <div class="review-card">
-        <div class="stars">★★★★★</div>
-        <p>"My daughter's confidence has improved since she joined Sky-Light. The teachers really care about the children."</p>
-        <p><strong>— Mrs. Adebayo</strong></p>
-      </div>
-      <div class="review-card">
-        <div class="stars">★★★★★</div>
-        <p>"The computer lab is excellent. My son is already learning how to code in JSS 2. Great investment."</p>
-        <p><strong>— Mr. Okonkwo</strong></p>
-      </div>
-      <div class="review-card">
-        <div class="stars">★★★★★</div>
-        <p>"Safe environment and very disciplined. I have peace of mind knowing my kids are here."</p>
-        <p><strong>— Iya Bolu</strong></p>
-      </div>
-    </div>
+<section id="hall">
+  <h3 class="section-title">Hall of Fame</h3>
+  <p style="text-align:center;margin-top:-30px;margin-bottom:30px;font-size:.9rem;color:#666;"><i class="fa-solid fa-headphones"></i> Hover over an artist to preview music</p>
+  <div class="hall">
+    <div class="artist tilt-card reveal-text" data-audio="mp3/goshen_snippet.mp3"><img src="./images/goshen.png" alt="Goshen" width="400" height="400"><div class="overlay"><p class="artist-name">GOSHEN</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="https://www.instagram.com/goshen_dt?igsh=MXZ3NWQ0Z3kwbW5uNg==" target="_blank" class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="#" class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>
+    <div class="artist tilt-card reveal-text" data-audio="mp3/tyira_snippet.mp3"><img src="images/tyira.png" alt="Tyira" width="300" height="300"><div class="overlay"><p class="artist-name">TYIRA</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="https://www.instagram.com/tyira_?igsh=MWozanltOGhhYTJ6Zw==" target="_blank" class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="#" class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>
+    <div class="artist tilt-card reveal-text" data-audio="mp3/vidarr_snippet.mp3"><img src="images/vidarr.jpg" alt="KvngVidarr" width="300" height="300"><div class="overlay"><p class="artist-name">KVNGVIDARR</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="https://www.instagram.com/kvngvidarr?igsh=eHhub25sODVvNjkz" target="_blank" class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="#" class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>
+    <div class="artist tilt-card reveal-text" data-audio="mp3/reechdee_snippet.mp3"><img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1768554541/Reechdee_a_unique_nigerian_songwriter_and_afro_pop_artiste_recently_dropped_a_double_single_SO_nfhpa9.jpg" alt="Reechdee"><div class="overlay"><p class="artist-name">REECHDEE</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="#" class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="#" class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>
+    <div class="artist tilt-card reveal-text" data-audio="mp3/pita_snippet.mp3"><img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1768554622/PRAISE_IN_THIS_AGE_pitasings_releases_a_12_tracks_album_that_celebrates_gratitude_God_s_Lo_q08icy.jpg" alt="Pita"><div class="overlay"><p class="artist-name">PITA</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="#" class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="#" class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>
+    <div class="artist tilt-card reveal-text" data-audio="mp3/sunnynine_snippet.mp3"><img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1768554790/SUNNYNINE_RELEASES_LATEST_PROJECT_SON_OF_THE_SUN_THE_EP_thesunnynine_represents_a_refreshing_ouldik.jpg" alt="Sunnynine"><div class="overlay"><p class="artist-name">SUNNYNINE</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="#" class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="#" class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>
+    <div class="artist tilt-card reveal-text" data-audio="mp3/clemz_snippet.mp3"><img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1768554832/artistically_inspired_by_the_Big_3_official__clemz_music_drops_his_second_single_GRATITUDE_wh_zrgypp.jpg" alt="Clemz"><div class="overlay"><p class="artist-name">CLEMZ</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="#" class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="#" class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>
   </div>
 </section>
 
-<section id="gallery" class="section" style="background:#fff">
-  <div class="container">
-    <h2 class="text-center">School Gallery</h2>
-    
-    <div class="gallery-nav">
-      <button class="g-btn active" onclick="filterGallery('all', this)">All</button>
-      <button class="g-btn" onclick="filterGallery('events', this)">Events</button>
-      <button class="g-btn" onclick="filterGallery('labs', this)">Facilities</button>
-    </div>
-
-    <div class="gallery-grid">
-      <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1769414023/IMG_20251006_105516_443_ayummn.jpg" 
-           class="gallery-img" data-cat="events" alt="School Life">
-
-      <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1769414119/IMG_20251006_105507_531_ia22f6.jpg" 
-           class="gallery-img" data-cat="labs" alt="Facility">
-
-      <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1769414154/IMG_20250927_090452_405_aolmi0.jpg" 
-           class="gallery-img" data-cat="events" alt="Students">
-
-      <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1769414192/IMG_20250927_090228_105_vyp0hg.jpg" 
-           class="gallery-img" data-cat="labs" alt="Campus">
-
-      <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1769414541/IMG_20250927_090305_163_pc8xak.jpg" 
-           class="gallery-img" data-cat="events" alt="Activities">
-           
-      <img src="cultural.jpg" class="gallery-img" data-cat="events" alt="Cultural Day" onerror="this.style.display='none'">
-    </div>
+<section id="reviews">
+  <h3 class="section-title">Client Reviews</h3>
+  <div class="reviews">
+    <div class="review tilt-card reveal-text"><i class="fa-solid fa-quote-left"></i><p>"Nur Futura made us a household name with bold campaigns."</p><strong style="display:block;margin-top:15px;color:var(--gold);">— YMX</strong></div>
+    <div class="review tilt-card reveal-text"><i class="fa-solid fa-quote-left"></i><p>"From ideas to execution, they are simply the best."</p><strong style="display:block;margin-top:15px;color:var(--gold);">— Babatunde</strong></div>
+    <div class="review tilt-card reveal-text"><i class="fa-solid fa-quote-left"></i><p>"Our billboard launch was unforgettable — thanks to Nur Futura."</p><strong style="display:block;margin-top:15px;color:var(--gold);">— Mora</strong></div>
   </div>
 </section>
 
-<section id="contact" class="section">
-  <div class="container">
-    <div class="grid-2">
-      <div>
-        <h2>Contact Us</h2>
-        <p><strong>📍 Address:</strong> 1, Steve Adeoye Street, Agbaje Bus Stop, Igbo Olomu.</p>
-        <p><strong>📞 Phone:</strong> 0803 816 4634, 0806 019 6191</p>
-        <p><strong>📧 Email:</strong> skylightmodelschools2015@gmail.com</p>
-        <iframe src="https://maps.google.com/maps?q=Igbo+Olomu&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0; border-radius:12px; margin-top:10px" allowfullscreen></iframe>
-      </div>
-      <div class="card">
-        <h3>Send Enquiry</h3>
-        <form action="https://formspree.io/f/myznkpkl" method="POST">
-          <input type="text" name="name" placeholder="Parent's Name" required>
-          <input type="tel" name="phone" placeholder="Phone Number" required>
-          <select name="subject">
-            <option>Admission Enquiry</option>
-            <option>Fees Information</option>
-            <option>Other</option>
-          </select>
-          <textarea name="message" rows="3" placeholder="Message"></textarea>
-          <button type="submit" class="btn btn-primary" style="width:100%">Submit</button>
-        </form>
-      </div>
-    </div>
+<section id="contact" class="contact">
+  <h3 class="section-title">Contact Us</h3>
+  <form action="https://formspree.io/f/xnnbykjd" method="POST" class="reveal-text">
+    <input type="text" name="_gotcha" style="display:none!important">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <select name="subject" required style="color:#fff;cursor:pointer;">
+      <option value="" disabled selected style="color:#aaa;">Select Subject...</option>
+      <option value="Marketing" style="color:#000;">Brand Marketing</option>
+      <option value="Demo" style="color:#000;">Submission (Distribution)</option>
+      <option value="Booking" style="color:#000;">Book an Artist</option>
+    </select>
+    <input type="url" name="link" placeholder="Link to Portfolio / SoundCloud (Optional)">
+    <textarea name="message" rows="5" placeholder="How can we help you?"></textarea>
+    <button type="submit" class="btn btn-primary">Send Message</button>
+  </form>
+  <div style="text-align:center;margin-top:30px;color:#888;">
+    <p id="contact-email-line"><i class="fa-solid fa-envelope"></i> <a id="contact-email-a" href="#" style="color:#888;"></a></p>
+    <p style="margin-top:5px;" id="contact-phone-line"><i class="fa-solid fa-phone"></i> +234 916 035 9275</p>
+    <p style="margin-top:5px;" id="contact-location-line"><i class="fa-solid fa-location-dot"></i> Lagos, Nigeria</p>
   </div>
 </section>
 
-<footer class="footer">
-  <div class="container">
-    <div class="grid-3">
-      <div>
-        <h3>Sky-Light Model College</h3>
-        <p>Nurturing future leaders since 2009 in a secure, government-approved environment.</p>
-      </div>
-      <div>
-        <h4>Quick Links</h4>
-        <p><a href="#about">About</a> • <a href="#portal">Parent Portal</a> • <a href="#gallery">Gallery</a></p>
-      </div>
-      <div>
-        <p>© 2026 Sky-Light Model College</p>
-        <p style="font-size:12px; opacity:0.6">Designed by <strong style="color:var(--gold)">NexaCore</strong></p>
-      </div>
-    </div>
+<footer>
+  <p>© <span id="year"></span> NUR FUTURA MARKETING | © <strong><a href="https://www.nexacorelabs.site" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;">NexaCore Labs</a></strong></p>
+  <div class="socials" id="footer-socials">
+    <a href="https://www.facebook.com/share/1GsZFKot85/?mibextid=wwXIfr" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+    <a href="https://twitter.com/nurfutura" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+    <a href="https://instagram.com/nur.futura" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+    <a href="https://www.linkedin.com/in/nur-futura-marketing-558a85356" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
   </div>
+  <div style="margin-top:14px;font-size:12px;"><a href="portal.html" style="color:#444;text-decoration:none;transition:.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='#444'"><i class="fa-solid fa-user-circle"></i> Client Portal Login</a></div>
 </footer>
 
-<div class="lightbox" id="lightbox">
-  <span class="lb-close">×</span>
-  <img id="lb-img" src="">
+<div class="floating-newsletter">
+  <a href="#announcements" title="Music Distro"><i class="fa-solid fa-music"></i></a>
 </div>
 
-<a href="https://wa.me/2348038164634" class="wa-float" target="_blank">
-  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-</a>
+<div class="popup-overlay" id="adPopup">
+  <div class="popup-content">
+    <div class="popup-close" id="closePopup"><i class="fa-solid fa-xmark"></i></div>
+    <a href="#announcements" onclick="closePopupFunc()">
+      <img src="https://res.cloudinary.com/dco9drzzp/image/upload/v1770817840/AMPLYFY_yjtdve.jpg" alt="Amplify Your Sounds" class="popup-img">
+    </a>
+    <div class="popup-cta">
+      <h3 style="color:var(--gold);font-family:'Playfair Display',serif;">Amplify Your Sounds</h3>
+      <p style="color:#ccc;font-size:14px;">Distribute on all platforms today.</p>
+    </div>
+  </div>
+</div>
 
-<script>
-  // 1. Mobile Menu
-  const drawer = document.getElementById('drawer');
-  const overlay = document.getElementById('overlay');
-  function toggleMenu() {
-    drawer.classList.toggle('open');
-    overlay.classList.toggle('open');
-  }
-  document.getElementById('openMenu').addEventListener('click', toggleMenu);
-  document.getElementById('closeMenu').addEventListener('click', toggleMenu);
-  overlay.addEventListener('click', toggleMenu);
+<!-- ══ ORIGINAL SITE SCRIPTS ══ -->
+<script data-cfasync="false">
+  // Email — assembled by JS so Cloudflare cannot obfuscate it
+  (function(){
+    var u='hello', d='nurfuturamarketing.com.ng';
+    var a=document.getElementById('contact-email-a');
+    if(a){ a.href='mailto:'+u+'@'+d; a.textContent=u+'@'+d; }
+  })();
 
-  // 2. Gallery Filter
-  function filterGallery(cat, btn) {
-    document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.gallery-img').forEach(img => {
-      if (cat === 'all' || img.dataset.cat === cat) img.style.display = 'block';
-      else img.style.display = 'none';
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Scroll-to-top button
+  var scrollBtn = document.createElement('button');
+  scrollBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+  scrollBtn.title = 'Back to top';
+  scrollBtn.style.cssText = 'position:fixed;bottom:90px;right:25px;width:42px;height:42px;background:var(--card-bg);border:1px solid var(--border);border-radius:50%;color:#666;font-size:14px;cursor:pointer;z-index:1000;opacity:0;pointer-events:none;transition:.3s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.4);';
+  document.body.appendChild(scrollBtn);
+  window.addEventListener('scroll', function(){
+    var show = window.scrollY > 400;
+    scrollBtn.style.opacity = show ? '1' : '0';
+    scrollBtn.style.pointerEvents = show ? 'auto' : 'none';
+  }, {passive:true});
+  scrollBtn.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  scrollBtn.addEventListener('mouseenter', function(){ this.style.borderColor='var(--gold)'; this.style.color='var(--gold)'; });
+  scrollBtn.addEventListener('mouseleave', function(){ this.style.borderColor='var(--border)'; this.style.color='#666'; });
+
+  // Mobile menu
+  document.querySelector('.menu-toggle').addEventListener('click', function(){
+    document.querySelector('nav').classList.toggle('active');
+  });
+
+  // Accordion — stored as named function so Firebase can re-call it
+  function initAccordion(){
+    document.querySelectorAll('.service-header').forEach(function(header){
+      header.addEventListener('click', function(){
+        var card=header.parentElement, wrapper=card.querySelector('.service-body-wrapper'), tog=header.querySelector('.service-toggle'), isOpen=wrapper.classList.contains('open');
+        document.querySelectorAll('.service-body-wrapper.open').forEach(function(ow){
+          if(ow!==wrapper){ow.classList.remove('open');ow.closest('.service-card').classList.remove('active');ow.closest('.service-card').querySelector('.service-toggle').textContent='View';}
+        });
+        if(isOpen){wrapper.classList.remove('open');card.classList.remove('active');tog.textContent='View';}
+        else{wrapper.classList.add('open');card.classList.add('active');tog.textContent='Close';}
+      });
     });
   }
+  initAccordion();
 
-  // 3. Lightbox
-  const lightbox = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lb-img');
-  document.querySelectorAll('.gallery-img').forEach(img => {
-    img.addEventListener('click', () => {
-      lbImg.src = img.src;
-      lightbox.classList.add('active');
+  // Custom cursor
+  var cursorDot=document.querySelector('.cursor-dot'), cursorOutline=document.querySelector('.cursor-outline');
+  window.addEventListener('mousemove', function(e){
+    if(cursorDot && getComputedStyle(cursorDot).display!=='none'){
+      cursorDot.style.left=e.clientX+'px'; cursorDot.style.top=e.clientY+'px';
+      cursorOutline.animate({left:e.clientX+'px',top:e.clientY+'px'},{duration:500,fill:'forwards'});
+    }
+  });
+
+  // Hacker text scramble
+  var letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
+  document.querySelectorAll('.section-title').forEach(function(target){
+    target.dataset.value=target.innerText;
+    target.addEventListener('mouseover', function(event){
+      var iterations=0;
+      var interval=setInterval(function(){
+        event.target.innerText=event.target.innerText.split('').map(function(l,i){ return i<iterations?event.target.dataset.value[i]:letters[Math.floor(Math.random()*26)]; }).join('');
+        if(iterations>=event.target.dataset.value.length) clearInterval(interval);
+        iterations+=1/3;
+      },30);
     });
   });
-  document.querySelector('.lb-close').addEventListener('click', () => lightbox.classList.remove('active'));
-  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) lightbox.classList.remove('active'); });
+
+  // 3D tilt — named so Firebase can re-call it
+  function initTilt(){
+    document.querySelectorAll('.tilt-card').forEach(function(card){
+      card.addEventListener('mousemove', function(e){
+        if(window.innerWidth>768){
+          var r=card.getBoundingClientRect();
+          card.style.transform='perspective(1000px) rotateX('+((e.clientY-r.top-r.height/2)/(r.height/2)*-8)+'deg) rotateY('+((e.clientX-r.left-r.width/2)/(r.width/2)*8)+'deg) scale(1.02)';
+        }
+      });
+      card.addEventListener('mouseleave', function(){ card.style.transform='perspective(1000px) rotateX(0) rotateY(0) scale(1)'; });
+    });
+  }
+  initTilt();
+
+  // Audio preview — named so Firebase can re-call it
+  function initAudio(){
+    var ap=new Audio();
+    document.querySelectorAll('.artist[data-audio]').forEach(function(artist){
+      artist.addEventListener('mouseenter', function(){
+        var s=artist.getAttribute('data-audio');
+        if(s){ap.src=s;ap.volume=0.4;ap.play().catch(function(){});}
+      });
+      artist.addEventListener('mouseleave', function(){ ap.pause(); ap.currentTime=0; });
+    });
+  }
+  initAudio();
+
+  // Scroll reveal — named so Firebase can re-call it
+  function initReveal(){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('active'); });
+    },{threshold:0.1});
+    document.querySelectorAll('.reveal-text:not(.active)').forEach(function(el){ obs.observe(el); });
+  }
+  initReveal();
+
+  // Magnetic buttons
+  document.querySelectorAll('.btn').forEach(function(btn){
+    btn.addEventListener('mousemove', function(e){
+      var r=btn.getBoundingClientRect();
+      btn.style.transform='translate('+((e.clientX-r.left-r.width/2)*0.3)+'px,'+((e.clientY-r.top-r.height/2)*0.3)+'px)';
+    });
+    btn.addEventListener('mouseleave', function(){ btn.style.transform='translate(0,0)'; });
+  });
+
+  // Nav scroll spy — highlight active section in nav
+  var navLinks = document.querySelectorAll('nav a[href^="#"]');
+  var sections = [];
+  navLinks.forEach(function(a){ var id=a.getAttribute('href').substring(1); var s=document.getElementById(id); if(s) sections.push({el:s,link:a}); });
+  window.addEventListener('scroll', function(){
+    var pos = window.scrollY + 100;
+    sections.forEach(function(s){ if(s.el.offsetTop<=pos && s.el.offsetTop+s.el.offsetHeight>pos){ navLinks.forEach(function(l){l.style.color='';}); s.link.style.color='var(--gold)'; } });
+  }, {passive:true});
+
+  // Popup
+  var _popupEl=document.getElementById('adPopup');
+  function openPopup(){ _popupEl.classList.add('active'); }
+  function closePopupFunc(){ _popupEl.classList.remove('active'); }
+  window.closePopupFunc=closePopupFunc;
+  document.getElementById('closePopup').addEventListener('click', closePopupFunc);
+  _popupEl.addEventListener('click', function(e){ if(e.target===_popupEl) closePopupFunc(); });
+
+  // Preloader — runs first, signals Firebase when done
+  var loaderText=document.querySelector('.loader-text');
+  var loaderProgress=document.querySelector('.loader-progress');
+  var loadCount=0;
+  var loadInterval=setInterval(function(){
+    loadCount+=Math.floor(Math.random()*10)+5;
+    if(loadCount>100) loadCount=100;
+    loaderText.innerText=loadCount+'%';
+    loaderProgress.style.width=loadCount+'%';
+    if(loadCount===100){
+      clearInterval(loadInterval);
+      setTimeout(function(){
+        document.body.classList.add('loaded');
+        document.querySelector('.hero h2').classList.add('active');
+        setTimeout(openPopup, 3000);
+        // Signal Firebase it can now update the DOM
+        window._siteLoaded=true;
+        if(window._applyFirebase) window._applyFirebase();
+      }, 500);
+    }
+  }, 100);
+</script>
+
+<!-- ══ FIREBASE COMPAT SDKs — no ES modules, works everywhere ══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script data-cfasync="false">
+  firebase.initializeApp({
+    apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
+    authDomain:        "nur-futura-marketing.firebaseapp.com",
+    projectId:         "nur-futura-marketing",
+    storageBucket:     "nur-futura-marketing.firebasestorage.app",
+    messagingSenderId: "838680597470",
+    appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
+    measurementId:     "G-RN914HZTED"
+  });
+  var db = firebase.firestore();
+
+  function fsGet(path){
+    var p=path.split('/');
+    return db.collection(p[0]).doc(p[1]).get()
+      .then(function(s){ return s.exists?s.data():null; })
+      .catch(function(){ return null; });
+  }
+  function fsList(col){
+    return db.collection(col).get()
+      .then(function(s){ return s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }); })
+      .catch(function(){ return []; });
+  }
+
+  window._applyFirebase = function(){
+    Promise.all([
+      fsGet('site/hero'), fsGet('site/about'), fsList('services'), fsList('artists'),
+      fsList('reviews'), fsGet('site/announcement'), fsGet('site/newsletter'),
+      fsGet('site/popup'), fsGet('site/contact'), fsGet('site/visibility')
+    ]).then(function(r){
+      var hero=r[0],about=r[1],services=r[2],artists=r[3],reviews=r[4],
+          ann=r[5],nl=r[6],popup=r[7],contact=r[8],vis=r[9];
+
+      // HERO
+      if(hero){
+        if(hero.h1&&hero.h2) document.querySelector('.hero h2').innerHTML=hero.h1+'<br>'+hero.h2;
+        var sub=document.querySelector('.hero .reveal-text'); if(sub&&hero.sub) sub.textContent=hero.sub;
+        if(hero.bg) document.querySelector('.hero').style.backgroundImage="url('"+hero.bg+"')";
+        var sn=document.querySelectorAll('.stat-number'),sl=document.querySelectorAll('.stat-label');
+        if(sn[0]&&hero.s1n)sn[0].textContent=hero.s1n; if(sl[0]&&hero.s1l)sl[0].textContent=hero.s1l;
+        if(sn[1]&&hero.s2n)sn[1].textContent=hero.s2n; if(sl[1]&&hero.s2l)sl[1].textContent=hero.s2l;
+        if(sn[2]&&hero.s3n)sn[2].textContent=hero.s3n; if(sl[2]&&hero.s3l)sl[2].textContent=hero.s3l;
+      }
+
+      // ABOUT
+      if(about){
+        var ps=document.querySelectorAll('#about .card p');
+        if(ps[0]&&about.mission)ps[0].textContent=about.mission;
+        if(ps[1]&&about.vision) ps[1].textContent=about.vision;
+        if(ps[2]&&about.who)    ps[2].textContent=about.who;
+      }
+
+      // SERVICES
+      if(services&&services.length>0){
+        var sg=document.querySelector('.services-grid');
+        if(sg){ sg.innerHTML=services.map(function(s){ return '<div class="service-card tilt-card reveal-text"><div class="service-header"><i class="'+s.icon+'"></i><h4>'+s.title+'</h4><span class="service-toggle">View</span></div><div class="service-body-wrapper"><div class="service-body"><div class="service-content-inner"><p style="color:#ccc;margin-bottom:10px;">'+s.desc+'</p><div class="service-options">'+((s.tags||'').split(',').map(function(t){return '<span class="service-option">'+t.trim()+'</span>';}).join(''))+'</div></div></div></div></div>'; }).join(''); initAccordion(); }
+      }
+
+      // ARTISTS
+      if(artists&&artists.length>0){
+        var hall=document.querySelector('.hall');
+        if(hall){ hall.innerHTML=artists.map(function(a){ return '<div class="artist tilt-card reveal-text" data-audio="'+(a.audio||'')+'"><img src="'+a.img+'" alt="'+a.name+'" width="400" height="400"><div class="overlay"><p class="artist-name">'+a.name+'</p><div class="audio-visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="artist-actions"><a href="'+(a.ig||'#')+'" '+(a.ig&&a.ig!='#'?'target="_blank"':'')+' class="btn-icon"><i class="fa-brands fa-instagram"></i></a><a href="'+(a.spotify||'#')+'" '+(a.spotify&&a.spotify!='#'?'target="_blank"':'')+' class="btn-icon"><i class="fa-brands fa-spotify"></i></a></div></div></div>'; }).join(''); initAudio(); }
+      }
+
+      // REVIEWS
+      if(reviews&&reviews.length>0){
+        var rg=document.querySelector('.reviews');
+        if(rg) rg.innerHTML=reviews.map(function(r){ return '<div class="review tilt-card reveal-text"><i class="fa-solid fa-quote-left"></i><p>"'+r.quote+'"</p><strong style="display:block;margin-top:15px;color:var(--gold);">— '+r.client+'</strong></div>'; }).join('');
+      }
+
+      // ANNOUNCEMENT
+      if(ann){
+        var badge=document.querySelector('.distro-badge'); if(badge&&ann.badge)badge.textContent=ann.badge;
+        var ah2=document.querySelector('#announcements .card h2'); if(ah2&&ann.title)ah2.textContent=ann.title;
+        var ap2=document.querySelector('#announcements .card>p'); if(ap2&&ann.body)ap2.innerHTML=ann.body;
+        var fp=document.querySelector('#announcements p[style*="font-size:14px"]');
+        if(fp&&ann.features)fp.innerHTML=ann.features.split(',').map(function(f){return '<i class="fa-solid fa-check" style="color:var(--gold)"></i> '+f.trim()+'&nbsp;';}).join('');
+        var al=document.querySelector('#announcements a[style*="underline"]'); if(al&&ann.linkText){al.textContent=ann.linkText;al.href=ann.linkUrl||'#';}
+      }
+
+      // NEWSLETTER
+      if(nl){
+        var ni=document.querySelectorAll('.newsletter-row .placeholder-img');
+        if(ni[0]&&nl.img1)ni[0].src=nl.img1;
+        if(ni[1]&&nl.img2)ni[1].src=nl.img2;
+        if(ni[2]&&nl.img3)ni[2].src=nl.img3;
+      }
+
+      // POPUP
+      if(popup){
+        var pi=document.querySelector('.popup-img'); if(pi&&popup.img)pi.src=popup.img;
+        var pl=document.querySelector('#adPopup .popup-content>a'); if(pl&&popup.link)pl.href=popup.link;
+        var pt=document.querySelector('.popup-cta h3'); if(pt&&popup.title)pt.textContent=popup.title;
+        var ps2=document.querySelector('.popup-cta p'); if(ps2&&popup.sub)ps2.textContent=popup.sub;
+        if(popup.enabled===false) clearTimeout(window._popupTimer);
+      }
+
+      // CONTACT
+      if(contact){
+        if(contact.email){
+          var ea=document.getElementById('contact-email-a');
+          if(ea){ea.href='mailto:'+contact.email; ea.textContent=contact.email;}
+        }
+        if(contact.phone){var ph=document.getElementById('contact-phone-line');if(ph)ph.innerHTML='<i class="fa-solid fa-phone"></i> '+contact.phone;}
+        if(contact.location){var lo=document.getElementById('contact-location-line');if(lo)lo.innerHTML='<i class="fa-solid fa-location-dot"></i> '+contact.location;}
+        var sa=document.querySelectorAll('#footer-socials a'),keys=['fb','tw','ig','li'];
+        sa.forEach(function(a,i){if(contact[keys[i]])a.href=contact[keys[i]];});
+      }
+
+      // VISIBILITY
+      if(vis){
+        var vmap={hero:'.hero',about:'#about',services:'#services',showcase:'#services-showcase',announcements:'#announcements',hall:'#hall',reviews:'#reviews',contact:'#contact'};
+        Object.keys(vmap).forEach(function(k){if(vis[k]===false){var el=document.querySelector(vmap[k]);if(el)el.style.display='none';}});
+      }
+
+      // Re-init interactive features for any Firebase-replaced elements
+      initTilt(); initReveal();
+    }).catch(function(e){ console.warn('Firebase error:',e); });
+  };
+
+  // Run when preloader finishes — poll if Firebase loaded before preloader finished
+  if(window._siteLoaded){
+    window._applyFirebase();
+  } else {
+    var _fbPoll=setInterval(function(){
+      if(window._siteLoaded){ clearInterval(_fbPoll); window._applyFirebase(); }
+    }, 100);
+  }
 </script>
 
 </body>
