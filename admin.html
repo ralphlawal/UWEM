@@ -422,6 +422,8 @@
             <h3>All Clients</h3>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <input id="client-search" placeholder="Search..." oninput="filterClients()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;color:#fff;padding:6px 11px;font-size:12px;font-family:'Inter',sans-serif;width:150px;">
+              <button class="btn btn-ghost btn-sm" id="export-csv-btn"><i class="fa-solid fa-file-csv"></i> Export</button>
+              <button class="btn btn-ghost btn-sm" id="broadcast-btn"><i class="fa-solid fa-broadcast-tower"></i> Broadcast</button>
               <button class="btn btn-ghost btn-sm" id="copy-portal-btn"><i class="fa-solid fa-copy"></i> Portal Link</button>
               <button class="btn btn-gold btn-sm" id="add-client-btn"><i class="fa-solid fa-plus"></i> Add Client</button>
             </div>
@@ -437,6 +439,11 @@
           <span id="detail-type" class="badge badge-gold"></span>
         </div>
         <div class="cqs" id="client-quick-stats"></div>
+        <div id="client-notes-bar" style="display:flex;align-items:center;gap:10px;margin-bottom:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;">
+          <i class="fa-solid fa-note-sticky" style="color:var(--gold);flex-shrink:0;"></i>
+          <input id="client-notes-inp" placeholder="Add internal notes about this client..." style="background:transparent;border:none;color:#bbb;font-size:13px;font-family:'Inter',sans-serif;flex:1;outline:none;">
+          <button class="btn btn-gold btn-xs" id="save-notes-btn"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;" id="sub-tabs">
           <button class="btn btn-gold btn-sm" data-sub="releases">Releases</button>
           <button class="btn btn-ghost btn-sm" data-sub="campaigns">Campaigns</button>
@@ -765,6 +772,7 @@ document.addEventListener('DOMContentLoaded', function() {
     g('detail-name').textContent=name; g('detail-type').textContent=type;
     g('msg-client-name').textContent=name;
     loadClientQuickStats();
+    loadClientNotes();
     switchSub('releases');
     loadReleasesAdmin(); loadCampaignsAdmin(); loadFilesAdmin(); loadInvoicesAdmin();
   }
@@ -807,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if(!items.length){el.innerHTML='<p style="padding:14px;color:#444;font-size:13px;">No releases yet.</p>';return;}
       el.innerHTML=(total?'<div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:#666;">Total royalties: <strong style="color:var(--gold);">&#8358;'+total.toLocaleString()+'</strong></div>':'')+
         '<table><thead><tr><th>Title</th><th>Artist</th><th>Status</th><th>Platforms</th><th>Royalties</th><th>Actions</th></tr></thead><tbody>'+
-        items.map(function(r){return '<tr><td style="font-weight:600;color:#ddd;">'+r.title+'</td><td style="color:#888;">'+r.artist+'</td><td><span class="badge '+(r.status==='active'?'badge-green':'badge-gold')+'">'+( r.status||'pending')+'</span></td><td style="font-size:12px;color:#666;">'+(Object.keys(r.platforms||{}).join(', ')||'—')+'</td><td style="color:var(--gold);">'+(r.royalties?'&#8358;'+Number(r.royalties).toLocaleString():'—')+'</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editRelease(\''+r.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delClientItem(\'nf_releases\',\''+r.id+'\',loadReleasesAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+
+        items.map(function(r){return '<tr><td style="font-weight:600;color:#ddd;">'+r.title+'</td><td style="color:#888;">'+r.artist+'</td><td><span class="badge '+(r.status==='active'?'badge-green':'badge-gold')+'">'+( r.status||'pending')+'</span></td><td style="font-size:12px;color:#666;">'+(Object.keys(r.platforms||{}).join(', ')||'—')+'</td><td style="color:var(--gold);">'+(r.royalties?'&#8358;'+Number(r.royalties).toLocaleString():'—')+'</td><td class="td-act"><button class="btn btn-ghost btn-xs" style="font-size:11px;" onclick="toggleReleaseStatus(\''+r.id+'\',\''+( r.status||'pending')+'\')" title="Toggle status">'+(r.status==='active'?'⏸':'▶')+'</button><button class="btn btn-ghost btn-xs" onclick="editRelease(\''+r.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delClientItem(\'nf_releases\',\''+r.id+'\',loadReleasesAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+
         '</tbody></table>';
     });
   }
@@ -841,7 +849,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var el=g('campaigns-admin');
       if(!items.length){el.innerHTML='<p style="padding:14px;color:#444;font-size:13px;">No campaigns yet.</p>';return;}
       el.innerHTML='<table><thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Milestones</th><th>Actions</th></tr></thead><tbody>'+
-        items.map(function(c){var ms=c.milestones||[],done=ms.filter(function(m){return m.done;}).length; return '<tr><td style="font-weight:600;color:#ddd;">'+c.title+'</td><td style="color:#888;">'+c.type+'</td><td><span class="badge badge-gold">'+c.status+'</span></td><td style="font-size:12px;color:#666;">'+done+'/'+ms.length+'</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editCampaign(\''+c.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delClientItem(\'nf_campaigns\',\''+c.id+'\',loadCampaignsAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+
+        items.map(function(c){var ms=c.milestones||[],done=ms.filter(function(m){return m.done;}).length; return '<tr><td style="font-weight:600;color:#ddd;">'+c.title+'</td><td style="color:#888;">'+c.type+'</td><td><span class="badge badge-gold">'+c.status+'</span></td><td style="font-size:12px;color:#666;">'+done+'/'+ms.length+'</td><td class="td-act"><button class="btn btn-ghost btn-xs" style="font-size:11px;" onclick="toggleCampaignStatus(\''+c.id+'\',\''+c.status+'\')" title="Cycle status"><i class="fa-solid fa-rotate"></i></button><button class="btn btn-ghost btn-xs" onclick="editCampaign(\''+c.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delClientItem(\'nf_campaigns\',\''+c.id+'\',loadCampaignsAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+
         '</tbody></table>';
     });
   }
@@ -876,9 +884,9 @@ document.addEventListener('DOMContentLoaded', function() {
     listEl.innerHTML='<div style="text-align:center;padding:20px;color:#444;"><span class="spin"></span></div>';
     // Mark client msgs as read
     db.collection('nf_messages').where('clientUid','==',selClientId).where('from','==','client').where('read','==',false).get().then(function(snap){snap.docs.forEach(function(d){d.ref.update({read:true});});});
-    admMsgUnsub = db.collection('nf_messages').where('clientUid','==',selClientId).orderBy('timestamp','asc')
+    admMsgUnsub = db.collection('nf_messages').where('clientUid','==',selClientId)
       .onSnapshot(function(snap){
-        var msgs=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+        var msgs=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}).sort(function(a,b){ var ta=a.timestamp?(a.timestamp.toDate?a.timestamp.toDate().getTime():new Date(a.timestamp).getTime()):0; var tb=b.timestamp?(b.timestamp.toDate?b.timestamp.toDate().getTime():new Date(b.timestamp).getTime()):0; return ta-tb; });
         if(!msgs.length){listEl.innerHTML='<p style="color:#444;font-size:13px;text-align:center;padding:16px;">No messages yet.</p>';return;}
         listEl.innerHTML=msgs.map(function(m){
           var isAdmin=m.from==='admin';
@@ -898,7 +906,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── FILES (admin) ──────────────────────────────────
   function loadFilesAdmin() {
-    db.collection('nf_files').where('clientUid','==',selClientId).orderBy('uploadDate','desc').get().then(function(snap){
+    db.collection('nf_files').where('clientUid','==',selClientId).get().then(function(snap){
       var items=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
       var el=g('files-admin');
       if(!items.length){el.innerHTML='<p style="color:#444;font-size:13px;">No files yet.</p>';return;}
@@ -920,12 +928,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── INVOICES (admin) ──────────────────────────────
   function loadInvoicesAdmin() {
-    db.collection('nf_invoices').where('clientUid','==',selClientId).orderBy('date','desc').get().then(function(snap){
+    db.collection('nf_invoices').where('clientUid','==',selClientId).get().then(function(snap){
       var items=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
       var el=g('invoices-admin');
       if(!items.length){el.innerHTML='<p style="padding:14px;color:#444;font-size:13px;">No invoices yet.</p>';return;}
       el.innerHTML='<table><thead><tr><th>Title</th><th>Amount</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead><tbody>'+
-        items.map(function(inv){return '<tr><td style="font-weight:600;color:#ddd;">'+(inv.title||'Invoice')+'</td><td style="color:var(--gold);font-family:\'Playfair Display\',serif;font-size:16px;">&#8358;'+Number(inv.amount||0).toLocaleString()+'</td><td><span class="badge '+(inv.status==='paid'?'badge-green':inv.status==='overdue'?'badge-red':'badge-gold')+'">'+inv.status+'</span></td><td style="color:#888;">'+fmtDate(inv.dueDate)+'</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editInvoice(\''+inv.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delClientItem(\'nf_invoices\',\''+inv.id+'\',loadInvoicesAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+
+        items.map(function(inv){return '<tr><td style="font-weight:600;color:#ddd;">'+(inv.title||'Invoice')+'</td><td style="color:var(--gold);font-family:\'Playfair Display\',serif;font-size:16px;">&#8358;'+Number(inv.amount||0).toLocaleString()+'</td><td><span class="badge '+(inv.status==='paid'?'badge-green':inv.status==='overdue'?'badge-red':'badge-gold')+'">'+inv.status+'</span></td><td style="color:#888;">'+fmtDate(inv.dueDate)+'</td><td class="td-act">'+(inv.status!=='paid'?'<button class="btn btn-ghost btn-xs" style="color:var(--success);font-size:11px;" onclick="markInvoicePaid(\''+inv.id+'\')"><i class="fa-solid fa-check"></i> Paid</button>':'')+' <button class="btn btn-ghost btn-xs" onclick="editInvoice(\''+inv.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delClientItem(\'nf_invoices\',\''+inv.id+'\',loadInvoicesAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+
         '</tbody></table>';
     });
   }
@@ -965,6 +973,97 @@ document.addEventListener('DOMContentLoaded', function() {
         if(b){ if(snap.size>0){b.style.display='inline';b.textContent=snap.size;}else{b.style.display='none';} }
       }, function(){});
   }
+
+  // ── EXPORT CLIENTS TO CSV ─────────────────────────────
+  g('export-csv-btn').addEventListener('click', function() {
+    if (!allClients.length) { 
+      toast('Loading clients...','loading');
+      db.collection('nf_clients').get().then(function(snap){
+        allClients = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+        if(!allClients.length){ toast('No clients to export','error'); return; }
+        doExportCSV();
+      }); return;
+    }
+    doExportCSV();
+  });
+  function doExportCSV() {
+    var rows = [['Name','Email','Type','Phone']];
+    allClients.forEach(function(c) { rows.push([c.name||'',c.email||'',c.type||'',c.phone||'']); });
+    var csv = rows.map(function(r){ return r.map(function(v){ return '"'+(v+'').replace(/"/g,'""')+'"'; }).join(','); }).join('
+');
+    var blob = new Blob([csv], {type:'text/csv'});
+    var url  = URL.createObjectURL(blob);
+    var a2   = document.createElement('a');
+    a2.href = url; a2.download = 'nur-futura-clients.csv'; a2.click();
+    URL.revokeObjectURL(url);
+    toast('Clients exported! ✓');
+  }
+
+  // ── BROADCAST MESSAGE TO ALL CLIENTS ─────────────────
+  g('broadcast-btn').addEventListener('click', function() {
+    if (!allClients.length) { toast('Open the Clients tab first to load client data.','error'); return; }
+    g('modal-container').innerHTML = '<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box"><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>'+
+      '<div class="modal-title"><i class="fa-solid fa-broadcast-tower"></i> Broadcast to All Clients</div>'+
+      '<div style="padding:10px 14px;background:rgba(245,176,65,.05);border:1px solid rgba(245,176,65,.15);border-radius:8px;font-size:12px;color:#888;margin-bottom:14px;">This message will be sent to all <strong style="color:var(--gold);">'+allClients.length+'</strong> client(s) in their Messages tab.</div>'+
+      '<div class="fg"><label>Message</label><textarea id="bc-msg" rows="4" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;width:100%;resize:vertical;" placeholder="Type your broadcast message..."></textarea></div>'+
+      '<div class="form-actions" style="margin-top:14px;"><button class="btn btn-gold" onclick="sendBroadcast()"><i class="fa-solid fa-broadcast-tower"></i> Send to All</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>'+
+      '</div></div>';
+  });
+  window.sendBroadcast = function() {
+    var text = g('bc-msg') && g('bc-msg').value.trim();
+    if (!text) { toast('Enter a message','error'); return; }
+    toast('Sending...','loading');
+    var batch = db.batch();
+    allClients.forEach(function(c) {
+      var ref = db.collection('nf_messages').doc();
+      batch.set(ref, { clientUid:c.id, text:text, from:'admin', read:false, timestamp:firebase.firestore.FieldValue.serverTimestamp() });
+    });
+    batch.commit().then(function() { closeModal(); toast('Broadcast sent to '+allClients.length+' client(s)! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+  };
+
+  // ── CLIENT NOTES ──────────────────────────────────────
+  g('save-notes-btn').addEventListener('click', function() {
+    if (!selClientId) return;
+    var notes = g('client-notes-inp').value.trim();
+    toast('Saving...','loading');
+    db.collection('nf_clients').doc(selClientId).set({notes:notes},{merge:true})
+      .then(function(){ toast('Notes saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+  });
+
+  function loadClientNotes() {
+    db.collection('nf_clients').doc(selClientId).get().then(function(s) {
+      if (s.exists && s.data().notes) { g('client-notes-inp').value = s.data().notes; }
+      else { g('client-notes-inp').value = ''; }
+    });
+  }
+
+  // ── INVOICE QUICK MARK-AS-PAID ────────────────────────
+  window.markInvoicePaid = function(id) {
+    toast('Updating...','loading');
+    db.collection('nf_invoices').doc(id).update({status:'paid'})
+      .then(function(){ loadInvoicesAdmin(); toast('Invoice marked as paid! ✓'); })
+      .catch(function(e){ toast('Error: '+e.message,'error'); });
+  };
+
+  // ── RELEASE STATUS QUICK TOGGLE ───────────────────────
+  window.toggleReleaseStatus = function(id, currentStatus) {
+    var next = currentStatus==='active' ? 'pending' : 'active';
+    toast('Updating...','loading');
+    db.collection('nf_releases').doc(id).update({status:next})
+      .then(function(){ loadReleasesAdmin(); toast('Status updated to '+next+'! ✓'); })
+      .catch(function(e){ toast('Error: '+e.message,'error'); });
+  };
+
+  // ── CAMPAIGN STATUS QUICK TOGGLE ──────────────────────
+  window.toggleCampaignStatus = function(id, currentStatus) {
+    var options = ['pending','active','completed','paused'];
+    var idx = options.indexOf(currentStatus);
+    var next = options[(idx+1) % options.length];
+    toast('Updating...','loading');
+    db.collection('nf_campaigns').doc(id).update({status:next})
+      .then(function(){ loadCampaignsAdmin(); toast('Status → '+next+'! ✓'); })
+      .catch(function(e){ toast('Error: '+e.message,'error'); });
+  };
 
 }); // end DOMContentLoaded
 </script>

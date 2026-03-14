@@ -192,6 +192,17 @@
     .act-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
     .act-text strong{font-size:13px;font-weight:600;color:#ddd;display:block;}
     .act-text span{font-size:12px;color:#444;}
+    /* NOTIFICATIONS */
+    .notif-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:default;transition:.2s;}
+    .notif-item:last-child{border-bottom:none;}
+    .notif-item.unread{background:rgba(245,176,65,.02);}
+    .notif-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+    .notif-body{flex:1;}
+    .notif-title{font-size:13px;font-weight:600;color:#ddd;}
+    .notif-item.unread .notif-title{color:#fff;}
+    .notif-sub{font-size:12px;color:#555;margin-top:2px;}
+    .notif-time{font-size:11px;color:#444;margin-top:3px;}
+    .unread-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:4px;}
     @media(max-width:768px){
       .sidebar{transform:translateX(-100%);}
       .sidebar.open{transform:translateX(0);}
@@ -262,6 +273,9 @@
     <div class="nav-lbl">Resources</div>
     <button class="nav-item" data-tab="files"><i class="fa-solid fa-folder-open"></i> My Files</button>
     <button class="nav-item" data-tab="invoices"><i class="fa-solid fa-file-invoice-dollar"></i> Invoices</button>
+    <div class="nav-lbl">Support</div>
+    <button class="nav-item" data-tab="notifications"><i class="fa-solid fa-bell"></i> Notifications <span class="n-badge" id="notif-badge"></span></button>
+    <button class="nav-item" data-tab="support"><i class="fa-solid fa-headset"></i> Support</button>
     <div class="nav-lbl">Account</div>
     <button class="nav-item" data-tab="profile"><i class="fa-solid fa-user-circle"></i> My Profile</button>
   </nav>
@@ -331,6 +345,51 @@
     <div class="tab-panel" id="tab-invoices">
       <div class="pg-hdr"><h2>Invoices</h2><p>Your billing history and outstanding payments</p></div>
       <div class="card" style="padding:0;overflow:hidden;"><div id="invoices-list"><div class="loading"><span class="spin"></span></div></div></div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="tab-panel" id="tab-notifications">
+      <div class="pg-hdr" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div><h2>Notifications</h2><p>Recent updates on your account</p></div>
+        <button id="clear-notifs-btn" class="msg-send" style="padding:8px 14px;font-size:12px;"><i class="fa-solid fa-check-double"></i> Mark All Read</button>
+      </div>
+      <div id="notifs-list"><div class="loading"><span class="spin"></span></div></div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="tab-panel" id="tab-support">
+      <div class="pg-hdr"><h2>Support</h2><p>Get help from the Nur Futura team</p></div>
+      <div class="card">
+        <div class="card-hdr"><h3><i class="fa-solid fa-headset"></i> Submit a Request</h3></div>
+        <div class="fg" style="margin-bottom:12px;"><label>Subject</label>
+          <select id="sup-subject" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;">
+            <option value="">Select a topic...</option>
+            <option>Release Issue</option>
+            <option>Campaign Query</option>
+            <option>Invoice / Payment</option>
+            <option>File Request</option>
+            <option>General Enquiry</option>
+          </select>
+        </div>
+        <div class="fg" style="margin-bottom:12px;"><label>Message</label>
+          <textarea id="sup-message" rows="4" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;resize:vertical;" placeholder="Describe your issue or question..."></textarea>
+        </div>
+        <button class="msg-send" id="sup-send-btn" style="padding:11px 22px;font-size:13px;"><i class="fa-solid fa-paper-plane"></i> Send Request</button>
+        <div id="sup-confirm" style="display:none;margin-top:12px;padding:12px 14px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:8px;color:var(--success);font-size:13px;"><i class="fa-solid fa-check-circle"></i> Request sent! Your manager will respond via Messages.</div>
+      </div>
+      <div class="card" style="margin-top:0;">
+        <div class="card-hdr"><h3><i class="fa-solid fa-circle-info"></i> Quick Contacts</h3></div>
+        <div style="display:grid;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card2);border-radius:8px;border:1px solid var(--border);">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,176,65,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><i class="fa-solid fa-envelope"></i></div>
+            <div><div style="font-size:13px;font-weight:600;color:#ddd;">Email</div><a href="mailto:hello@nurfuturamarketing.com.ng" style="font-size:12px;color:#555;text-decoration:none;">hello@nurfuturamarketing.com.ng</a></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card2);border-radius:8px;border:1px solid var(--border);">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,176,65,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><i class="fa-brands fa-instagram"></i></div>
+            <div><div style="font-size:13px;font-weight:600;color:#ddd;">Instagram</div><a href="https://instagram.com/nur.futura" target="_blank" style="font-size:12px;color:#555;text-decoration:none;">@nur.futura</a></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- PROFILE -->
@@ -607,7 +666,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── RELEASES ───────────────────────────────────────────
   function loadReleases() {
-    db.collection('nf_releases').where('clientUid','==',currentUser.uid).orderBy('releaseDate','desc').get()
+    db.collection('nf_releases').where('clientUid','==',currentUser.uid).get()
       .then(function(snap) {
         var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
         if (!items.length) { g('releases-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>No releases found.<br>Your manager will add your releases here.</p></div>'; return; }
@@ -629,13 +688,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── CAMPAIGNS ──────────────────────────────────────────
   function loadCampaigns() {
-    db.collection('nf_campaigns').where('clientUid','==',currentUser.uid).orderBy('startDate','desc').get()
+    db.collection('nf_campaigns').where('clientUid','==',currentUser.uid).get()
       .then(function(snap) {
         var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
         var active = items.filter(function(c){return c.status==='active';}).length;
         var cb = g('camp-badge');
         if (cb) { if(active>0){cb.style.display='inline';cb.textContent=active;}else{cb.style.display='none';} }
         if (!items.length) { g('campaigns-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><p>No campaigns yet.<br>Your manager will add your campaigns here.</p></div>'; return; }
+        items.sort(function(a,b){ var ta=a.startDate?(a.startDate.toDate?a.startDate.toDate().getTime():0):0; var tb=b.startDate?(b.startDate.toDate?b.startDate.toDate().getTime():0):0; return tb-ta; });
         g('campaigns-list').innerHTML = items.map(function(c) {
           var ms    = c.milestones || [];
           var done  = ms.filter(function(m){return m.done;}).length;
@@ -662,9 +722,9 @@ document.addEventListener('DOMContentLoaded', function() {
     db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').where('read','==',false).get()
       .then(function(snap) { snap.docs.forEach(function(d){d.ref.update({read:true});}); });
     // Real-time listener
-    msgUnsub = db.collection('nf_messages').where('clientUid','==',uid).orderBy('timestamp','asc')
+    msgUnsub = db.collection('nf_messages').where('clientUid','==',uid)
       .onSnapshot(function(snap) {
-        var msgs = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+        var msgs = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}).sort(function(a,b){ var ta=a.timestamp?(a.timestamp.toDate?a.timestamp.toDate().getTime():new Date(a.timestamp).getTime()):0; var tb=b.timestamp?(b.timestamp.toDate?b.timestamp.toDate().getTime():new Date(b.timestamp).getTime()):0; return ta-tb; });
         if (!msgs.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-comments"></i><p>No messages yet.<br>Send a message below.</p></div>'; return; }
         var lastDate = '';
         list.innerHTML = msgs.map(function(m) {
@@ -699,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── FILES ──────────────────────────────────────────────
   function loadFiles() {
-    db.collection('nf_files').where('clientUid','==',currentUser.uid).orderBy('uploadDate','desc').get()
+    db.collection('nf_files').where('clientUid','==',currentUser.uid).get()
       .then(function(snap) {
         var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
         if (!items.length) { g('files-list').innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fa-solid fa-folder-open"></i><p>No files yet.<br>Your manager will upload files here.</p></div>'; return; }
@@ -714,7 +774,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── INVOICES ───────────────────────────────────────────
   function loadInvoices() {
-    db.collection('nf_invoices').where('clientUid','==',currentUser.uid).orderBy('date','desc').get()
+    db.collection('nf_invoices').where('clientUid','==',currentUser.uid).get()
       .then(function(snap) {
         var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
         if (!items.length) { g('invoices-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><p>No invoices yet.</p></div>'; return; }
@@ -755,6 +815,92 @@ document.addEventListener('DOMContentLoaded', function() {
         else           { if(badge) badge.style.display='none'; if(dot) dot.classList.remove('on'); }
       }, function(){});
   }
+
+  // ── NOTIFICATIONS ──────────────────────────────────────
+  function loadNotifications() {
+    var uid = currentUser.uid;
+    var listEl = g('notifs-list');
+    if (!listEl) return;
+    // Notifications are built from messages + releases + invoices
+    Promise.all([
+      db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').get(),
+      db.collection('nf_releases').where('clientUid','==',uid).get(),
+      db.collection('nf_invoices').where('clientUid','==',uid).get()
+    ]).then(function(r) {
+      var notifs = [];
+      r[0].docs.forEach(function(d) {
+        var data = d.data();
+        notifs.push({ type:'message', icon:'ic-blue', fa:'fa-comments', title:'New message from Nur Futura', sub:data.text?data.text.substring(0,60)+'…':'', ts:data.timestamp, read:data.read, id:d.id });
+      });
+      r[1].docs.forEach(function(d) {
+        var data = d.data();
+        notifs.push({ type:'release', icon:'ic-gold', fa:'fa-compact-disc', title:'Release: '+data.title, sub:'Status: '+(data.status||'pending'), ts:data.releaseDate, read:true, id:d.id });
+      });
+      r[2].docs.forEach(function(d) {
+        var data = d.data();
+        notifs.push({ type:'invoice', icon: data.status==='pending'?'ic-red':'ic-green', fa:'fa-file-invoice-dollar', title:'Invoice: '+(data.title||'Invoice'), sub:'₦'+Number(data.amount||0).toLocaleString()+' — '+data.status, ts:data.date, read:data.status==='paid', id:d.id });
+      });
+      // Sort by timestamp desc
+      notifs.sort(function(a,b) {
+        var ta = a.ts?( a.ts.toDate?a.ts.toDate():new Date(a.ts)):new Date(0);
+        var tb = b.ts?( b.ts.toDate?b.ts.toDate():new Date(b.ts)):new Date(0);
+        return tb-ta;
+      });
+      var unreadCount = notifs.filter(function(n){return !n.read;}).length;
+      var nb = g('notif-badge');
+      if (nb) { if(unreadCount>0){nb.style.display='inline';nb.textContent=unreadCount;}else{nb.style.display='none';} }
+      if (!notifs.length) { listEl.innerHTML='<div class="empty"><i class="fa-solid fa-bell"></i><p>No notifications yet.</p></div>'; return; }
+      listEl.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:4px 18px;">'+
+        notifs.map(function(n) {
+          return '<div class="notif-item '+(n.read?'':'unread')+'">'+
+            '<div class="notif-icon '+n.icon+'"><i class="fa-solid '+n.fa+'"></i></div>'+
+            '<div class="notif-body"><div class="notif-title">'+n.title+'</div>'+
+            '<div class="notif-sub">'+esc(n.sub)+'</div>'+
+            '<div class="notif-time">'+fmtDate(n.ts)+'</div></div>'+
+            (!n.read?'<div class="unread-dot"></div>':'')+'</div>';
+        }).join('')+'</div>';
+    }).catch(function(e){ listEl.innerHTML='<div class="empty"><i class="fa-solid fa-bell"></i><p>Could not load notifications.</p></div>'; console.warn(e); });
+  }
+
+  g('clear-notifs-btn').addEventListener('click', function() {
+    if (!currentUser) return;
+    db.collection('nf_messages').where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false).get()
+      .then(function(snap){ var b=db.batch(); snap.docs.forEach(function(d){b.update(d.ref,{read:true});}); return b.commit(); })
+      .then(function(){ loadNotifications(); });
+  });
+
+  // ── SUPPORT ────────────────────────────────────────────
+  g('sup-send-btn').addEventListener('click', function() {
+    var subject = g('sup-subject').value;
+    var message = g('sup-message').value.trim();
+    if (!subject) { g('sup-subject').style.borderColor='var(--danger)'; return; }
+    if (!message) { g('sup-message').style.borderColor='var(--danger)'; return; }
+    g('sup-subject').style.borderColor=''; g('sup-message').style.borderColor='';
+    g('sup-send-btn').disabled = true;
+    var fullMsg = '[SUPPORT REQUEST — '+subject+']
+
+'+message;
+    db.collection('nf_messages').add({
+      clientUid: currentUser.uid,
+      text: fullMsg,
+      from: 'client',
+      read: false,
+      type: 'support',
+      subject: subject,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function() {
+      g('sup-confirm').style.display = 'block';
+      g('sup-message').value = '';
+      g('sup-subject').value = '';
+      g('sup-send-btn').disabled = false;
+      setTimeout(function(){ g('sup-confirm').style.display='none'; }, 5000);
+    }).catch(function(e){ g('sup-send-btn').disabled=false; console.warn(e); });
+  });
+
+  // Load notifications when tab opened
+  document.querySelectorAll('.nav-item[data-tab="notifications"]').forEach(function(btn) {
+    btn.addEventListener('click', function(){ setTimeout(loadNotifications, 100); });
+  });
 
   // ── RESPONSIVE DASHBOARD ───────────────────────────────
   function checkGrid() { var gr=g('dash-grid'); if(gr) gr.style.gridTemplateColumns=window.innerWidth<768?'1fr':'1fr 1fr'; }
