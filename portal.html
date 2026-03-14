@@ -392,24 +392,53 @@
   </div><!-- /content -->
 </div><!-- /main -->
 
-<!-- ══ FIREBASE COMPAT SDKs ══ -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- ══ FIREBASE COMPAT SDKs — onload pattern so script never crashes ══ -->
 <script>
-  try {
-    firebase.initializeApp({
-      apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
-      authDomain:        "nur-futura-marketing.firebaseapp.com",
-      projectId:         "nur-futura-marketing",
-      storageBucket:     "nur-futura-marketing.firebasestorage.app",
-      messagingSenderId: "838680597470",
-      appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
-      measurementId:     "G-RN914HZTED"
-    });
-  } catch(e) { console.warn('Firebase already initialized'); }
-  var auth = firebase.auth();
-  var db   = firebase.firestore();
+  // Track how many SDKs have loaded
+  var _sdkCount = 0;
+  var auth, db;
+
+  function _sdkLoaded() {
+    _sdkCount++;
+    if (_sdkCount === 3) _initPortal(); // all 3 loaded, safe to start
+  }
+  function _sdkError(name) {
+    document.getElementById('auth-error').style.display = 'block';
+    document.getElementById('auth-error').textContent = 'Could not load Firebase (' + name + '). Check your internet connection and reload the page.';
+    var btn = document.getElementById('login-btn');
+    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In'; }
+  }
+  function _initPortal() {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp({
+          apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
+          authDomain:        "nur-futura-marketing.firebaseapp.com",
+          projectId:         "nur-futura-marketing",
+          storageBucket:     "nur-futura-marketing.firebasestorage.app",
+          messagingSenderId: "838680597470",
+          appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
+          measurementId:     "G-RN914HZTED"
+        });
+      }
+      auth = firebase.auth();
+      db   = firebase.firestore();
+      _startApp(); // now wire up all the logic
+    } catch(e) {
+      document.getElementById('auth-error').style.display = 'block';
+      document.getElementById('auth-error').textContent = 'Firebase error: ' + e.message;
+    }
+  }
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"
+  onload="_sdkLoaded()" onerror="_sdkError('firebase-app')"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"
+  onload="_sdkLoaded()" onerror="_sdkError('firebase-auth')"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"
+  onload="_sdkLoaded()" onerror="_sdkError('firebase-firestore')"></script>
+<script>
+  var currentUser  = null;
+  var clientData   = null;
 
   var currentUser  = null;
   var clientData   = null;
@@ -449,6 +478,8 @@
   }
 
   // ── AUTH ───────────────────────────────────────────
+  // _startApp: runs after Firebase SDKs confirmed loaded
+  function _startApp() {
   el('login-btn').addEventListener('click', doLogin);
   el('auth-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
 
@@ -831,6 +862,7 @@
         }
       });
   }
+  } // end _startApp
 </script>
 </body>
 </html>
