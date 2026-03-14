@@ -527,15 +527,17 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-  firebase.initializeApp({
-    apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
-    authDomain:        "nur-futura-marketing.firebaseapp.com",
-    projectId:         "nur-futura-marketing",
-    storageBucket:     "nur-futura-marketing.firebasestorage.app",
-    messagingSenderId: "838680597470",
-    appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
-    measurementId:     "G-RN914HZTED"
-  });
+  try {
+    firebase.initializeApp({
+      apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
+      authDomain:        "nur-futura-marketing.firebaseapp.com",
+      projectId:         "nur-futura-marketing",
+      storageBucket:     "nur-futura-marketing.firebasestorage.app",
+      messagingSenderId: "838680597470",
+      appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
+      measurementId:     "G-RN914HZTED"
+    });
+  } catch(e) { console.warn('Firebase already initialized'); }
   var auth = firebase.auth();
   var db   = firebase.firestore();
 
@@ -575,9 +577,17 @@
     var btn=document.getElementById('login-btn');
     err.style.display='none'; btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Signing in...';
     auth.signInWithEmailAndPassword(email, pass)
+      .then(function(){ /* onAuthStateChanged handles redirect */ })
       .catch(function(e){
+        console.error('Admin sign-in error:', e.code, e.message);
+        var msg = e.message;
+        if(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found') msg='Wrong email or password.';
+        else if(e.code==='auth/invalid-email')        msg='Invalid email address.';
+        else if(e.code==='auth/too-many-requests')    msg='Too many attempts. Please wait.';
+        else if(e.code==='auth/network-request-failed') msg='Network error. Check your connection.';
+        else if(e.code==='auth/operation-not-allowed')  msg='Email sign-in not enabled in Firebase Console.';
         err.style.display='block';
-        err.textContent = e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'?'Wrong email or password.':e.message;
+        err.textContent = msg;
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-lock-open"></i> Enter Panel';
       });
   });
@@ -761,24 +771,6 @@
   var adminMsgUnsubscribe = null;
 
   // ── CLIENT LIST ─────────────────────────────
-  function loadClientsTable(){
-    db.collection('nf_clients').get().then(function(snap){
-      var items = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
-      var el = document.getElementById('clients-list');
-      if(!items.length){ el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No clients yet. Add your first client.</p>'; return; }
-      el.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Actions</th></tr></thead><tbody>'+
-        items.map(function(c){
-          return '<tr><td style="font-weight:600;color:#ddd;">'+c.name+'</td><td style="color:#888;">'+c.email+'</td>'+
-            '<td><span class="badge badge-gold">'+c.type+'</span></td>'+
-            '<td class="td-act">'+
-            '<button class="btn btn-ghost btn-xs" onclick="openClientDetail(''+c.id+'',''+c.name+'',''+c.type+'')"><i class="fa-solid fa-folder-open"></i> Manage</button>'+
-            '<button class="btn btn-ghost btn-xs" onclick="editClient(''+c.id+'')"><i class="fa-solid fa-pen"></i></button>'+
-            '<button class="btn btn-red btn-xs" onclick="deleteClient(''+c.id+'')"><i class="fa-solid fa-trash"></i></button>'+
-            '</td></tr>';
-        }).join('')+'</tbody></table>';
-    });
-  }
-
   document.getElementById('add-client-btn').addEventListener('click', function(){ openClientModal({}); });
 
   // ── CLIENT SEARCH ────────────────────────
@@ -1127,15 +1119,17 @@
 
   // ── ADMIN UNREAD MESSAGE WATCHER ─────────────────
   function watchAdminUnread(){
-    db.collection('nf_messages').where('from','==','client').where('read','==',false)
-      .onSnapshot(function(snap){
-        var count = snap.size;
-        var badge = document.getElementById('admin-unread-badge');
-        if(badge){
-          if(count>0){ badge.style.display='inline'; badge.textContent=count; }
-          else { badge.style.display='none'; }
-        }
-      }, function(e){ /* silently ignore if no permission yet */ });
+    try {
+      db.collection('nf_messages').where('from','==','client').where('read','==',false)
+        .onSnapshot(function(snap){
+          var count = snap.size;
+          var badge = document.getElementById('admin-unread-badge');
+          if(badge){
+            if(count>0){ badge.style.display='inline'; badge.textContent=count; }
+            else { badge.style.display='none'; }
+          }
+        }, function(e){ console.warn('watchAdminUnread:', e.code); });
+    } catch(e) { console.warn('watchAdminUnread setup error:', e); }
   }
 
   // ── COPY PORTAL LINK ─────────────────────────────

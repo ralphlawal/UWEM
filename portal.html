@@ -397,15 +397,17 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-  firebase.initializeApp({
-    apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
-    authDomain:        "nur-futura-marketing.firebaseapp.com",
-    projectId:         "nur-futura-marketing",
-    storageBucket:     "nur-futura-marketing.firebasestorage.app",
-    messagingSenderId: "838680597470",
-    appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
-    measurementId:     "G-RN914HZTED"
-  });
+  try {
+    firebase.initializeApp({
+      apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
+      authDomain:        "nur-futura-marketing.firebaseapp.com",
+      projectId:         "nur-futura-marketing",
+      storageBucket:     "nur-futura-marketing.firebasestorage.app",
+      messagingSenderId: "838680597470",
+      appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
+      measurementId:     "G-RN914HZTED"
+    });
+  } catch(e) { console.warn('Firebase already initialized'); }
   var auth = firebase.auth();
   var db   = firebase.firestore();
 
@@ -455,13 +457,26 @@
     var pass  = el('auth-pass').value;
     var errEl = el('auth-error');
     var btn   = el('login-btn');
+    if(!email){ errEl.style.display='block'; errEl.textContent='Please enter your email address.'; return; }
+    if(!pass){  errEl.style.display='block'; errEl.textContent='Please enter your password.'; return; }
     errEl.style.display='none';
     btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Signing in...';
-    auth.signInWithEmailAndPassword(email, pass).catch(function(e){
-      errEl.style.display='block';
-      errEl.textContent = (e.code==='auth/invalid-credential'||e.code==='auth/wrong-password') ? 'Wrong email or password.' : e.message;
-      btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-right-to-bracket"></i> Sign In';
-    });
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(function(){ /* onAuthStateChanged handles the rest */ })
+      .catch(function(e){
+        console.error('Sign-in error:', e.code, e.message);
+        var msg = 'Sign-in failed. Please try again.';
+        if(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found') msg='Wrong email or password.';
+        else if(e.code==='auth/invalid-email')       msg='Invalid email address.';
+        else if(e.code==='auth/too-many-requests')   msg='Too many attempts. Please wait and try again.';
+        else if(e.code==='auth/network-request-failed') msg='Network error. Check your connection.';
+        else if(e.code==='auth/operation-not-allowed')  msg='Email sign-in is not enabled. Contact your manager.';
+        else if(e.code==='auth/configuration-not-found') msg='Auth not configured. Contact your manager.';
+        else msg = e.message || msg;
+        errEl.style.display='block';
+        errEl.textContent = msg;
+        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+      });
   }
 
   el('signout-btn').addEventListener('click', function(){
@@ -712,12 +727,8 @@
     });
   }
 
-  function checkUnreadMessages(){
-    db.collection('nf_messages').where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false).get().then(function(snap){
-      var count = snap.size;
-      if(count>0){ el('msg-badge').style.display='inline'; el('msg-badge').textContent=count; el('notif-dot').classList.add('active'); }
-    });
-  }
+  // Unread count is handled by watchNewMessages() real-time listener
+
 
   // ── FILES ──────────────────────────────────────────
   function loadFiles(){
