@@ -16,7 +16,7 @@
     .auth-box{background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:48px 40px;width:100%;max-width:400px;text-align:center;}
     .auth-logo{font-family:'Playfair Display',serif;font-size:30px;color:var(--gold);margin-bottom:4px;}
     .auth-sub{color:#555;font-size:13px;margin-bottom:32px;text-transform:uppercase;letter-spacing:2px;}
-    .auth-box input{width:100%;padding:14px 16px;background:#0f0f0f;border:1px solid var(--border);border-radius:9px;color:#fff;font-size:14px;margin-bottom:12px;font-family:'Inter',sans-serif;transition:border-color .2s;}
+    .auth-box input{width:100%;padding:14px 16px;background:#0f0f0f;border:1px solid var(--border);border-radius:9px;color:#fff;font-size:16px;margin-bottom:12px;font-family:'Inter',sans-serif;transition:border-color .2s;}
     .auth-box input:focus{outline:none;border-color:var(--gold);}
     .auth-btn{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:9px;font-weight:700;font-size:15px;cursor:pointer;transition:.3s;font-family:'Inter',sans-serif;}
     .auth-btn:disabled{opacity:.6;cursor:not-allowed;}
@@ -81,11 +81,10 @@
     .form-card-title{font-size:14px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:9px;color:#ddd;}
     .form-card-title i{color:var(--gold);}
     .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-    .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
     .g1{display:grid;grid-template-columns:1fr;gap:14px;}
     .fg{display:flex;flex-direction:column;gap:5px;}
     .fg label{font-size:11px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-    .fg input,.fg textarea,.fg select{background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:11px 13px;font-size:13.5px;font-family:'Inter',sans-serif;transition:border-color .2s;width:100%;}
+    .fg input,.fg textarea,.fg select{background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:11px 13px;font-size:16px;font-family:'Inter',sans-serif;transition:border-color .2s;width:100%;}
     .fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:var(--gold);}
     .fg textarea{resize:vertical;min-height:80px;}
     .hint{font-size:11px;color:#444;margin-top:3px;}
@@ -116,6 +115,7 @@
     .badge-gold{background:rgba(245,176,65,.13);color:var(--gold);}
     .badge-green{background:rgba(46,204,113,.13);color:var(--success);}
     .badge-gray{background:rgba(255,255,255,.06);color:#666;}
+    .badge-red{background:rgba(231,76,60,.13);color:var(--danger);}
     .td-img{width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--border);background:#111;}
 
     /* MODAL */
@@ -153,7 +153,7 @@
     @keyframes spin{to{transform:rotate(360deg);}}
     .load-state{padding:30px;text-align:center;color:#444;font-size:13px;}
 
-    /* TIP BOX */
+    /* TIP */
     .tip-box{background:rgba(245,176,65,.05);border:1px solid rgba(245,176,65,.2);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#888;line-height:1.7;}
     .tip-box strong{color:var(--gold);}
 
@@ -166,7 +166,7 @@
       .sidebar{transform:translateX(-100%);}
       .sidebar.open{transform:translateX(0);}
       .main{margin-left:0;}
-      .dash-grid,.g2,.g3{grid-template-columns:1fr;}
+      .dash-grid,.g2{grid-template-columns:1fr;}
       .mobile-menu-btn{display:block;}
       .topbar{padding:12px 16px;}
       .content{padding:14px;}
@@ -183,21 +183,16 @@
     <div class="auth-sub">Admin Portal</div>
     <input type="email" id="auth-email" placeholder="Admin Email"/>
     <input type="password" id="auth-pass" placeholder="Password"/>
-    <button class="auth-btn" id="login-btn" onclick="doLogin()">
+    <button class="auth-btn" id="login-btn">
       <i class="fa-solid fa-lock-open"></i> Enter Panel
     </button>
     <div class="auth-error" id="auth-error"></div>
-    <div class="auth-hint">
-      Use the email &amp; password you set up in<br>
-      <strong style="color:var(--gold)">Firebase Console → Authentication</strong>
-    </div>
+    <div class="auth-hint">Use the email &amp; password from<br><strong style="color:var(--gold)">Firebase Console → Authentication</strong></div>
   </div>
 </div>
 
-<!-- MOBILE OVERLAY -->
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="name">NUR FUTURA</div>
@@ -205,35 +200,37 @@
   </div>
   <nav class="sidebar-nav">
     <div class="nav-group-label">Overview</div>
-    <button class="nav-item active" onclick="showTab('dashboard',this)"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
+    <button class="nav-item active" data-tab="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
     <div class="nav-group-label">Content</div>
-    <button class="nav-item" onclick="showTab('hero',this)"><i class="fa-solid fa-star"></i> Hero Section</button>
-    <button class="nav-item" onclick="showTab('about',this)"><i class="fa-solid fa-circle-info"></i> About Us</button>
-    <button class="nav-item" onclick="showTab('services',this)"><i class="fa-solid fa-briefcase"></i> Services</button>
-    <button class="nav-item" onclick="showTab('artists',this)"><i class="fa-solid fa-music"></i> Hall of Fame</button>
-    <button class="nav-item" onclick="showTab('reviews',this)"><i class="fa-solid fa-quote-left"></i> Reviews</button>
-    <button class="nav-item" onclick="showTab('announcements',this)"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
-    <button class="nav-item" onclick="showTab('newsletter',this)"><i class="fa-solid fa-newspaper"></i> Newsletter Images</button>
+    <button class="nav-item" data-tab="hero"><i class="fa-solid fa-star"></i> Hero Section</button>
+    <button class="nav-item" data-tab="about"><i class="fa-solid fa-circle-info"></i> About Us</button>
+    <button class="nav-item" data-tab="services"><i class="fa-solid fa-briefcase"></i> Services</button>
+    <button class="nav-item" data-tab="artists"><i class="fa-solid fa-music"></i> Hall of Fame</button>
+    <button class="nav-item" data-tab="reviews"><i class="fa-solid fa-quote-left"></i> Reviews</button>
+    <button class="nav-item" data-tab="announcements"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
+    <button class="nav-item" data-tab="newsletter"><i class="fa-solid fa-newspaper"></i> Newsletter Images</button>
     <div class="nav-group-label">Site</div>
-    <button class="nav-item" onclick="showTab('popup',this)"><i class="fa-solid fa-rectangle-ad"></i> Popup Ad</button>
-    <button class="nav-item" onclick="showTab('contact',this)"><i class="fa-solid fa-phone"></i> Contact Info</button>
-    <button class="nav-item" onclick="showTab('visibility',this)"><i class="fa-solid fa-eye"></i> Section Visibility</button>
+    <button class="nav-item" data-tab="popup"><i class="fa-solid fa-rectangle-ad"></i> Popup Ad</button>
+    <button class="nav-item" data-tab="contact"><i class="fa-solid fa-phone"></i> Contact Info</button>
+    <button class="nav-item" data-tab="visibility"><i class="fa-solid fa-eye"></i> Section Visibility</button>
+    <div class="nav-group-label">Portal</div>
+    <button class="nav-item" data-tab="clients"><i class="fa-solid fa-users"></i> Client Accounts <span id="admin-unread-badge" style="background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:auto;display:none;">0</span></button>
   </nav>
   <div class="sidebar-footer">
-    <button class="logout-btn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+    <button class="logout-btn" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
   <div class="topbar">
     <div class="topbar-left">
-      <button class="mobile-menu-btn" onclick="openSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
       <h2 id="topbar-title">Admin <span>Panel</span></h2>
     </div>
     <div class="topbar-right">
       <div class="live-dot"></div>
       <small>Firebase Live</small>
+      <a href="portal.html" target="_blank" class="view-btn" style="background:rgba(139,44,0,.1);border-color:var(--brand);color:#e88a5a;"><i class="fa-solid fa-user-circle"></i> Portal</a>
       <a href="index.html" target="_blank" class="view-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</a>
     </div>
   </div>
@@ -252,18 +249,14 @@
 
     <!-- HERO -->
     <div class="tab-panel" id="tab-hero">
-      <div class="section-header"><h2>Hero Section</h2><p>Main banner headline, subtext, background image and stats</p></div>
+      <div class="section-header"><h2>Hero Section</h2><p>Main banner, background image and stats</p></div>
       <div class="form-card">
         <div class="form-card-title"><i class="fa-solid fa-heading"></i> Headline & Subtext</div>
         <div class="g1">
           <div class="fg"><label>Headline Line 1</label><input type="text" id="hero-h1" placeholder="Perception is Reality,"></div>
           <div class="fg"><label>Headline Line 2</label><input type="text" id="hero-h2" placeholder="Image is Everything"></div>
           <div class="fg"><label>Subtext</label><textarea id="hero-sub" rows="2"></textarea></div>
-          <div class="fg">
-            <label>Background Image URL</label>
-            <input type="url" id="hero-bg" placeholder="https://res.cloudinary.com/... or images/hero.png">
-            <span class="hint">Use Cloudinary, imgbb or any direct image link</span>
-          </div>
+          <div class="fg"><label>Background Image URL</label><input type="url" id="hero-bg" placeholder="https://... or images/hero.png"><span class="hint">Use Cloudinary or any direct image link</span></div>
         </div>
         <div class="form-card-title" style="margin-top:22px;"><i class="fa-solid fa-chart-bar"></i> Stats</div>
         <div class="g2">
@@ -275,8 +268,8 @@
           <div class="fg"><label>Stat 3 Label</label><input type="text" id="s3l" placeholder="Global Support"></div>
         </div>
         <div class="form-actions">
-          <button class="btn btn-gold" onclick="saveHero()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
-          <button class="btn btn-ghost" onclick="loadHeroForm()"><i class="fa-solid fa-rotate-left"></i> Discard</button>
+          <button class="btn btn-gold" id="save-hero"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
+          <button class="btn btn-ghost" id="reload-hero"><i class="fa-solid fa-rotate-left"></i> Discard</button>
         </div>
       </div>
     </div>
@@ -291,8 +284,8 @@
           <div class="fg"><label>Who We Are</label><textarea id="about-who" rows="3"></textarea></div>
         </div>
         <div class="form-actions">
-          <button class="btn btn-gold" onclick="saveAbout()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
-          <button class="btn btn-ghost" onclick="loadAboutForm()"><i class="fa-solid fa-rotate-left"></i> Discard</button>
+          <button class="btn btn-gold" id="save-about"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
+          <button class="btn btn-ghost" id="reload-about"><i class="fa-solid fa-rotate-left"></i> Discard</button>
         </div>
       </div>
     </div>
@@ -301,7 +294,7 @@
     <div class="tab-panel" id="tab-services">
       <div class="section-header"><h2>Services</h2><p>Manage the 7-Fold Package</p></div>
       <div class="table-wrap">
-        <div class="table-top"><h3>All Services</h3><button class="btn btn-gold btn-sm" onclick="openModal('service')"><i class="fa-solid fa-plus"></i> Add Service</button></div>
+        <div class="table-top"><h3>All Services</h3><button class="btn btn-gold btn-sm" id="add-service"><i class="fa-solid fa-plus"></i> Add Service</button></div>
         <div id="services-list"><div class="load-state"><span class="spinner"></span> Loading...</div></div>
       </div>
     </div>
@@ -309,9 +302,9 @@
     <!-- ARTISTS -->
     <div class="tab-panel" id="tab-artists">
       <div class="section-header"><h2>Hall of Fame</h2><p>Add and manage artists</p></div>
-      <div class="tip-box"><strong>💡 How to add photos:</strong> Upload to <strong>cloudinary.com</strong> (free) or <strong>imgbb.com</strong> → copy the image URL → paste it in the Photo URL field below.</div>
+      <div class="tip-box"><strong>💡 How to add photos:</strong> Upload to <strong>cloudinary.com</strong> or <strong>imgbb.com</strong> → copy the image URL → paste in the Photo URL field.</div>
       <div class="table-wrap">
-        <div class="table-top"><h3>All Artists</h3><button class="btn btn-gold btn-sm" onclick="openModal('artist')"><i class="fa-solid fa-plus"></i> Add Artist</button></div>
+        <div class="table-top"><h3>All Artists</h3><button class="btn btn-gold btn-sm" id="add-artist"><i class="fa-solid fa-plus"></i> Add Artist</button></div>
         <div id="artists-list"><div class="load-state"><span class="spinner"></span> Loading...</div></div>
       </div>
     </div>
@@ -320,14 +313,14 @@
     <div class="tab-panel" id="tab-reviews">
       <div class="section-header"><h2>Client Reviews</h2><p>Manage testimonials</p></div>
       <div class="table-wrap">
-        <div class="table-top"><h3>All Reviews</h3><button class="btn btn-gold btn-sm" onclick="openModal('review')"><i class="fa-solid fa-plus"></i> Add Review</button></div>
+        <div class="table-top"><h3>All Reviews</h3><button class="btn btn-gold btn-sm" id="add-review"><i class="fa-solid fa-plus"></i> Add Review</button></div>
         <div id="reviews-list"><div class="load-state"><span class="spinner"></span> Loading...</div></div>
       </div>
     </div>
 
     <!-- ANNOUNCEMENTS -->
     <div class="tab-panel" id="tab-announcements">
-      <div class="section-header"><h2>Announcements</h2><p>Edit the main announcement and distribution section</p></div>
+      <div class="section-header"><h2>Announcements</h2><p>Edit the main announcement section</p></div>
       <div class="form-card">
         <div class="g2">
           <div class="fg"><label>Badge Text</label><input type="text" id="ann-badge" placeholder="Major Launch"></div>
@@ -335,13 +328,13 @@
         </div>
         <div class="g1" style="margin-top:12px;">
           <div class="fg"><label>Body Text</label><textarea id="ann-body" rows="4"></textarea></div>
-          <div class="fg"><label>Features (comma-separated)</label><input type="text" id="ann-features" placeholder="Transparent Royalties, Playlist Pitching, Global Reach"></div>
+          <div class="fg"><label>Features (comma-separated)</label><input type="text" id="ann-features" placeholder="Transparent Royalties, Playlist Pitching"></div>
           <div class="fg"><label>Link Text</label><input type="text" id="ann-link-text"></div>
           <div class="fg"><label>Link URL</label><input type="url" id="ann-link-url"></div>
         </div>
         <div class="form-actions">
-          <button class="btn btn-gold" onclick="saveAnnouncement()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
-          <button class="btn btn-ghost" onclick="loadAnnouncementForm()"><i class="fa-solid fa-rotate-left"></i> Discard</button>
+          <button class="btn btn-gold" id="save-ann"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
+          <button class="btn btn-ghost" id="reload-ann"><i class="fa-solid fa-rotate-left"></i> Discard</button>
         </div>
       </div>
     </div>
@@ -350,14 +343,14 @@
     <div class="tab-panel" id="tab-newsletter">
       <div class="section-header"><h2>Newsletter Images</h2><p>The 3 highlight images in the newsletter section</p></div>
       <div class="form-card">
-        <div class="tip-box"><strong>💡 Tip:</strong> Paste direct image URLs. Upload to Cloudinary or imgbb first. Recommended: 400×200px.</div>
+        <div class="tip-box"><strong>💡 Tip:</strong> Paste direct image URLs from Cloudinary or imgbb. Recommended: 400×200px.</div>
         <div class="g1">
           <div class="fg"><label>Image 1 URL</label><input type="url" id="nl-img1" placeholder="https://..."></div>
           <div class="fg"><label>Image 2 URL</label><input type="url" id="nl-img2" placeholder="https://..."></div>
           <div class="fg"><label>Image 3 URL</label><input type="url" id="nl-img3" placeholder="https://..."></div>
         </div>
         <div class="form-actions">
-          <button class="btn btn-gold" onclick="saveNewsletter()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
+          <button class="btn btn-gold" id="save-nl"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
         </div>
       </div>
     </div>
@@ -368,9 +361,9 @@
       <div class="form-card">
         <div class="g2">
           <div>
-            <div class="fg"><label>Popup Image URL</label><input type="url" id="popup-img" placeholder="https://..." oninput="updatePopupPrev()"></div>
-            <div class="fg" style="margin-top:12px;"><label>Headline</label><input type="text" id="popup-ttl" oninput="updatePopupPrev()"></div>
-            <div class="fg" style="margin-top:12px;"><label>Subtext</label><input type="text" id="popup-sub" oninput="updatePopupPrev()"></div>
+            <div class="fg"><label>Popup Image URL</label><input type="url" id="popup-img" placeholder="https://..."></div>
+            <div class="fg" style="margin-top:12px;"><label>Headline</label><input type="text" id="popup-ttl"></div>
+            <div class="fg" style="margin-top:12px;"><label>Subtext</label><input type="text" id="popup-sub"></div>
             <div class="fg" style="margin-top:12px;"><label>Click Destination</label><input type="text" id="popup-lnk" placeholder="#announcements"></div>
             <div class="fg" style="margin-top:14px;">
               <label>Enable Popup</label>
@@ -380,7 +373,7 @@
           <div>
             <p style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Preview</p>
             <div class="popup-prev">
-              <img id="popup-prev-img" src="" style="min-height:80px;">
+              <img id="popup-prev-img" src="" style="min-height:80px;" alt="Preview">
               <div class="popup-prev-info">
                 <div id="popup-prev-ttl" style="color:var(--gold);font-family:'Playfair Display',serif;font-size:15px;"></div>
                 <div id="popup-prev-sub" style="color:#999;font-size:12px;margin-top:4px;"></div>
@@ -389,7 +382,7 @@
           </div>
         </div>
         <div class="form-actions">
-          <button class="btn btn-gold" onclick="savePopup()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
+          <button class="btn btn-gold" id="save-popup"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
         </div>
       </div>
     </div>
@@ -411,7 +404,7 @@
           <div class="fg"><label>LinkedIn URL</label><input type="url" id="s-li"></div>
         </div>
         <div class="form-actions">
-          <button class="btn btn-gold" onclick="saveContact()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
+          <button class="btn btn-gold" id="save-contact"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button>
         </div>
       </div>
     </div>
@@ -421,195 +414,736 @@
       <div class="section-header"><h2>Section Visibility</h2><p>Toggle sections on/off — changes go live immediately</p></div>
       <div class="form-card">
         <div class="vis-grid">
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-star"></i>Hero</div><label class="toggle"><input type="checkbox" id="vis-hero" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-circle-info"></i>About Us</div><label class="toggle"><input type="checkbox" id="vis-about" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-briefcase"></i>Services</div><label class="toggle"><input type="checkbox" id="vis-services" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-image"></i>Services Image</div><label class="toggle"><input type="checkbox" id="vis-showcase" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-bullhorn"></i>Announcements</div><label class="toggle"><input type="checkbox" id="vis-announcements" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-music"></i>Hall of Fame</div><label class="toggle"><input type="checkbox" id="vis-hall" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-quote-left"></i>Reviews</div><label class="toggle"><input type="checkbox" id="vis-reviews" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
-          <div class="vis-card"><div class="vi"><i class="fa-solid fa-phone"></i>Contact</div><label class="toggle"><input type="checkbox" id="vis-contact" checked onchange="saveVisibility()"><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-star"></i>Hero</div><label class="toggle"><input type="checkbox" id="vis-hero" checked><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-circle-info"></i>About Us</div><label class="toggle"><input type="checkbox" id="vis-about" checked><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-briefcase"></i>Services</div><label class="toggle"><input type="checkbox" id="vis-services" checked><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-image"></i>Services Image</div><label class="toggle"><input type="checkbox" id="vis-showcase" checked><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-bullhorn"></i>Announcements</div><label class="toggle"><input type="checkbox" id="vis-announcements" checked><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-music"></i>Hall of Fame</div><label class="toggle"><input type="checkbox" id="vis-hall" checked><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-quote-left"></i>Reviews</div><label class="toggle"><input type="checkbox" id="vis-reviews" checked><span class="toggle-slider"></span></label></div>
+          <div class="vis-card"><div class="vi"><i class="fa-solid fa-phone"></i>Contact</div><label class="toggle"><input type="checkbox" id="vis-contact" checked><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="form-actions" style="margin-top:20px;">
+          <button class="btn btn-gold" id="save-vis"><i class="fa-solid fa-floppy-disk"></i> Save Visibility</button>
         </div>
       </div>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+    <!-- CLIENTS -->
+    <div class="tab-panel" id="tab-clients">
+      <div class="section-header"><h2>Client Accounts</h2><p>Manage client portal accounts, releases, campaigns, files and invoices</p></div>
+
+      <!-- CLIENT LIST -->
+      <div class="table-wrap" id="clients-section">
+        <div class="table-top">
+          <h3>All Clients</h3>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <input type="text" id="client-search" placeholder="Search clients..." oninput="filterClients()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;color:#fff;padding:6px 12px;font-size:12px;font-family:'Inter',sans-serif;width:160px;">
+            <button class="btn btn-ghost btn-sm" onclick="copyPortalLink()"><i class="fa-solid fa-copy"></i> Copy Portal Link</button>
+            <button class="btn btn-gold btn-sm" id="add-client-btn"><i class="fa-solid fa-plus"></i> Add Client</button>
+          </div>
+        </div>
+        <div id="clients-list"><div class="load-state"><span class="spinner"></span> Loading...</div></div>
+      </div>
+
+      <!-- CLIENT DETAIL (hidden until client selected) -->
+      <div id="client-detail" style="display:none;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" id="back-to-clients"><i class="fa-solid fa-arrow-left"></i> All Clients</button>
+          <h3 id="detail-client-name" style="font-size:18px;font-weight:700;color:var(--gold);"></h3>
+          <span id="detail-client-type" class="badge badge-gold" style="margin-left:4px;"></span>
+        </div>
+        <div id="client-quick-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px;"></div>
+
+        <!-- Sub-tabs -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;" id="client-sub-tabs">
+          <button class="btn btn-gold btn-sm active-sub" data-sub="releases">Releases</button>
+          <button class="btn btn-ghost btn-sm" data-sub="campaigns">Campaigns</button>
+          <button class="btn btn-ghost btn-sm" data-sub="messages">Messages</button>
+          <button class="btn btn-ghost btn-sm" data-sub="files">Files</button>
+          <button class="btn btn-ghost btn-sm" data-sub="invoices">Invoices</button>
+        </div>
+
+        <!-- RELEASES sub -->
+        <div id="sub-releases">
+          <div class="table-top" style="background:var(--card);border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none;padding:14px 18px;">
+            <h3>Releases</h3><button class="btn btn-gold btn-sm" id="add-release-btn"><i class="fa-solid fa-plus"></i> Add Release</button>
+          </div>
+          <div class="table-wrap" style="border-radius:0 0 14px 14px;margin-bottom:0;" id="releases-admin-list"></div>
+        </div>
+
+        <!-- CAMPAIGNS sub -->
+        <div id="sub-campaigns" style="display:none;">
+          <div class="table-top" style="background:var(--card);border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none;padding:14px 18px;">
+            <h3>Campaigns</h3><button class="btn btn-gold btn-sm" id="add-campaign-btn"><i class="fa-solid fa-plus"></i> Add Campaign</button>
+          </div>
+          <div class="table-wrap" style="border-radius:0 0 14px 14px;margin-bottom:0;" id="campaigns-admin-list"></div>
+        </div>
+
+        <!-- MESSAGES sub -->
+        <div id="sub-messages" style="display:none;">
+          <div class="form-card">
+            <div class="form-card-title"><i class="fa-solid fa-comments"></i> Conversation</div>
+            <div id="admin-msgs-list" style="max-height:350px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;padding:4px;"></div>
+            <div style="display:flex;gap:10px;">
+              <input type="text" id="admin-msg-input" placeholder="Type a message to this client..." style="background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:11px 13px;font-size:13px;font-family:'Inter',sans-serif;flex:1;">
+              <button class="btn btn-gold btn-sm" id="admin-msg-send"><i class="fa-solid fa-paper-plane"></i> Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILES sub -->
+        <div id="sub-files" style="display:none;">
+          <div class="form-card">
+            <div class="form-card-title"><i class="fa-solid fa-folder-open"></i> Files</div>
+            <div class="tip-box"><strong>Add a file:</strong> Upload to Cloudinary or any host, paste the URL below.</div>
+            <div class="g2" style="margin-bottom:12px;">
+              <div class="fg"><label>File Name</label><input type="text" id="file-name-inp" placeholder="Contract.pdf"></div>
+              <div class="fg"><label>File URL</label><input type="url" id="file-url-inp" placeholder="https://..."></div>
+            </div>
+            <button class="btn btn-gold btn-sm" id="add-file-btn"><i class="fa-solid fa-plus"></i> Add File</button>
+            <div id="files-admin-list" style="margin-top:14px;"></div>
+          </div>
+        </div>
+
+        <!-- INVOICES sub -->
+        <div id="sub-invoices" style="display:none;">
+          <div class="table-top" style="background:var(--card);border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none;padding:14px 18px;">
+            <h3>Invoices</h3><button class="btn btn-gold btn-sm" id="add-invoice-btn"><i class="fa-solid fa-plus"></i> Add Invoice</button>
+          </div>
+          <div class="table-wrap" style="border-radius:0 0 14px 14px;margin-bottom:0;" id="invoices-admin-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <div id="modal-container"></div>
 <div id="toast"><i class="fa-solid fa-check-circle"></i><span id="toast-msg">Saved!</span></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<!-- ══ FIREBASE COMPAT SDKs ══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
+    authDomain:        "nur-futura-marketing.firebaseapp.com",
+    projectId:         "nur-futura-marketing",
+    storageBucket:     "nur-futura-marketing.firebasestorage.app",
+    messagingSenderId: "838680597470",
+    appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
+    measurementId:     "G-RN914HZTED"
+  });
+  var auth = firebase.auth();
+  var db   = firebase.firestore();
 
-const app  = initializeApp({ apiKey:"AIzaSyA5RUfGUA68-RNyMZPlxaVYj85h5OiJdJw", authDomain:"cbt-app-5907f.firebaseapp.com", projectId:"cbt-app-5907f", storageBucket:"cbt-app-5907f.firebasestorage.app", messagingSenderId:"705323924101", appId:"1:705323924101:web:e2468e94d1b030e61287ec" });
-const auth = getAuth(app);
-const db   = getFirestore(app);
+  // ── HELPERS ──────────────────────────────────────────
+  function fsGet(path){
+    var p=path.split('/');
+    return db.collection(p[0]).doc(p[1]).get()
+      .then(function(s){ return s.exists?s.data():null; })
+      .catch(function(){ return null; });
+  }
+  function fsSet(path,data){
+    var p=path.split('/');
+    return db.collection(p[0]).doc(p[1]).set(data,{merge:true});
+  }
+  function fsList(col){
+    return db.collection(col).get()
+      .then(function(s){ return s.docs.map(function(d){ return Object.assign({id:d.id},d.data()); }); })
+      .catch(function(){ return []; });
+  }
 
-const D = {
-  hero:{ h1:'Perception is Reality,', h2:'Image is Everything', sub:"We don't just build campaigns — we build unforgettable brands.", bg:'images/hero.png', s1n:'150+', s1l:'Artists Distributed', s2n:'10M+', s2l:'Streams Generated', s3n:'24/7', s3l:'Global Support' },
-  about:{ mission:'Our mission is to bring brands, artistes, and individuals into the limelight.', vision:'Illuminating paths of our clients, unlocking full potentials, and redefining the marketing landscape.', who:'We are a revolutionary force in 2026. With expertise in strategy, creativity & technology, we drive real results.' },
-  announcement:{ badge:'Major Launch', title:'Introducing: Nur Futura Distribution', body:"We don't just manage artists; we power them. Get your music on Spotify, Apple Music, Boomplay, and 150+ stores worldwide.", features:'Transparent Royalties,Playlist Pitching,Global Reach', linkText:'Distribution Terms & FAQ', linkUrl:'#' },
-  newsletter:{ img1:'images/pla2.png', img2:'images/pla1.png', img3:'images/pla.png' },
-  popup:{ img:'https://res.cloudinary.com/dco9drzzp/image/upload/v1770817840/AMPLYFY_yjtdve.jpg', title:'Amplify Your Sounds', sub:'Distribute on all platforms today.', link:'#announcements', enabled:true },
-  contact:{ email:'hello@nurfuturamarketing.com.ng', phone:'+234 916 035 9275', location:'Lagos, Nigeria', fb:'https://www.facebook.com/share/1GsZFKot85/', tw:'https://twitter.com/nurfutura', ig:'https://instagram.com/nur.futura', li:'https://www.linkedin.com/in/nur-futura-marketing-558a85356' },
-  visibility:{ hero:true, about:true, services:true, announcements:true, hall:true, reviews:true, contact:true }
-};
+  // ── TOAST ────────────────────────────────────────────
+  function toast(msg, type){
+    type = type || 'success';
+    var t=document.getElementById('toast');
+    t.className=type;
+    t.querySelector('i').className = type==='success'?'fa-solid fa-check-circle':type==='error'?'fa-solid fa-circle-xmark':'fa-solid fa-spinner fa-spin';
+    document.getElementById('toast-msg').textContent=msg;
+    t.classList.add('show');
+    if(type!=='loading') setTimeout(function(){ t.classList.remove('show'); }, 3200);
+  }
 
-async function fsGet(p){ 
-  try{ const s=await getDoc(doc(db,...p.split('/'))); return s.exists()?s.data():null; }
-  catch(e){ console.warn('Read failed:',p,e.message); return null; } 
-}
-async function fsSet(p,d){ 
-  try{ await setDoc(doc(db,...p.split('/')),d,{merge:true}); }
-  catch(e){ toast('Save failed — check Firestore rules: '+e.message,'error'); throw e; } 
-}
-async function fsList(c){ 
-  try{ const s=await getDocs(collection(db,c)); return s.docs.map(d=>({id:d.id,...d.data()})); }
-  catch(e){ console.warn('List failed:',c,e.message); return []; } 
-}
+  // ── AUTH ─────────────────────────────────────────────
+  document.getElementById('login-btn').addEventListener('click', function(){
+    var email=document.getElementById('auth-email').value.trim();
+    var pass=document.getElementById('auth-pass').value;
+    var err=document.getElementById('auth-error');
+    var btn=document.getElementById('login-btn');
+    err.style.display='none'; btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Signing in...';
+    auth.signInWithEmailAndPassword(email, pass)
+      .catch(function(e){
+        err.style.display='block';
+        err.textContent = e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'?'Wrong email or password.':e.message;
+        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-lock-open"></i> Enter Panel';
+      });
+  });
+  document.getElementById('auth-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('login-btn').click(); });
+  document.getElementById('logout-btn').addEventListener('click', function(){ auth.signOut(); });
 
-window.toast = function(msg,type='success'){
-  const t=document.getElementById('toast');
-  t.className=type;
-  t.querySelector('i').className=type==='success'?'fa-solid fa-check-circle':type==='error'?'fa-solid fa-circle-xmark':'fa-solid fa-spinner fa-spin';
-  document.getElementById('toast-msg').textContent=msg;
-  t.classList.add('show');
-  if(type!=='loading') setTimeout(()=>t.classList.remove('show'),3200);
-};
-
-// AUTH
-window.doLogin = async function(){
-  const e=document.getElementById('auth-email').value.trim();
-  const p=document.getElementById('auth-pass').value;
-  const err=document.getElementById('auth-error');
-  const btn=document.getElementById('login-btn');
-  err.style.display='none'; btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Signing in...';
-  try{ await signInWithEmailAndPassword(auth,e,p); }
-  catch(ex){ err.style.display='block'; err.textContent=ex.code==='auth/invalid-credential'?'Wrong email or password.':ex.message; btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-lock-open"></i> Enter Panel'; }
-};
-document.getElementById('auth-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') window.doLogin(); });
-window.doLogout = async ()=>{ await signOut(auth); };
-
-onAuthStateChanged(auth,user=>{
-  if(user){ document.getElementById('auth-screen').style.display='none'; initAdmin(); }
-  else{ document.getElementById('auth-screen').style.display='flex'; document.getElementById('login-btn').disabled=false; document.getElementById('login-btn').innerHTML='<i class="fa-solid fa-lock-open"></i> Enter Panel'; }
-});
-
-// MOBILE
-window.openSidebar  = ()=>{ document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active'); };
-window.closeSidebar = ()=>{ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); };
-window.showTab = function(name,btn){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  btn.classList.add('active');
-  document.getElementById('topbar-title').innerHTML=btn.textContent.trim().replace(/^.+?\s/,'')+'  <span>Editor</span>';
-  window.closeSidebar();
-};
-
-async function initAdmin(){
-  await Promise.all([loadHeroForm(),loadAboutForm(),loadAnnouncementForm(),loadNewsletterForm(),loadPopupForm(),loadContactForm(),loadVisibility(),loadServicesTable(),loadArtistsTable(),loadReviewsTable()]);
-  loadDashboard();
-}
-
-// DASHBOARD
-async function loadDashboard(){
-  const [art,rev,svc]=await Promise.all([fsList('artists'),fsList('reviews'),fsList('services')]);
-  document.getElementById('dash-stats').innerHTML=`
-    <div class="stat-card"><div class="s-label">Artists</div><div class="s-val">${art.length}</div><div class="s-sub">Hall of Fame</div></div>
-    <div class="stat-card"><div class="s-label">Services</div><div class="s-val">${svc.length}</div><div class="s-sub">7-Fold Package</div></div>
-    <div class="stat-card"><div class="s-label">Reviews</div><div class="s-val">${rev.length}</div><div class="s-sub">Testimonials</div></div>
-    <div class="stat-card"><div class="s-label">Database</div><div class="s-val" style="font-size:18px;margin-top:4px;">🔥 Live</div><div class="s-sub">Firebase Firestore</div></div>`;
-  document.getElementById('dash-artists').innerHTML=art.length?art.slice(0,6).map(a=>`<div class="recent-item"><span style="color:#ccc;font-weight:500;">${a.name}</span><span class="badge badge-gold">Artist</span></div>`).join(''):'<p style="color:#444;font-size:13px;">No artists yet.</p>';
-  document.getElementById('dash-reviews').innerHTML=rev.length?rev.slice(0,5).map(r=>`<div class="recent-item"><span style="color:#ccc;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">"${r.quote.substring(0,45)}..."</span><span style="color:#444;font-size:12px;">— ${r.client}</span></div>`).join(''):'<p style="color:#444;font-size:13px;">No reviews yet.</p>';
-}
-
-// HERO
-window.loadHeroForm = async function(){ const d=await fsGet('site/hero')||D.hero; ['h1','h2','sub','bg'].forEach(k=>{ const el=document.getElementById('hero-'+k); if(el) el.value=d[k]||''; }); document.getElementById('s1n').value=d.s1n||d.stat1n||''; document.getElementById('s1l').value=d.s1l||d.stat1l||''; document.getElementById('s2n').value=d.s2n||d.stat2n||''; document.getElementById('s2l').value=d.s2l||d.stat2l||''; document.getElementById('s3n').value=d.s3n||d.stat3n||''; document.getElementById('s3l').value=d.s3l||d.stat3l||''; };
-window.saveHero = async function(){ toast('Saving...','loading'); await fsSet('site/hero',{ h1:document.getElementById('hero-h1').value, h2:document.getElementById('hero-h2').value, sub:document.getElementById('hero-sub').value, bg:document.getElementById('hero-bg').value, s1n:document.getElementById('s1n').value, s1l:document.getElementById('s1l').value, s2n:document.getElementById('s2n').value, s2l:document.getElementById('s2l').value, s3n:document.getElementById('s3n').value, s3l:document.getElementById('s3l').value }); toast('Hero section published! ✓'); };
-
-// ABOUT
-window.loadAboutForm = async function(){ const d=await fsGet('site/about')||D.about; document.getElementById('about-mission').value=d.mission||''; document.getElementById('about-vision').value=d.vision||''; document.getElementById('about-who').value=d.who||''; };
-window.saveAbout = async function(){ toast('Saving...','loading'); await fsSet('site/about',{ mission:document.getElementById('about-mission').value, vision:document.getElementById('about-vision').value, who:document.getElementById('about-who').value }); toast('About section published! ✓'); };
-
-// SERVICES
-async function loadServicesTable(){
-  const items=await fsList('services');
-  const el=document.getElementById('services-list');
-  if(!items.length){ el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No services yet. Add your first one.</p>'; return; }
-  el.innerHTML=`<table><thead><tr><th>Icon</th><th>Title</th><th>Description</th><th>Actions</th></tr></thead><tbody>${items.map(s=>`<tr><td><i class="${s.icon}" style="color:var(--gold);font-size:18px;"></i></td><td style="font-weight:600;color:#ddd;">${s.title}</td><td style="font-size:12px;color:#666;max-width:200px;">${(s.desc||'').substring(0,50)}…</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editItem('service','${s.id}')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delItem('services','${s.id}')"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')}</tbody></table>`;
-}
-window.loadServicesTable=loadServicesTable;
-
-// ARTISTS
-async function loadArtistsTable(){
-  const items=await fsList('artists');
-  const el=document.getElementById('artists-list');
-  if(!items.length){ el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No artists yet. Add your first one.</p>'; return; }
-  el.innerHTML=`<table><thead><tr><th>Photo</th><th>Name</th><th>IG</th><th>Spotify</th><th>Actions</th></tr></thead><tbody>${items.map(a=>`<tr><td><img class="td-img" src="${a.img}" onerror="this.src=''" alt="${a.name}"></td><td style="font-weight:700;color:var(--gold);">${a.name}</td><td>${a.ig&&a.ig!='#'?'<span class="badge badge-green">✓</span>':'<span class="badge badge-gray">—</span>'}</td><td>${a.spotify&&a.spotify!='#'?'<span class="badge badge-green">✓</span>':'<span class="badge badge-gray">—</span>'}</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editItem('artist','${a.id}')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delItem('artists','${a.id}')"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')}</tbody></table>`;
-}
-window.loadArtistsTable=loadArtistsTable;
-
-// REVIEWS
-async function loadReviewsTable(){
-  const items=await fsList('reviews');
-  const el=document.getElementById('reviews-list');
-  if(!items.length){ el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No reviews yet.</p>'; return; }
-  el.innerHTML=`<table><thead><tr><th>Quote</th><th>Client</th><th>Actions</th></tr></thead><tbody>${items.map(r=>`<tr><td style="max-width:260px;color:#ccc;">"${r.quote.substring(0,60)}${r.quote.length>60?'…':''}"</td><td style="color:var(--gold);font-weight:600;">— ${r.client}</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editItem('review','${r.id}')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delItem('reviews','${r.id}')"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')}</tbody></table>`;
-}
-window.loadReviewsTable=loadReviewsTable;
-
-// ANNOUNCEMENT
-window.loadAnnouncementForm = async function(){ const d=await fsGet('site/announcement')||D.announcement; document.getElementById('ann-badge').value=d.badge||''; document.getElementById('ann-title').value=d.title||''; document.getElementById('ann-body').value=d.body||''; document.getElementById('ann-features').value=d.features||''; document.getElementById('ann-link-text').value=d.linkText||''; document.getElementById('ann-link-url').value=d.linkUrl||''; };
-window.saveAnnouncement = async function(){ toast('Saving...','loading'); await fsSet('site/announcement',{ badge:document.getElementById('ann-badge').value, title:document.getElementById('ann-title').value, body:document.getElementById('ann-body').value, features:document.getElementById('ann-features').value, linkText:document.getElementById('ann-link-text').value, linkUrl:document.getElementById('ann-link-url').value }); toast('Announcement published! ✓'); };
-
-// NEWSLETTER
-window.loadNewsletterForm = async function(){ const d=await fsGet('site/newsletter')||D.newsletter; document.getElementById('nl-img1').value=d.img1||''; document.getElementById('nl-img2').value=d.img2||''; document.getElementById('nl-img3').value=d.img3||''; };
-window.saveNewsletter = async function(){ toast('Saving...','loading'); await fsSet('site/newsletter',{ img1:document.getElementById('nl-img1').value, img2:document.getElementById('nl-img2').value, img3:document.getElementById('nl-img3').value }); toast('Newsletter images published! ✓'); };
-
-// POPUP
-window.loadPopupForm = async function(){ const d=await fsGet('site/popup')||D.popup; document.getElementById('popup-img').value=d.img||''; document.getElementById('popup-ttl').value=d.title||''; document.getElementById('popup-sub').value=d.sub||''; document.getElementById('popup-lnk').value=d.link||''; document.getElementById('popup-on').checked=d.enabled!==false; window.updatePopupPrev(); };
-window.updatePopupPrev = function(){ document.getElementById('popup-prev-img').src=document.getElementById('popup-img').value; document.getElementById('popup-prev-ttl').textContent=document.getElementById('popup-ttl').value; document.getElementById('popup-prev-sub').textContent=document.getElementById('popup-sub').value; };
-window.savePopup = async function(){ toast('Saving...','loading'); await fsSet('site/popup',{ img:document.getElementById('popup-img').value, title:document.getElementById('popup-ttl').value, sub:document.getElementById('popup-sub').value, link:document.getElementById('popup-lnk').value, enabled:document.getElementById('popup-on').checked }); toast('Popup published! ✓'); };
-
-// CONTACT
-window.loadContactForm = async function(){ const d=await fsGet('site/contact')||D.contact; document.getElementById('c-email').value=d.email||''; document.getElementById('c-phone').value=d.phone||''; document.getElementById('c-location').value=d.location||''; document.getElementById('s-fb').value=d.fb||''; document.getElementById('s-tw').value=d.tw||''; document.getElementById('s-ig').value=d.ig||''; document.getElementById('s-li').value=d.li||''; };
-window.saveContact = async function(){ toast('Saving...','loading'); await fsSet('site/contact',{ email:document.getElementById('c-email').value, phone:document.getElementById('c-phone').value, location:document.getElementById('c-location').value, fb:document.getElementById('s-fb').value, tw:document.getElementById('s-tw').value, ig:document.getElementById('s-ig').value, li:document.getElementById('s-li').value }); toast('Contact info published! ✓'); };
-
-// VISIBILITY
-window.loadVisibility = async function(){ const d=await fsGet('site/visibility')||D.visibility; Object.keys(d).forEach(k=>{ const el=document.getElementById('vis-'+k); if(el) el.checked=d[k]; }); };
-window.saveVisibility = async function(){ const keys=['hero','about','services','announcements','hall','reviews','contact']; const obj={}; keys.forEach(k=>{ const el=document.getElementById('vis-'+k); if(el) obj[k]=el.checked; }); await fsSet('site/visibility',obj); toast('Visibility updated! ✓'); };
-
-// MODAL
-window.openModal = function(type, data={}){
-  const cfgs = {
-    service:{
-      title: data.id?'Edit Service':'Add Service', icon:'fa-solid fa-briefcase',
-      html:`<div class="g2"><div class="fg"><label>Service Title</label><input id="m-title" value="${data.title||''}" placeholder="Brand Management"></div><div class="fg"><label>Icon class (Font Awesome)</label><input id="m-icon" value="${data.icon||''}" placeholder="fa-solid fa-briefcase"></div></div><div class="fg" style="margin-top:12px;"><label>Description</label><textarea id="m-desc" rows="2">${data.desc||''}</textarea></div><div class="fg" style="margin-top:12px;"><label>Tags (comma separated)</label><input id="m-tags" value="${data.tags||''}" placeholder="Identity Refresh, Creative Direction"></div>`,
-      save: async()=>{ const o={icon:document.getElementById('m-icon').value||'fa-solid fa-star',title:document.getElementById('m-title').value,desc:document.getElementById('m-desc').value,tags:document.getElementById('m-tags').value}; if(!o.title){toast('Title required','error');return;} toast('Saving...','loading'); if(data.id) await updateDoc(doc(db,'services',data.id),o); else await addDoc(collection(db,'services'),o); closeModal(); await loadServicesTable(); loadDashboard(); toast('Service saved! ✓'); }
-    },
-    artist:{
-      title: data.id?'Edit Artist':'Add Artist', icon:'fa-solid fa-music',
-      html:`<div class="tip-box"><strong>Photo URL:</strong> Upload to cloudinary.com or imgbb.com → copy URL → paste below.</div><div class="g2"><div class="fg"><label>Artist Name</label><input id="m-name" value="${data.name||''}" placeholder="GOSHEN"></div><div class="fg"><label>Photo URL</label><input id="m-img" value="${data.img||''}" placeholder="https://..."></div><div class="fg"><label>Instagram URL</label><input id="m-ig" value="${data.ig||''}" placeholder="https://instagram.com/..."></div><div class="fg"><label>Spotify URL</label><input id="m-spotify" value="${data.spotify||''}" placeholder="https://open.spotify.com/..."></div><div class="fg"><label>Audio Snippet URL (optional)</label><input id="m-audio" value="${data.audio||''}" placeholder="mp3/name.mp3 or https://..."></div></div>`,
-      save: async()=>{ const o={name:(document.getElementById('m-name').value||'').toUpperCase(),img:document.getElementById('m-img').value,ig:document.getElementById('m-ig').value||'#',spotify:document.getElementById('m-spotify').value||'#',audio:document.getElementById('m-audio').value||''}; if(!o.name){toast('Name required','error');return;} toast('Saving...','loading'); if(data.id) await updateDoc(doc(db,'artists',data.id),o); else await addDoc(collection(db,'artists'),o); closeModal(); await loadArtistsTable(); loadDashboard(); toast('Artist saved! ✓'); }
-    },
-    review:{
-      title: data.id?'Edit Review':'Add Review', icon:'fa-solid fa-quote-left',
-      html:`<div class="g1"><div class="fg"><label>Review / Quote</label><textarea id="m-quote" rows="3">${data.quote||''}</textarea></div><div class="fg"><label>Client Name</label><input id="m-client" value="${data.client||''}" placeholder="YMX"></div></div>`,
-      save: async()=>{ const o={quote:document.getElementById('m-quote').value,client:document.getElementById('m-client').value}; if(!o.quote||!o.client){toast('All fields required','error');return;} toast('Saving...','loading'); if(data.id) await updateDoc(doc(db,'reviews',data.id),o); else await addDoc(collection(db,'reviews'),o); closeModal(); await loadReviewsTable(); loadDashboard(); toast('Review saved! ✓'); }
+  auth.onAuthStateChanged(function(user){
+    if(user){
+      document.getElementById('auth-screen').style.display='none';
+      initAdmin();
+    } else {
+      document.getElementById('auth-screen').style.display='flex';
+      document.getElementById('login-btn').disabled=false;
+      document.getElementById('login-btn').innerHTML='<i class="fa-solid fa-lock-open"></i> Enter Panel';
     }
-  };
-  const cfg=cfgs[type];
-  window._modalSave=cfg.save;
-  document.getElementById('modal-container').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button><div class="modal-title"><i class="${cfg.icon}"></i> ${cfg.title}</div>${cfg.html}<div class="form-actions" style="margin-top:18px;"><button class="btn btn-gold" onclick="window._modalSave()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div></div></div>`;
-};
-window.closeModal = ()=>{ document.getElementById('modal-container').innerHTML=''; };
+  });
 
-window.editItem = async function(type,id){ const colMap={service:'services',artist:'artists',review:'reviews'}; const s=await getDoc(doc(db,colMap[type],id)); if(s.exists()) window.openModal(type,{id,...s.data()}); };
-window.delItem = async function(col,id){ if(!confirm('Delete this item? This cannot be undone.')) return; toast('Deleting...','loading'); await deleteDoc(doc(db,col,id)); if(col==='services') await loadServicesTable(); if(col==='artists') await loadArtistsTable(); if(col==='reviews') await loadReviewsTable(); loadDashboard(); toast('Deleted.'); };
+  // ── MOBILE ───────────────────────────────────────────
+  document.getElementById('mobile-menu-btn').addEventListener('click', function(){
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('active');
+  });
+  document.getElementById('sidebar-overlay').addEventListener('click', function(){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  });
+
+  // ── TABS ─────────────────────────────────────────────
+  document.querySelectorAll('.nav-item[data-tab]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var name=btn.getAttribute('data-tab');
+      document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+      document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
+      document.getElementById('tab-'+name).classList.add('active');
+      btn.classList.add('active');
+      document.getElementById('topbar-title').innerHTML=btn.textContent.trim().replace(/^\S+\s*/,'')+' <span>Editor</span>';
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('active');
+    });
+  });
+
+  // ── INIT ─────────────────────────────────────────────
+  function initAdmin(){
+    loadHeroForm(); loadAboutForm(); loadAnnouncementForm();
+    loadNewsletterForm(); loadPopupForm(); loadContactForm();
+    loadVisibility(); loadServicesTable(); loadArtistsTable(); loadReviewsTable();
+    loadDashboard();
+    watchAdminUnread();
+  }
+
+  // ── DASHBOARD ────────────────────────────────────────
+  function loadDashboard(){
+    Promise.all([fsList('artists'),fsList('reviews'),fsList('services'),fsList('nf_clients')]).then(function(r){
+      var art=r[0],rev=r[1],svc=r[2],clients=r[3];
+      document.getElementById('dash-stats').innerHTML='<div class="stat-card"><div class="s-label">Clients</div><div class="s-val">'+clients.length+'</div><div class="s-sub">Portal Accounts</div></div><div class="stat-card"><div class="s-label">Artists</div><div class="s-val">'+art.length+'</div><div class="s-sub">Hall of Fame</div></div><div class="stat-card"><div class="s-label">Services</div><div class="s-val">'+svc.length+'</div><div class="s-sub">7-Fold Package</div></div><div class="stat-card"><div class="s-label">Reviews</div><div class="s-val">'+rev.length+'</div><div class="s-sub">Testimonials</div></div>';
+      document.getElementById('dash-artists').innerHTML=art.length?art.slice(0,6).map(function(a){return '<div class="recent-item"><span style="color:#ccc;font-weight:500;">'+a.name+'</span><span class="badge badge-gold">Artist</span></div>';}).join(''):'<p style="color:#444;font-size:13px;">No artists yet.</p>';
+      document.getElementById('dash-reviews').innerHTML=rev.length?rev.slice(0,5).map(function(r){return '<div class="recent-item"><span style="color:#ccc;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">"'+r.quote.substring(0,45)+'..."</span><span style="color:#444;font-size:12px;">— '+r.client+'</span></div>';}).join(''):'<p style="color:#444;font-size:13px;">No reviews yet.</p>';
+    });
+  }
+
+  // ── HERO ─────────────────────────────────────────────
+  function loadHeroForm(){ fsGet('site/hero').then(function(d){ d=d||{}; document.getElementById('hero-h1').value=d.h1||''; document.getElementById('hero-h2').value=d.h2||''; document.getElementById('hero-sub').value=d.sub||''; document.getElementById('hero-bg').value=d.bg||''; document.getElementById('s1n').value=d.s1n||''; document.getElementById('s1l').value=d.s1l||''; document.getElementById('s2n').value=d.s2n||''; document.getElementById('s2l').value=d.s2l||''; document.getElementById('s3n').value=d.s3n||''; document.getElementById('s3l').value=d.s3l||''; }); }
+  document.getElementById('save-hero').addEventListener('click', function(){ toast('Saving...','loading'); fsSet('site/hero',{h1:document.getElementById('hero-h1').value,h2:document.getElementById('hero-h2').value,sub:document.getElementById('hero-sub').value,bg:document.getElementById('hero-bg').value,s1n:document.getElementById('s1n').value,s1l:document.getElementById('s1l').value,s2n:document.getElementById('s2n').value,s2l:document.getElementById('s2l').value,s3n:document.getElementById('s3n').value,s3l:document.getElementById('s3l').value}).then(function(){ toast('Hero published! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); }); });
+  document.getElementById('reload-hero').addEventListener('click', loadHeroForm);
+
+  // ── ABOUT ────────────────────────────────────────────
+  function loadAboutForm(){ fsGet('site/about').then(function(d){ d=d||{}; document.getElementById('about-mission').value=d.mission||''; document.getElementById('about-vision').value=d.vision||''; document.getElementById('about-who').value=d.who||''; }); }
+  document.getElementById('save-about').addEventListener('click', function(){ toast('Saving...','loading'); fsSet('site/about',{mission:document.getElementById('about-mission').value,vision:document.getElementById('about-vision').value,who:document.getElementById('about-who').value}).then(function(){ toast('About published! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); }); });
+  document.getElementById('reload-about').addEventListener('click', loadAboutForm);
+
+  // ── SERVICES ─────────────────────────────────────────
+  function loadServicesTable(){ fsList('services').then(function(items){ var el=document.getElementById('services-list'); if(!items.length){el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No services yet.</p>';return;} el.innerHTML='<table><thead><tr><th>Icon</th><th>Title</th><th>Description</th><th>Actions</th></tr></thead><tbody>'+items.map(function(s){return '<tr><td><i class="'+s.icon+'" style="color:var(--gold);font-size:18px;"></i></td><td style="font-weight:600;color:#ddd;">'+s.title+'</td><td style="font-size:12px;color:#666;max-width:180px;">'+(s.desc||'').substring(0,50)+'…</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editItem(\'service\',\''+s.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delItem(\'services\',\''+s.id+'\')"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+'</tbody></table>'; }); }
+  document.getElementById('add-service').addEventListener('click', function(){ openModal('service',{}); });
+
+  // ── ARTISTS ──────────────────────────────────────────
+  function loadArtistsTable(){ fsList('artists').then(function(items){ var el=document.getElementById('artists-list'); if(!items.length){el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No artists yet.</p>';return;} el.innerHTML='<table><thead><tr><th>Photo</th><th>Name</th><th>IG</th><th>Spotify</th><th>Actions</th></tr></thead><tbody>'+items.map(function(a){return '<tr><td><img class="td-img" src="'+a.img+'" onerror="this.src=\'\'"></td><td style="font-weight:700;color:var(--gold);">'+a.name+'</td><td>'+(a.ig&&a.ig!='#'?'<span class="badge badge-green">✓</span>':'<span class="badge badge-gray">—</span>')+'</td><td>'+(a.spotify&&a.spotify!='#'?'<span class="badge badge-green">✓</span>':'<span class="badge badge-gray">—</span>')+'</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editItem(\'artist\',\''+a.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delItem(\'artists\',\''+a.id+'\')"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+'</tbody></table>'; }); }
+  document.getElementById('add-artist').addEventListener('click', function(){ openModal('artist',{}); });
+
+  // ── REVIEWS ──────────────────────────────────────────
+  function loadReviewsTable(){ fsList('reviews').then(function(items){ var el=document.getElementById('reviews-list'); if(!items.length){el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No reviews yet.</p>';return;} el.innerHTML='<table><thead><tr><th>Quote</th><th>Client</th><th>Actions</th></tr></thead><tbody>'+items.map(function(r){return '<tr><td style="max-width:240px;color:#ccc;">"'+r.quote.substring(0,60)+(r.quote.length>60?'…':'')+'"</td><td style="color:var(--gold);font-weight:600;">— '+r.client+'</td><td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editItem(\'review\',\''+r.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="delItem(\'reviews\',\''+r.id+'\')"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+'</tbody></table>'; }); }
+  document.getElementById('add-review').addEventListener('click', function(){ openModal('review',{}); });
+
+  // ── ANNOUNCEMENT ─────────────────────────────────────
+  function loadAnnouncementForm(){ fsGet('site/announcement').then(function(d){ d=d||{}; document.getElementById('ann-badge').value=d.badge||''; document.getElementById('ann-title').value=d.title||''; document.getElementById('ann-body').value=d.body||''; document.getElementById('ann-features').value=d.features||''; document.getElementById('ann-link-text').value=d.linkText||''; document.getElementById('ann-link-url').value=d.linkUrl||''; }); }
+  document.getElementById('save-ann').addEventListener('click', function(){ toast('Saving...','loading'); fsSet('site/announcement',{badge:document.getElementById('ann-badge').value,title:document.getElementById('ann-title').value,body:document.getElementById('ann-body').value,features:document.getElementById('ann-features').value,linkText:document.getElementById('ann-link-text').value,linkUrl:document.getElementById('ann-link-url').value}).then(function(){ toast('Announcement published! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); }); });
+  document.getElementById('reload-ann').addEventListener('click', loadAnnouncementForm);
+
+  // ── NEWSLETTER ───────────────────────────────────────
+  function loadNewsletterForm(){ fsGet('site/newsletter').then(function(d){ d=d||{}; document.getElementById('nl-img1').value=d.img1||''; document.getElementById('nl-img2').value=d.img2||''; document.getElementById('nl-img3').value=d.img3||''; }); }
+  document.getElementById('save-nl').addEventListener('click', function(){ toast('Saving...','loading'); fsSet('site/newsletter',{img1:document.getElementById('nl-img1').value,img2:document.getElementById('nl-img2').value,img3:document.getElementById('nl-img3').value}).then(function(){ toast('Newsletter saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); }); });
+
+  // ── POPUP ────────────────────────────────────────────
+  function loadPopupForm(){ fsGet('site/popup').then(function(d){ d=d||{}; document.getElementById('popup-img').value=d.img||''; document.getElementById('popup-ttl').value=d.title||''; document.getElementById('popup-sub').value=d.sub||''; document.getElementById('popup-lnk').value=d.link||''; document.getElementById('popup-on').checked=d.enabled!==false; updatePopupPrev(); }); }
+  function updatePopupPrev(){ document.getElementById('popup-prev-img').src=document.getElementById('popup-img').value; document.getElementById('popup-prev-ttl').textContent=document.getElementById('popup-ttl').value; document.getElementById('popup-prev-sub').textContent=document.getElementById('popup-sub').value; }
+  document.getElementById('popup-img').addEventListener('input', updatePopupPrev);
+  document.getElementById('popup-ttl').addEventListener('input', updatePopupPrev);
+  document.getElementById('popup-sub').addEventListener('input', updatePopupPrev);
+  document.getElementById('save-popup').addEventListener('click', function(){ toast('Saving...','loading'); fsSet('site/popup',{img:document.getElementById('popup-img').value,title:document.getElementById('popup-ttl').value,sub:document.getElementById('popup-sub').value,link:document.getElementById('popup-lnk').value,enabled:document.getElementById('popup-on').checked}).then(function(){ toast('Popup saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); }); });
+
+  // ── CONTACT ──────────────────────────────────────────
+  function loadContactForm(){ fsGet('site/contact').then(function(d){ d=d||{}; document.getElementById('c-email').value=d.email||''; document.getElementById('c-phone').value=d.phone||''; document.getElementById('c-location').value=d.location||''; document.getElementById('s-fb').value=d.fb||''; document.getElementById('s-tw').value=d.tw||''; document.getElementById('s-ig').value=d.ig||''; document.getElementById('s-li').value=d.li||''; }); }
+  document.getElementById('save-contact').addEventListener('click', function(){ toast('Saving...','loading'); fsSet('site/contact',{email:document.getElementById('c-email').value,phone:document.getElementById('c-phone').value,location:document.getElementById('c-location').value,fb:document.getElementById('s-fb').value,tw:document.getElementById('s-tw').value,ig:document.getElementById('s-ig').value,li:document.getElementById('s-li').value}).then(function(){ toast('Contact saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); }); });
+
+  // ── VISIBILITY ───────────────────────────────────────
+  function loadVisibility(){ fsGet('site/visibility').then(function(d){ d=d||{}; ['hero','about','services','showcase','announcements','hall','reviews','contact'].forEach(function(k){ var el=document.getElementById('vis-'+k); if(el) el.checked=d[k]!==false; }); }); }
+  document.getElementById('save-vis').addEventListener('click', function(){
+    var keys=['hero','about','services','showcase','announcements','hall','reviews','contact'];
+    var obj={};
+    keys.forEach(function(k){ var el=document.getElementById('vis-'+k); if(el) obj[k]=el.checked; });
+    toast('Saving...','loading');
+    fsSet('site/visibility',obj).then(function(){ toast('Visibility saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+  });
+
+  // ── MODAL ────────────────────────────────────────────
+  function openModal(type, data){
+    var configs = {
+      service:{
+        title: data.id?'Edit Service':'Add Service', icon:'fa-solid fa-briefcase',
+        html: '<div class="g2"><div class="fg"><label>Service Title</label><input id="m-title" value="'+(data.title||'')+'" placeholder="Brand Management"></div><div class="fg"><label>Font Awesome Icon class</label><input id="m-icon" value="'+(data.icon||'')+'" placeholder="fa-solid fa-briefcase"></div></div><div class="fg" style="margin-top:12px;"><label>Description</label><textarea id="m-desc" rows="2">'+(data.desc||'')+'</textarea></div><div class="fg" style="margin-top:12px;"><label>Tags (comma separated)</label><input id="m-tags" value="'+(data.tags||'')+'" placeholder="Identity Refresh, Creative Direction"></div>',
+        save: function(){
+          var o={icon:document.getElementById('m-icon').value||'fa-solid fa-star',title:document.getElementById('m-title').value,desc:document.getElementById('m-desc').value,tags:document.getElementById('m-tags').value};
+          if(!o.title){toast('Title required','error');return;}
+          toast('Saving...','loading');
+          var p = data.id ? db.collection('services').doc(data.id).update(o) : db.collection('services').add(o);
+          p.then(function(){ closeModal(); loadServicesTable(); loadDashboard(); toast('Service saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+        }
+      },
+      artist:{
+        title: data.id?'Edit Artist':'Add Artist', icon:'fa-solid fa-music',
+        html: '<div class="tip-box"><strong>Photo URL:</strong> Upload to cloudinary.com or imgbb.com → copy URL → paste below.</div><div class="g2"><div class="fg"><label>Artist Name</label><input id="m-name" value="'+(data.name||'')+'" placeholder="GOSHEN"></div><div class="fg"><label>Photo URL</label><input id="m-img" value="'+(data.img||'')+'" placeholder="https://..."></div><div class="fg"><label>Instagram URL</label><input id="m-ig" value="'+(data.ig||'')+'" placeholder="https://instagram.com/..."></div><div class="fg"><label>Spotify URL</label><input id="m-spotify" value="'+(data.spotify||'')+'" placeholder="https://open.spotify.com/..."></div><div class="fg"><label>Audio Snippet URL (optional)</label><input id="m-audio" value="'+(data.audio||'')+'" placeholder="mp3/name.mp3"></div></div>',
+        save: function(){
+          var o={name:(document.getElementById('m-name').value||'').toUpperCase(),img:document.getElementById('m-img').value,ig:document.getElementById('m-ig').value||'#',spotify:document.getElementById('m-spotify').value||'#',audio:document.getElementById('m-audio').value||''};
+          if(!o.name){toast('Name required','error');return;}
+          toast('Saving...','loading');
+          var p = data.id ? db.collection('artists').doc(data.id).update(o) : db.collection('artists').add(o);
+          p.then(function(){ closeModal(); loadArtistsTable(); loadDashboard(); toast('Artist saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+        }
+      },
+      review:{
+        title: data.id?'Edit Review':'Add Review', icon:'fa-solid fa-quote-left',
+        html: '<div class="g1"><div class="fg"><label>Review / Quote</label><textarea id="m-quote" rows="3">'+(data.quote||'')+'</textarea></div><div class="fg"><label>Client Name</label><input id="m-client" value="'+(data.client||'')+'" placeholder="YMX"></div></div>',
+        save: function(){
+          var o={quote:document.getElementById('m-quote').value,client:document.getElementById('m-client').value};
+          if(!o.quote||!o.client){toast('All fields required','error');return;}
+          toast('Saving...','loading');
+          var p = data.id ? db.collection('reviews').doc(data.id).update(o) : db.collection('reviews').add(o);
+          p.then(function(){ closeModal(); loadReviewsTable(); loadDashboard(); toast('Review saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+        }
+      }
+    };
+    var cfg = configs[type];
+    window._modalSave = cfg.save;
+    document.getElementById('modal-container').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button><div class="modal-title"><i class="'+cfg.icon+'"></i> '+cfg.title+'</div>'+cfg.html+'<div class="form-actions" style="margin-top:18px;"><button class="btn btn-gold" onclick="window._modalSave()"><i class="fa-solid fa-floppy-disk"></i> Save & Publish</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div></div></div>';
+  }
+  function closeModal(){ document.getElementById('modal-container').innerHTML=''; }
+  window.openModal=openModal; window.closeModal=closeModal;
+
+  function editItem(type, id){
+    var colMap={service:'services',artist:'artists',review:'reviews'};
+    db.collection(colMap[type]).doc(id).get().then(function(s){
+      if(s.exists) openModal(type, Object.assign({id:id}, s.data()));
+    });
+  }
+  function delItem(col, id){
+    if(!confirm('Delete this item? This cannot be undone.')) return;
+    toast('Deleting...','loading');
+    db.collection(col).doc(id).delete().then(function(){
+      if(col==='services') loadServicesTable();
+      if(col==='artists') loadArtistsTable();
+      if(col==='reviews') loadReviewsTable();
+      loadDashboard(); toast('Deleted.');
+    });
+  }
+  window.editItem=editItem; window.delItem=delItem;
+
+  // ══════════════════════════════════════════════
+  //  CLIENT PORTAL MANAGEMENT
+  // ══════════════════════════════════════════════
+  var selectedClientId = null;
+  var selectedClientName = '';
+  var adminMsgUnsubscribe = null;
+
+  // ── CLIENT LIST ─────────────────────────────
+  function loadClientsTable(){
+    db.collection('nf_clients').get().then(function(snap){
+      var items = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      var el = document.getElementById('clients-list');
+      if(!items.length){ el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No clients yet. Add your first client.</p>'; return; }
+      el.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Actions</th></tr></thead><tbody>'+
+        items.map(function(c){
+          return '<tr><td style="font-weight:600;color:#ddd;">'+c.name+'</td><td style="color:#888;">'+c.email+'</td>'+
+            '<td><span class="badge badge-gold">'+c.type+'</span></td>'+
+            '<td class="td-act">'+
+            '<button class="btn btn-ghost btn-xs" onclick="openClientDetail(''+c.id+'',''+c.name+'',''+c.type+'')"><i class="fa-solid fa-folder-open"></i> Manage</button>'+
+            '<button class="btn btn-ghost btn-xs" onclick="editClient(''+c.id+'')"><i class="fa-solid fa-pen"></i></button>'+
+            '<button class="btn btn-red btn-xs" onclick="deleteClient(''+c.id+'')"><i class="fa-solid fa-trash"></i></button>'+
+            '</td></tr>';
+        }).join('')+'</tbody></table>';
+    });
+  }
+
+  document.getElementById('add-client-btn').addEventListener('click', function(){ openClientModal({}); });
+
+  // ── CLIENT SEARCH ────────────────────────
+  var _allClients = [];
+  var _origLoadClients = loadClientsTable;
+  loadClientsTable = function(){
+    db.collection('nf_clients').get().then(function(snap){
+      _allClients = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      renderClientsTable(_allClients);
+    });
+  };
+  function renderClientsTable(items){
+    var el = document.getElementById('clients-list');
+    if(!items.length){ el.innerHTML='<p style="padding:20px;color:#444;font-size:13px;">No clients found.</p>'; return; }
+    el.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Phone</th><th>Actions</th></tr></thead><tbody>'+
+      items.map(function(c){
+        return '<tr><td style="font-weight:600;color:#ddd;">'+c.name+'</td><td style="color:#888;">'+c.email+'</td>'+
+          '<td><span class="badge badge-gold">'+c.type+'</span></td>'+
+          '<td style="color:#666;">'+( c.phone||'—')+'</td>'+
+          '<td class="td-act">'+
+          '<button class="btn btn-ghost btn-xs" onclick="openClientDetail(''+c.id+'',''+c.name+'',''+c.type+'')"><i class="fa-solid fa-folder-open"></i> Manage</button>'+
+          '<button class="btn btn-ghost btn-xs" onclick="editClient(''+c.id+'')"><i class="fa-solid fa-pen"></i></button>'+
+          '<button class="btn btn-red btn-xs" onclick="deleteClient(''+c.id+'')"><i class="fa-solid fa-trash"></i></button>'+
+          '</td></tr>';
+      }).join('')+'</tbody></table>';
+  }
+  window.filterClients = function(){
+    var q = document.getElementById('client-search').value.toLowerCase();
+    var filtered = _allClients.filter(function(c){ return (c.name||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q)||(c.type||'').toLowerCase().includes(q); });
+    renderClientsTable(filtered);
+  };
+
+  // ── CLIENT QUICK STATS ───────────────────
+  function loadClientQuickStats(){
+    Promise.all([
+      db.collection('nf_releases').where('clientUid','==',selectedClientId).get(),
+      db.collection('nf_campaigns').where('clientUid','==',selectedClientId).get(),
+      db.collection('nf_invoices').where('clientUid','==',selectedClientId).where('status','==','pending').get(),
+      db.collection('nf_messages').where('clientUid','==',selectedClientId).where('from','==','client').where('read','==',false).get()
+    ]).then(function(r){
+      var qs = document.getElementById('client-quick-stats');
+      if(!qs) return;
+      qs.innerHTML=
+        '<div class="stat-card" style="padding:14px;"><div class="s-label">Releases</div><div class="s-val" style="font-size:22px;">'+r[0].size+'</div></div>'+
+        '<div class="stat-card" style="padding:14px;"><div class="s-label">Campaigns</div><div class="s-val" style="font-size:22px;">'+r[1].size+'</div></div>'+
+        '<div class="stat-card" style="padding:14px;"><div class="s-label">Pending Invoices</div><div class="s-val" style="font-size:22px;">'+r[2].size+'</div></div>'+
+        '<div class="stat-card" style="padding:14px;"><div class="s-label">Unread Messages</div><div class="s-val" style="font-size:22px;'+(r[3].size>0?'color:var(--danger)':'')+'">'+r[3].size+'</div></div>';
+    });
+  }
+
+  function openClientModal(data){
+    window._clientSave = function(){
+      var name  = document.getElementById('cm-name').value.trim();
+      var email = document.getElementById('cm-email').value.trim();
+      var type  = document.getElementById('cm-type').value;
+      var phone = document.getElementById('cm-phone').value.trim();
+      var uid   = document.getElementById('cm-uid').value.trim();
+      if(!name||!email){ toast('Name and email required','error'); return; }
+      toast('Saving...','loading');
+      var obj = {name:name,email:email,type:type,phone:phone};
+      var p = data.id ? db.collection('nf_clients').doc(data.id).set(obj,{merge:true}) : db.collection('nf_clients').doc(uid||email.replace(/[^a-z0-9]/gi,'_')).set(obj);
+      p.then(function(){ closeModal(); loadClientsTable(); toast('Client saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+    };
+    document.getElementById('modal-container').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box">'+
+      '<button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>'+
+      '<div class="modal-title"><i class="fa-solid fa-user-plus"></i> '+(data.id?'Edit Client':'Add Client')+'</div>'+
+      '<div class="g2">'+
+      '<div class="fg"><label>Full Name</label><input id="cm-name" value="'+(data.name||'')+'" placeholder="GOSHEN"></div>'+
+      '<div class="fg"><label>Email</label><input id="cm-email" type="email" value="'+(data.email||'')+'" placeholder="client@email.com"></div>'+
+      '<div class="fg"><label>Type</label><select id="cm-type"><option value="Artist" '+(data.type==='Artist'?'selected':'')+'>Artist</option><option value="Brand" '+(data.type==='Brand'?'selected':'')+'>Brand</option><option value="Client" '+(data.type==='Client'||!data.type?'selected':'')+'>Client</option></select></div>'+
+      '<div class="fg"><label>Phone</label><input id="cm-phone" value="'+(data.phone||'')+'" placeholder="+234..."></div>'+
+      '</div>'+
+      (data.id?'':
+      '<div class="fg" style="margin-top:10px;"><label>Firebase Auth UID <span style="color:#555;font-weight:400;">(from Firebase Console → Auth)</span></label>'+
+      '<input id="cm-uid" placeholder="Paste UID here (or leave blank to use email as ID)"></div>')+
+      '<div class="tip-box" style="margin-top:12px;"><strong>💡 Setup:</strong> First create this user in <strong>Firebase Console → Authentication → Add User</strong>, then add them here. The UID must match their Auth UID.</div>'+
+      '<div class="form-actions" style="margin-top:16px;"><button class="btn btn-gold" onclick="window._clientSave()"><i class="fa-solid fa-floppy-disk"></i> Save Client</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>'+
+      '</div></div>';
+  }
+
+  function editClient(id){
+    db.collection('nf_clients').doc(id).get().then(function(s){
+      if(s.exists) openClientModal(Object.assign({id:id},s.data()));
+    });
+  }
+  function deleteClient(id){
+    if(!confirm('Delete this client and all their data? This cannot be undone.')) return;
+    var batch = db.batch();
+    // Delete client doc
+    batch.delete(db.collection('nf_clients').doc(id));
+    batch.commit().then(function(){ loadClientsTable(); toast('Client deleted.'); });
+  }
+  window.openClientDetail=openClientDetail; window.editClient=editClient; window.deleteClient=deleteClient;
+
+  // ── CLIENT DETAIL ────────────────────────────
+  function openClientDetail(id, name, type){
+    selectedClientId = id; selectedClientName = name;
+    document.getElementById('clients-section').style.display='none';
+    document.getElementById('client-detail').style.display='block';
+    document.getElementById('detail-client-name').textContent = name;
+    document.getElementById('detail-client-type').textContent = type;
+    loadClientQuickStats();
+    // Reset sub-tabs
+    switchSubTab('releases');
+    loadReleasesAdmin(); loadCampaignsAdmin(); loadFilesAdmin(); loadInvoicesAdmin();
+  }
+
+  document.getElementById('back-to-clients').addEventListener('click', function(){
+    document.getElementById('client-detail').style.display='none';
+    document.getElementById('clients-section').style.display='block';
+    if(adminMsgUnsubscribe){ adminMsgUnsubscribe(); adminMsgUnsubscribe=null; }
+    selectedClientId=null;
+  });
+
+  // Sub-tab switching
+  document.getElementById('client-sub-tabs').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-sub]'); if(!btn) return;
+    document.querySelectorAll('[data-sub]').forEach(function(b){ b.classList.remove('btn-gold','active-sub'); b.classList.add('btn-ghost'); });
+    btn.classList.add('btn-gold','active-sub'); btn.classList.remove('btn-ghost');
+    switchSubTab(btn.getAttribute('data-sub'));
+  });
+  function switchSubTab(name){
+    ['releases','campaigns','messages','files','invoices'].forEach(function(s){ document.getElementById('sub-'+s).style.display=s===name?'block':'none'; });
+    if(name==='messages') loadAdminMessages();
+  }
+
+  // ── RELEASES (admin) ─────────────────────────
+  function loadReleasesAdmin(){
+    db.collection('nf_releases').where('clientUid','==',selectedClientId).get().then(function(snap){
+      var items = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      var el = document.getElementById('releases-admin-list');
+      if(!items.length){ el.innerHTML='<p style="padding:16px;color:#444;font-size:13px;">No releases yet.</p>'; return; }
+      var totalRoyalties = items.reduce(function(sum,r){ return sum+(parseFloat(r.royalties)||0); },0);
+      el.innerHTML='<div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;color:#666;">Total Royalties Tracked: <strong style="color:var(--gold);">₦'+totalRoyalties.toLocaleString()+'</strong></div>'+
+        '<table><thead><tr><th>Title</th><th>Artist</th><th>Status</th><th>Platforms</th><th>Royalties</th><th>Actions</th></tr></thead><tbody>'+
+        items.map(function(r){
+          return '<tr><td style="font-weight:600;color:#ddd;">'+r.title+'</td><td style="color:#888;">'+r.artist+'</td>'+
+            '<td><span class="badge '+(r.status==='active'?'badge-green':'badge-gold')+'">'+r.status+'</span></td>'+
+            '<td style="font-size:12px;color:#666;">'+(Object.keys(r.platforms||{}).join(', ')||'—')+'</td>'+
+            '<td style="color:var(--gold);">'+(r.royalties?'₦'+Number(r.royalties).toLocaleString():'—')+'</td>'+
+            '<td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editRelease(''+r.id+'')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="deleteDoc('nf_releases',''+r.id+'',loadReleasesAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';
+        }).join('')+'</tbody></table>';
+    });
+  }
+  document.getElementById('add-release-btn').addEventListener('click', function(){ openReleaseModal({}); });
+  function openReleaseModal(data){
+    window._releaseSave = function(){
+      var platforms = {};
+      document.querySelectorAll('.platform-check:checked').forEach(function(cb){ platforms[cb.value]=document.getElementById('ps-'+cb.value).value||'pending'; });
+      var obj={clientUid:selectedClientId,title:document.getElementById('r-title').value,artist:document.getElementById('r-artist').value,type:document.getElementById('r-type').value,status:document.getElementById('r-status').value,royalties:document.getElementById('r-royalties').value||0,cover:document.getElementById('r-cover').value,releaseDate:document.getElementById('r-date').value?firebase.firestore.Timestamp.fromDate(new Date(document.getElementById('r-date').value)):null,platforms:platforms};
+      if(!obj.title){ toast('Title required','error'); return; }
+      toast('Saving...','loading');
+      var p = data.id ? db.collection('nf_releases').doc(data.id).set(obj,{merge:true}) : db.collection('nf_releases').add(obj);
+      p.then(function(){ closeModal(); loadReleasesAdmin(); toast('Release saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+    };
+    var plats=['Spotify','Apple','YouTube','Boomplay','Tidal','Deezer','Amazon','Audiomack'];
+    var existingP = data.platforms||{};
+    document.getElementById('modal-container').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box" style="max-width:600px;">'+
+      '<button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>'+
+      '<div class="modal-title"><i class="fa-solid fa-compact-disc"></i> '+(data.id?'Edit Release':'Add Release')+'</div>'+
+      '<div class="g2">'+
+      '<div class="fg"><label>Release Title</label><input id="r-title" value="'+(data.title||'')+'" placeholder="My Single"></div>'+
+      '<div class="fg"><label>Artist Name</label><input id="r-artist" value="'+(data.artist||selectedClientName)+'" placeholder="Artist"></div>'+
+      '<div class="fg"><label>Release Type</label><select id="r-type"><option '+(data.type==='Single'?'selected':'')+'>Single</option><option '+(data.type==='EP'?'selected':'')+'>EP</option><option '+(data.type==='Album'?'selected':'')+'>Album</option></select></div>'+
+      '<div class="fg"><label>Status</label><select id="r-status"><option value="pending" '+(data.status==='pending'?'selected':'')+'>Pending</option><option value="active" '+(data.status==='active'?'selected':'')+'>Live</option><option value="rejected" '+(data.status==='rejected'?'selected':'')+'>Rejected</option></select></div>'+
+      '<div class="fg"><label>Release Date</label><input type="date" id="r-date" value="'+(data.releaseDate&&data.releaseDate.toDate?data.releaseDate.toDate().toISOString().split('T')[0]:data.releaseDate||'')+'"></div>'+
+      '<div class="fg"><label>Royalties (₦)</label><input type="number" id="r-royalties" value="'+(data.royalties||0)+'"></div>'+
+      '</div>'+
+      '<div class="fg" style="margin-top:12px;"><label>Cover Art URL</label><input id="r-cover" value="'+(data.cover||'')+'" placeholder="https://..."></div>'+
+      '<div class="fg" style="margin-top:12px;"><label>Platforms & Status</label>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">'+
+      plats.map(function(p){ var pk=p.toLowerCase(); return '<div style="display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;">'+
+        '<input type="checkbox" class="platform-check" value="'+pk+'" id="pc-'+pk+'" '+(existingP[pk]?'checked':'')+'>'+
+        '<label for="pc-'+pk+'" style="font-size:12px;color:#bbb;flex:1;">'+p+'</label>'+
+        '<select id="ps-'+pk+'" style="background:#111;border:1px solid var(--border);border-radius:4px;color:#fff;padding:3px 6px;font-size:11px;width:70px;">'+
+        '<option value="pending" '+(existingP[pk]==='pending'||!existingP[pk]?'selected':'')+'>Pending</option>'+
+        '<option value="live" '+(existingP[pk]==='live'?'selected':'')+'>Live</option>'+
+        '<option value="rejected" '+(existingP[pk]==='rejected'?'selected':'')+'>Rejected</option>'+
+        '</select></div>'; }).join('')+
+      '</div></div>'+
+      '<div class="form-actions" style="margin-top:16px;"><button class="btn btn-gold" onclick="window._releaseSave()"><i class="fa-solid fa-floppy-disk"></i> Save Release</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>'+
+      '</div></div>';
+  }
+  function editRelease(id){ db.collection('nf_releases').doc(id).get().then(function(s){ if(s.exists) openReleaseModal(Object.assign({id:id},s.data())); }); }
+  window.editRelease=editRelease;
+
+  // ── CAMPAIGNS (admin) ────────────────────────
+  function loadCampaignsAdmin(){
+    db.collection('nf_campaigns').where('clientUid','==',selectedClientId).get().then(function(snap){
+      var items = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      var el = document.getElementById('campaigns-admin-list');
+      if(!items.length){ el.innerHTML='<p style="padding:16px;color:#444;font-size:13px;">No campaigns yet.</p>'; return; }
+      el.innerHTML='<table><thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Progress</th><th>Actions</th></tr></thead><tbody>'+
+        items.map(function(c){
+          var ms=c.milestones||[], done=ms.filter(function(m){return m.done;}).length;
+          return '<tr><td style="font-weight:600;color:#ddd;">'+c.title+'</td><td style="color:#888;">'+c.type+'</td>'+
+            '<td><span class="badge badge-gold">'+c.status+'</span></td>'+
+            '<td style="font-size:12px;color:#666;">'+done+'/'+ms.length+' milestones</td>'+
+            '<td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editCampaign(''+c.id+'')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="deleteDoc('nf_campaigns',''+c.id+'',loadCampaignsAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';
+        }).join('')+'</tbody></table>';
+    });
+  }
+  document.getElementById('add-campaign-btn').addEventListener('click', function(){ openCampaignModal({}); });
+  function openCampaignModal(data){
+    var ms = data.milestones || [];
+    window._campaignSave = function(){
+      var msInputs = document.querySelectorAll('.ms-inp');
+      var msDone   = document.querySelectorAll('.ms-done');
+      var milestones = Array.from(msInputs).map(function(inp,i){ return {title:inp.value,done:msDone[i].checked}; }).filter(function(m){return m.title;});
+      var obj={clientUid:selectedClientId,title:document.getElementById('c-title').value,type:document.getElementById('c-type').value,status:document.getElementById('c-status').value,budget:document.getElementById('c-budget').value||0,startDate:document.getElementById('c-start').value?firebase.firestore.Timestamp.fromDate(new Date(document.getElementById('c-start').value)):null,milestones:milestones};
+      if(!obj.title){ toast('Title required','error'); return; }
+      toast('Saving...','loading');
+      var p = data.id ? db.collection('nf_campaigns').doc(data.id).set(obj,{merge:true}) : db.collection('nf_campaigns').add(obj);
+      p.then(function(){ closeModal(); loadCampaignsAdmin(); toast('Campaign saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+    };
+    document.getElementById('modal-container').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box" style="max-width:600px;">'+
+      '<button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>'+
+      '<div class="modal-title"><i class="fa-solid fa-rocket"></i> '+(data.id?'Edit Campaign':'Add Campaign')+'</div>'+
+      '<div class="g2">'+
+      '<div class="fg"><label>Campaign Title</label><input id="c-title" value="'+(data.title||'')+'" placeholder="Brand Launch 2026"></div>'+
+      '<div class="fg"><label>Type</label><select id="c-type"><option '+(data.type==='Brand Marketing'?'selected':'')+'>Brand Marketing</option><option '+(data.type==='Music Distribution'?'selected':'')+'>Music Distribution</option><option '+(data.type==='Social Media'?'selected':'')+'>Social Media</option><option '+(data.type==='PR'?'selected':'')+'>PR</option><option '+(data.type==='Event'?'selected':'')+'>Event</option></select></div>'+
+      '<div class="fg"><label>Status</label><select id="c-status"><option value="pending" '+(data.status==='pending'?'selected':'')+'>Pending</option><option value="active" '+(data.status==='active'?'selected':'')+'>Active</option><option value="completed" '+(data.status==='completed'?'selected':'')+'>Completed</option><option value="paused" '+(data.status==='paused'?'selected':'')+'>Paused</option></select></div>'+
+      '<div class="fg"><label>Budget (₦)</label><input type="number" id="c-budget" value="'+(data.budget||0)+'"></div>'+
+      '<div class="fg"><label>Start Date</label><input type="date" id="c-start" value="'+(data.startDate&&data.startDate.toDate?data.startDate.toDate().toISOString().split('T')[0]:data.startDate||'')+'"></div>'+
+      '</div>'+
+      '<div class="fg" style="margin-top:12px;"><label>Milestones</label>'+
+      '<div id="ms-list">'+ms.map(function(m){ return '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><input type="checkbox" class="ms-done" '+(m.done?'checked':'')+' style="width:auto;"><input class="ms-inp" value="'+m.title+'" placeholder="Milestone..." style="flex:1;"></div>'; }).join('')+
+      '</div>'+
+      '<button type="button" onclick="document.getElementById('ms-list').insertAdjacentHTML('beforeend','<div style=\"display:flex;align-items:center;gap:8px;margin-top:6px;\"><input type=\"checkbox\" class=\"ms-done\" style=\"width:auto;\"><input class=\"ms-inp\" placeholder=\"Milestone...\" style=\"flex:1;\"></div>')" class="btn btn-ghost btn-sm" style="margin-top:8px;"><i class="fa-solid fa-plus"></i> Add Milestone</button>'+
+      '</div>'+
+      '<div class="form-actions" style="margin-top:16px;"><button class="btn btn-gold" onclick="window._campaignSave()"><i class="fa-solid fa-floppy-disk"></i> Save Campaign</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>'+
+      '</div></div>';
+  }
+  function editCampaign(id){ db.collection('nf_campaigns').doc(id).get().then(function(s){ if(s.exists) openCampaignModal(Object.assign({id:id},s.data())); }); }
+  window.editCampaign=editCampaign;
+
+  // ── MESSAGES (admin) ─────────────────────────
+  function loadAdminMessages(){
+    if(adminMsgUnsubscribe){ adminMsgUnsubscribe(); }
+    var listEl = document.getElementById('admin-msgs-list');
+    listEl.innerHTML='<div style="text-align:center;padding:20px;color:#444;"><span class="spinner"></span></div>';
+    // Mark client msgs as read
+    db.collection('nf_messages').where('clientUid','==',selectedClientId).where('from','==','client').where('read','==',false).get().then(function(snap){ snap.docs.forEach(function(d){ d.ref.update({read:true}); }); });
+    adminMsgUnsubscribe = db.collection('nf_messages').where('clientUid','==',selectedClientId).orderBy('timestamp','asc').onSnapshot(function(snap){
+      var msgs = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      if(!msgs.length){ listEl.innerHTML='<p style="color:#444;font-size:13px;text-align:center;padding:20px;">No messages yet.</p>'; return; }
+      listEl.innerHTML = msgs.map(function(m){
+        var isAdmin = m.from==='admin';
+        var ts = m.timestamp ? (m.timestamp.toDate?m.timestamp.toDate():new Date(m.timestamp)) : new Date();
+        var time = ts.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+        return '<div style="display:flex;flex-direction:column;align-items:'+(isAdmin?'flex-end':'flex-start')+';">'+
+          '<div style="background:'+(isAdmin?'rgba(245,176,65,.1)':'var(--card2)')+';border:1px solid '+(isAdmin?'rgba(245,176,65,.2)':'var(--border)')+';border-radius:10px;padding:10px 14px;max-width:80%;font-size:13px;color:#ddd;">'+escHtml(m.text)+'</div>'+
+          '<div style="font-size:11px;color:#444;margin-top:3px;">'+(isAdmin?'You':'Client')+' · '+time+'</div></div>';
+      }).join('');
+      listEl.scrollTop = listEl.scrollHeight;
+    });
+    document.getElementById('admin-msg-send').onclick = function(){
+      var text = document.getElementById('admin-msg-input').value.trim();
+      if(!text) return;
+      document.getElementById('admin-msg-input').value='';
+      db.collection('nf_messages').add({clientUid:selectedClientId,text:text,from:'admin',read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    };
+    document.getElementById('admin-msg-input').onkeydown = function(e){ if(e.key==='Enter') document.getElementById('admin-msg-send').click(); };
+  }
+
+  // ── FILES (admin) ────────────────────────────
+  function loadFilesAdmin(){
+    db.collection('nf_files').where('clientUid','==',selectedClientId).orderBy('uploadDate','desc').get().then(function(snap){
+      var items = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      var el = document.getElementById('files-admin-list');
+      if(!items.length){ el.innerHTML='<p style="color:#444;font-size:13px;">No files yet.</p>'; return; }
+      el.innerHTML='<div style="display:flex;flex-direction:column;gap:8px;">'+items.map(function(f){
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:8px;">'+
+          '<div><div style="font-size:13px;font-weight:600;color:#ddd;">'+f.name+'</div><div style="font-size:11px;color:#555;">'+fmtAdminDate(f.uploadDate)+'</div></div>'+
+          '<div style="display:flex;gap:6px;">'+
+          '<a href="'+f.url+'" target="_blank" class="btn btn-ghost btn-xs"><i class="fa-solid fa-external-link-alt"></i></a>'+
+          '<button class="btn btn-red btn-xs" onclick="deleteDoc('nf_files',''+f.id+'',loadFilesAdmin)"><i class="fa-solid fa-trash"></i></button>'+
+          '</div></div>';
+      }).join('')+'</div>';
+    });
+  }
+  document.getElementById('add-file-btn').addEventListener('click', function(){
+    var name = document.getElementById('file-name-inp').value.trim();
+    var url  = document.getElementById('file-url-inp').value.trim();
+    if(!name||!url){ toast('Name and URL required','error'); return; }
+    toast('Saving...','loading');
+    db.collection('nf_files').add({clientUid:selectedClientId,name:name,url:url,uploadDate:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+      document.getElementById('file-name-inp').value=''; document.getElementById('file-url-inp').value='';
+      loadFilesAdmin(); toast('File added! ✓');
+    });
+  });
+
+  // ── INVOICES (admin) ─────────────────────────
+  function loadInvoicesAdmin(){
+    db.collection('nf_invoices').where('clientUid','==',selectedClientId).orderBy('date','desc').get().then(function(snap){
+      var items = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+      var el = document.getElementById('invoices-admin-list');
+      if(!items.length){ el.innerHTML='<p style="padding:16px;color:#444;font-size:13px;">No invoices yet.</p>'; return; }
+      el.innerHTML='<table><thead><tr><th>Title</th><th>Amount</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead><tbody>'+
+        items.map(function(inv){
+          return '<tr><td style="font-weight:600;color:#ddd;">'+(inv.title||'Invoice')+'</td>'+
+            '<td style="color:var(--gold);font-family:'Playfair Display',serif;font-size:16px;">₦'+Number(inv.amount||0).toLocaleString()+'</td>'+
+            '<td><span class="badge '+(inv.status==='paid'?'badge-green':inv.status==='overdue'?'badge-red':'badge-gold')+'">'+inv.status+'</span></td>'+
+            '<td style="color:#888;">'+fmtAdminDate(inv.dueDate)+'</td>'+
+            '<td class="td-act"><button class="btn btn-ghost btn-xs" onclick="editInvoice(''+inv.id+'')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-red btn-xs" onclick="deleteDoc('nf_invoices',''+inv.id+'',loadInvoicesAdmin)"><i class="fa-solid fa-trash"></i></button></td></tr>';
+        }).join('')+'</tbody></table>';
+    });
+  }
+  document.getElementById('add-invoice-btn').addEventListener('click', function(){ openInvoiceModal({}); });
+  function openInvoiceModal(data){
+    window._invoiceSave = function(){
+      var obj={clientUid:selectedClientId,title:document.getElementById('i-title').value,amount:parseFloat(document.getElementById('i-amount').value)||0,currency:'NGN',status:document.getElementById('i-status').value,date:firebase.firestore.FieldValue.serverTimestamp(),dueDate:document.getElementById('i-due').value?firebase.firestore.Timestamp.fromDate(new Date(document.getElementById('i-due').value)):null,fileUrl:document.getElementById('i-url').value};
+      if(!obj.title||!obj.amount){ toast('Title and amount required','error'); return; }
+      toast('Saving...','loading');
+      var p = data.id ? db.collection('nf_invoices').doc(data.id).set(obj,{merge:true}) : db.collection('nf_invoices').add(obj);
+      p.then(function(){ closeModal(); loadInvoicesAdmin(); toast('Invoice saved! ✓'); }).catch(function(e){ toast('Error: '+e.message,'error'); });
+    };
+    document.getElementById('modal-container').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box">'+
+      '<button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>'+
+      '<div class="modal-title"><i class="fa-solid fa-file-invoice-dollar"></i> '+(data.id?'Edit Invoice':'Add Invoice')+'</div>'+
+      '<div class="g2">'+
+      '<div class="fg"><label>Invoice Title</label><input id="i-title" value="'+(data.title||'')+'" placeholder="Distribution Fee - March"></div>'+
+      '<div class="fg"><label>Amount (₦)</label><input type="number" id="i-amount" value="'+(data.amount||'')+'" placeholder="50000"></div>'+
+      '<div class="fg"><label>Status</label><select id="i-status"><option value="pending" '+(data.status==='pending'?'selected':'')+'>Pending</option><option value="paid" '+(data.status==='paid'?'selected':'')+'>Paid</option><option value="overdue" '+(data.status==='overdue'?'selected':'')+'>Overdue</option></select></div>'+
+      '<div class="fg"><label>Due Date</label><input type="date" id="i-due" value="'+(data.dueDate&&data.dueDate.toDate?data.dueDate.toDate().toISOString().split('T')[0]:data.dueDate||'')+'"></div>'+
+      '</div>'+
+      '<div class="fg" style="margin-top:12px;"><label>Invoice File URL (optional)</label><input type="url" id="i-url" value="'+(data.fileUrl||'')+'" placeholder="https://..."></div>'+
+      '<div class="form-actions" style="margin-top:16px;"><button class="btn btn-gold" onclick="window._invoiceSave()"><i class="fa-solid fa-floppy-disk"></i> Save Invoice</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button></div>'+
+      '</div></div>';
+  }
+  function editInvoice(id){ db.collection('nf_invoices').doc(id).get().then(function(s){ if(s.exists) openInvoiceModal(Object.assign({id:id},s.data())); }); }
+  window.editInvoice=editInvoice;
+
+  // ── HELPERS ──────────────────────────────────
+  function deleteDoc(col, id, reloadFn){
+    if(!confirm('Delete this item?')) return;
+    toast('Deleting...','loading');
+    db.collection(col).doc(id).delete().then(function(){ reloadFn(); toast('Deleted.'); });
+  }
+  function fmtAdminDate(ts){ if(!ts) return '—'; var d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+  function escHtml(t){ var d=document.createElement('div'); d.appendChild(document.createTextNode(t)); return d.innerHTML; }
+  window.deleteDoc=deleteDoc; window.loadReleasesAdmin=loadReleasesAdmin; window.loadCampaignsAdmin=loadCampaignsAdmin; window.loadFilesAdmin=loadFilesAdmin; window.loadInvoicesAdmin=loadInvoicesAdmin;
+
+  // Load clients when tab is opened
+  document.querySelector('[data-tab="clients"]').addEventListener('click', function(){ loadClientsTable(); });
+
+  // ── ADMIN UNREAD MESSAGE WATCHER ─────────────────
+  function watchAdminUnread(){
+    db.collection('nf_messages').where('from','==','client').where('read','==',false)
+      .onSnapshot(function(snap){
+        var count = snap.size;
+        var badge = document.getElementById('admin-unread-badge');
+        if(badge){
+          if(count>0){ badge.style.display='inline'; badge.textContent=count; }
+          else { badge.style.display='none'; }
+        }
+      }, function(e){ /* silently ignore if no permission yet */ });
+  }
+
+  // ── COPY PORTAL LINK ─────────────────────────────
+  window.copyPortalLink = function(){
+    var url = window.location.origin + window.location.pathname.replace('admin.html','portal.html');
+    if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ toast('Portal link copied! ✓'); }); }
+    else { prompt('Copy this portal URL:', url); }
+  };
 </script>
 </body>
 </html>
