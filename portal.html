@@ -408,77 +408,6 @@
     var btn = document.getElementById('login-btn');
     if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In'; }
   }
-  function _initPortal() {
-    try {
-      if (!firebase.apps.length) {
-        firebase.initializeApp({
-          apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
-          authDomain:        "nur-futura-marketing.firebaseapp.com",
-          projectId:         "nur-futura-marketing",
-          storageBucket:     "nur-futura-marketing.firebasestorage.app",
-          messagingSenderId: "838680597470",
-          appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
-          measurementId:     "G-RN914HZTED"
-        });
-      }
-      auth = firebase.auth();
-      db   = firebase.firestore();
-      _startApp(); // now wire up all the logic
-    } catch(e) {
-      document.getElementById('auth-error').style.display = 'block';
-      document.getElementById('auth-error').textContent = 'Firebase error: ' + e.message;
-    }
-  }
-</script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"
-  onload="_sdkLoaded()" onerror="_sdkError('firebase-app')"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"
-  onload="_sdkLoaded()" onerror="_sdkError('firebase-auth')"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"
-  onload="_sdkLoaded()" onerror="_sdkError('firebase-firestore')"></script>
-<script>
-  var currentUser  = null;
-  var clientData   = null;
-
-  var currentUser  = null;
-  var clientData   = null;
-  var msgUnsubscribe = null;
-
-  // ── HELPERS ────────────────────────────────────────
-  function q(sel){ return document.querySelector(sel); }
-  function qs(sel){ return document.querySelectorAll(sel); }
-  function el(id){ return document.getElementById(id); }
-
-  function fmtDate(ts){
-    if(!ts) return '—';
-    var d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-  }
-  function fmtTime(ts){
-    if(!ts) return '';
-    var d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  }
-  function initials(name){
-    if(!name) return '?';
-    return name.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().substring(0,2);
-  }
-  function fileIconClass(name){
-    var ext = (name||'').split('.').pop().toLowerCase();
-    if(['pdf'].includes(ext)) return 'pdf';
-    if(['jpg','jpeg','png','gif','webp'].includes(ext)) return 'img';
-    if(['doc','docx','txt'].includes(ext)) return 'doc';
-    if(['mp3','wav','aac','ogg'].includes(ext)) return 'audio';
-    return 'other';
-  }
-  function fileIcon(name){
-    var c = fileIconClass(name);
-    var icons = {pdf:'fa-file-pdf',img:'fa-image',doc:'fa-file-word',audio:'fa-music',other:'fa-file'};
-    return icons[c]||'fa-file';
-  }
-
-  // ── AUTH ───────────────────────────────────────────
-  // _startApp: runs after Firebase SDKs confirmed loaded
   function _startApp() {
   el('login-btn').addEventListener('click', doLogin);
   el('auth-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
@@ -862,7 +791,80 @@
         }
       });
   }
-  } // end _startApp
+  }
+
+function _initPortal() {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp({
+          apiKey:            "AIzaSyAOYw0Y53U84BDY418bl7NQfznaCgfO2po",
+          authDomain:        "nur-futura-marketing.firebaseapp.com",
+          projectId:         "nur-futura-marketing",
+          storageBucket:     "nur-futura-marketing.firebasestorage.app",
+          messagingSenderId: "838680597470",
+          appId:             "1:838680597470:web:2b93d80805f8a4be20034f",
+          measurementId:     "G-RN914HZTED"
+        });
+      }
+      auth = firebase.auth();
+      db   = firebase.firestore();
+      _startApp(); // now wire up all the logic
+    } catch(e) {
+      document.getElementById('auth-error').style.display = 'block';
+      document.getElementById('auth-error').textContent = 'Firebase error: ' + e.message;
+    }
+  }
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"
+  onload="_sdkLoaded()" onerror="_sdkError('firebase-app')"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"
+  onload="_sdkLoaded()" onerror="_sdkError('firebase-auth')"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"
+  onload="_sdkLoaded()" onerror="_sdkError('firebase-firestore')"></script>
+<script>
+  var currentUser  = null;
+  var clientData   = null;
+
+  var currentUser  = null;
+  var clientData   = null;
+  var msgUnsubscribe = null;
+
+  // ── HELPERS ────────────────────────────────────────
+  function q(sel){ return document.querySelector(sel); }
+  function qs(sel){ return document.querySelectorAll(sel); }
+  function el(id){ return document.getElementById(id); }
+
+  function fmtDate(ts){
+    if(!ts) return '—';
+    var d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  }
+  function fmtTime(ts){
+    if(!ts) return '';
+    var d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  }
+  function initials(name){
+    if(!name) return '?';
+    return name.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().substring(0,2);
+  }
+  function fileIconClass(name){
+    var ext = (name||'').split('.').pop().toLowerCase();
+    if(['pdf'].includes(ext)) return 'pdf';
+    if(['jpg','jpeg','png','gif','webp'].includes(ext)) return 'img';
+    if(['doc','docx','txt'].includes(ext)) return 'doc';
+    if(['mp3','wav','aac','ogg'].includes(ext)) return 'audio';
+    return 'other';
+  }
+  function fileIcon(name){
+    var c = fileIconClass(name);
+    var icons = {pdf:'fa-file-pdf',img:'fa-image',doc:'fa-file-word',audio:'fa-music',other:'fa-file'};
+    return icons[c]||'fa-file';
+  }
+
+  // ── AUTH ───────────────────────────────────────────
+  // _startApp: runs after Firebase SDKs confirmed loaded
+   // end _startApp
 </script>
 </body>
 </html>
