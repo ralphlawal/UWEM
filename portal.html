@@ -1,368 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NUR FUTURA — Client Portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <style>
-    :root{--brand:#8B2C00;--gold:#f5b041;--dark:#0a0a0a;--card:#141414;--card2:#1c1c1c;--border:rgba(255,255,255,0.07);--light:#f4f4f4;--success:#2ecc71;--warning:#f39c12;--danger:#e74c3c;--info:#3498db;--sidebar:260px;}
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);min-height:100vh;display:flex;}
-    /* AUTH */
-    #auth-screen{position:fixed;inset:0;background:linear-gradient(135deg,#000,#0a0a0a 50%,#0d0800);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
-    .auth-wrap{width:100%;max-width:420px;}
-    .auth-brand{text-align:center;margin-bottom:28px;}
-    .auth-brand .logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);letter-spacing:2px;}
-    .auth-brand .tag{font-size:11px;color:#444;text-transform:uppercase;letter-spacing:3px;margin-top:4px;}
-    .auth-box{background:var(--card);border:1px solid rgba(245,176,65,.2);border-radius:18px;padding:36px;box-shadow:0 40px 80px rgba(0,0,0,.6);}
-    .auth-box h2{font-size:20px;font-weight:700;margin-bottom:6px;}
-    .auth-box p{color:#555;font-size:13px;margin-bottom:24px;}
-    .auth-box input{display:block;width:100%;padding:13px 15px;background:#0f0f0f;border:1px solid var(--border);border-radius:9px;color:#fff;font-size:16px;margin-bottom:12px;font-family:'Inter',sans-serif;transition:border-color .2s;}
-    .auth-box input:focus{outline:none;border-color:var(--gold);}
-    .auth-btn{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:9px;font-weight:700;font-size:15px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s;}
-    .auth-btn:hover{box-shadow:0 0 20px rgba(245,176,65,.4);}
-    .auth-btn:disabled{opacity:.6;cursor:not-allowed;}
-    .auth-error{color:var(--danger);font-size:13px;margin-top:10px;display:none;text-align:center;line-height:1.5;}
-    .auth-footer{text-align:center;margin-top:18px;font-size:12px;color:#444;}
-    .auth-footer a{color:var(--gold);text-decoration:none;}
-    /* LAYOUT */
-    .sidebar{width:var(--sidebar);background:var(--card);border-right:1px solid var(--border);height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s;}
-    .sb-brand{padding:22px 20px 16px;border-bottom:1px solid var(--border);}
-    .sb-brand .name{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);}
-    .sb-tag{font-size:10px;background:rgba(245,176,65,.1);color:var(--gold);border:1px solid rgba(245,176,65,.2);padding:3px 8px;border-radius:20px;display:inline-block;margin-top:4px;letter-spacing:1px;text-transform:uppercase;}
-    .client-pill{margin:12px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;align-items:center;gap:10px;}
-    .c-avatar{width:34px;height:34px;border-radius:50%;background:rgba(245,176,65,.12);border:1px solid rgba(245,176,65,.25);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gold);font-weight:700;flex-shrink:0;}
-    .c-name{font-size:13px;font-weight:600;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;}
-    .c-type{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.5px;}
-    .sb-nav{flex:1;padding:8px 10px;overflow-y:auto;}
-    .nav-lbl{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#333;padding:10px 12px 5px;}
-    .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:8px;cursor:pointer;color:#555;transition:.18s;font-size:13.5px;font-weight:500;margin-bottom:1px;border:none;background:none;width:100%;text-align:left;}
-    .nav-item i{width:17px;text-align:center;font-size:14px;}
-    .nav-item:hover{color:#ddd;background:rgba(255,255,255,.04);}
-    .nav-item.active{color:var(--gold);background:rgba(245,176,65,.08);}
-    .n-badge{background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:auto;display:none;}
-    .sb-footer{padding:12px 10px;border-top:1px solid var(--border);}
-    .signout-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);color:var(--danger);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;}
-    .signout-btn:hover{background:var(--danger);color:#fff;}
-    /* MOBILE */
-    .mob-btn{display:none;background:none;border:none;color:var(--gold);font-size:22px;cursor:pointer;padding:4px;}
-    .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;}
-    .sb-overlay.active{display:block;}
-    /* MAIN */
-    .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-    .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
-    .tb-left{display:flex;align-items:center;gap:12px;}
-    .tb-title{font-size:16px;font-weight:700;}
-    .tb-title span{color:var(--gold);}
-    .tb-right{display:flex;align-items:center;gap:12px;}
-    .notif-btn{position:relative;background:none;border:none;color:#555;font-size:18px;cursor:pointer;padding:4px;transition:.2s;}
-    .notif-btn:hover{color:var(--gold);}
-    .notif-dot{position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--danger);border-radius:50%;display:none;}
-    .notif-dot.on{display:block;}
-    .back-link{color:#444;font-size:12px;text-decoration:none;transition:.2s;}
-    .back-link:hover{color:var(--gold);}
-    .content{padding:24px;flex:1;}
-    .tab-panel{display:none;}
-    .tab-panel.active{display:block;animation:fi .3s ease;}
-    @keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-    /* STATS */
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px;}
-    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.3s;}
-    .stat-card:hover{border-color:rgba(245,176,65,.2);}
-    .stat-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px;}
-    .ic-gold{background:rgba(245,176,65,.1);color:var(--gold);}
-    .ic-green{background:rgba(46,204,113,.1);color:var(--success);}
-    .ic-blue{background:rgba(52,152,219,.1);color:var(--info);}
-    .ic-red{background:rgba(231,76,60,.1);color:var(--danger);}
-    .stat-val{font-size:26px;font-weight:700;font-family:'Playfair Display',serif;color:#fff;line-height:1;}
-    .stat-lbl{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
-    /* CARDS */
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;}
-    .card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-    .card-hdr h3{font-size:14px;font-weight:700;color:#ddd;display:flex;align-items:center;gap:8px;}
-    .card-hdr h3 i{color:var(--gold);}
-    .pg-hdr{margin-bottom:22px;}
-    .pg-hdr h2{font-size:21px;font-weight:700;}
-    .pg-hdr p{color:#555;font-size:13px;margin-top:3px;}
-    /* RELEASES */
-    .release-grid{display:grid;gap:12px;}
-    .release-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:14px;transition:.2s;}
-    .release-card:hover{border-color:rgba(245,176,65,.2);}
-    .rel-cover{width:60px;height:60px;border-radius:8px;object-fit:cover;background:#111;border:1px solid var(--border);flex-shrink:0;}
-    .rel-placeholder{width:60px;height:60px;border-radius:8px;background:rgba(245,176,65,.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:20px;flex-shrink:0;}
-    .rel-info{flex:1;min-width:0;}
-    .rel-title{font-weight:700;font-size:14px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .rel-meta{font-size:12px;color:#555;margin-top:2px;}
-    .rel-plats{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
-    .plat-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
-    .pb-live{background:rgba(46,204,113,.1);color:var(--success);border:1px solid rgba(46,204,113,.2);}
-    .pb-pending{background:rgba(243,156,18,.1);color:var(--warning);border:1px solid rgba(243,156,18,.2);}
-    .pb-rejected{background:rgba(231,76,60,.1);color:var(--danger);border:1px solid rgba(231,76,60,.2);}
-    .rel-royalty{text-align:right;flex-shrink:0;}
-    .royalty-amt{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);font-weight:700;}
-    .royalty-lbl{font-size:10px;color:#444;text-transform:uppercase;}
-    /* CAMPAIGNS */
-    .camp-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:.2s;}
-    .camp-card:hover{border-color:rgba(245,176,65,.2);}
-    .camp-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;}
-    .camp-name{font-weight:700;font-size:14px;color:#ddd;}
-    .camp-type{font-size:11px;color:#555;margin-top:2px;}
-    .st-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;flex-shrink:0;}
-    .st-active{background:rgba(46,204,113,.1);color:var(--success);border:1px solid rgba(46,204,113,.2);}
-    .st-pending{background:rgba(243,156,18,.1);color:var(--warning);border:1px solid rgba(243,156,18,.2);}
-    .st-completed{background:rgba(52,152,219,.1);color:var(--info);border:1px solid rgba(52,152,219,.2);}
-    .st-paused{background:rgba(255,255,255,.05);color:#555;border:1px solid var(--border);}
-    .prog-bar{height:5px;background:rgba(255,255,255,.05);border-radius:3px;margin-bottom:10px;overflow:hidden;}
-    .prog-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--gold));border-radius:3px;}
-    .milestones{display:flex;flex-direction:column;gap:7px;}
-    .ms-item{display:flex;align-items:center;gap:9px;font-size:13px;}
-    .ms-dot{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
-    .ms-done-dot{background:rgba(46,204,113,.15);color:var(--success);border:1px solid rgba(46,204,113,.3);}
-    .ms-pend-dot{background:rgba(255,255,255,.04);color:#444;border:1px solid var(--border);}
-    .ms-done-txt{color:#666;text-decoration:line-through;}
-    .ms-pend-txt{color:#bbb;}
-    /* MESSAGES */
-    .msgs-wrap{display:flex;flex-direction:column;height:calc(100vh - 230px);min-height:350px;}
-    .msgs-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--card2);border-radius:12px 12px 0 0;border:1px solid var(--border);border-bottom:none;}
-    .msg{max-width:74%;display:flex;flex-direction:column;gap:3px;}
-    .msg-in{align-self:flex-start;}
-    .msg-out{align-self:flex-end;}
-    .msg-sender{font-weight:600;color:var(--gold);font-size:11px;margin-bottom:2px;}
-    .msg-bubble{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.5;}
-    .msg-in .msg-bubble{background:var(--card);border:1px solid var(--border);border-bottom-left-radius:3px;color:#ccc;}
-    .msg-out .msg-bubble{background:rgba(245,176,65,.1);border:1px solid rgba(245,176,65,.18);border-bottom-right-radius:3px;color:#ddd;}
-    .msg-time{font-size:11px;color:#444;}
-    .msg-out .msg-time{text-align:right;}
-    .msg-date-sep{text-align:center;margin:6px 0;}
-    .msg-date-sep span{font-size:11px;color:#333;background:var(--card2);padding:3px 10px;border-radius:20px;}
-    .msgs-input-wrap{display:flex;gap:10px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:0 0 12px 12px;}
-    .msg-input{flex:1;padding:11px 14px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:14px;font-family:'Inter',sans-serif;resize:none;height:42px;transition:border-color .2s,height .2s;}
-    .msg-input:focus{outline:none;border-color:var(--gold);height:76px;}
-    .msg-input::placeholder{color:#333;}
-    .msg-send{padding:0 16px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;white-space:nowrap;}
-    .msg-send:hover{box-shadow:0 0 12px rgba(245,176,65,.4);}
-    /* FILES */
-    .files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
-    .file-card{background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;transition:.2s;cursor:pointer;text-decoration:none;}
-    .file-card:hover{border-color:rgba(245,176,65,.3);background:rgba(245,176,65,.03);}
-    .file-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
-    .fi-pdf{background:rgba(231,76,60,.1);color:var(--danger);}
-    .fi-img{background:rgba(52,152,219,.1);color:var(--info);}
-    .fi-doc{background:rgba(52,152,219,.1);color:var(--info);}
-    .fi-audio{background:rgba(46,204,113,.1);color:var(--success);}
-    .fi-other{background:rgba(245,176,65,.1);color:var(--gold);}
-    .file-name{font-size:12px;font-weight:600;color:#ddd;word-break:break-word;}
-    .file-date{font-size:11px;color:#444;}
-    /* INVOICES */
-    .inv-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;border-bottom:1px solid var(--border);}
-    .inv-summary-card{background:var(--card2);border-radius:8px;padding:12px;text-align:center;border:1px solid var(--border);}
-    .inv-tbl{width:100%;border-collapse:collapse;}
-    .inv-tbl thead th{padding:10px 14px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#444;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2);}
-    .inv-tbl tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
-    .inv-tbl tbody tr:last-child{border-bottom:none;}
-    .inv-tbl tbody tr:hover{background:rgba(255,255,255,.015);}
-    .inv-tbl tbody td{padding:12px 14px;font-size:13px;color:#bbb;vertical-align:middle;}
-    .inv-dl{padding:5px 11px;background:rgba(245,176,65,.08);border:1px solid rgba(245,176,65,.2);color:var(--gold);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:.2s;}
-    .inv-dl:hover{background:var(--gold);color:#000;}
-    /* PROFILE */
-    .prof-top{display:flex;flex-direction:column;align-items:center;padding:28px;background:var(--card2);border-radius:14px;border:1px solid var(--border);margin-bottom:16px;}
-    .prof-avatar{width:72px;height:72px;border-radius:50%;background:rgba(245,176,65,.1);border:2px solid rgba(245,176,65,.3);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--gold);font-family:'Playfair Display',serif;font-weight:700;margin-bottom:10px;}
-    .prof-name{font-size:19px;font-weight:700;font-family:'Playfair Display',serif;}
-    .prof-email{font-size:13px;color:#555;margin-top:3px;}
-    .prof-type{margin-top:8px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:rgba(245,176,65,.1);color:var(--gold);border:1px solid rgba(245,176,65,.2);}
-    .fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
-    .fg label{font-size:11px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-    .fg input{background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;}
-    .fg input:disabled{opacity:.4;}
-    .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-    /* EMPTY */
-    .empty{text-align:center;padding:46px 20px;color:#444;}
-    .empty i{font-size:38px;display:block;margin-bottom:12px;color:#222;}
-    .empty p{font-size:13px;line-height:1.7;}
-    /* SPINNER */
-    .spin{width:20px;height:20px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;display:inline-block;}
-    @keyframes sp{to{transform:rotate(360deg);}}
-    .loading{padding:36px;text-align:center;color:#444;}
-    /* ACTIVITY */
-    .activity{display:flex;flex-direction:column;}
-    .act-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
-    .act-item:last-child{border-bottom:none;}
-    .act-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-    .act-text strong{font-size:13px;font-weight:600;color:#ddd;display:block;}
-    .act-text span{font-size:12px;color:#444;}
-    /* NOTIFICATIONS */
-    .notif-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:default;transition:.2s;}
-    .notif-item:last-child{border-bottom:none;}
-    .notif-item.unread{background:rgba(245,176,65,.02);}
-    .notif-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-    .notif-body{flex:1;}
-    .notif-title{font-size:13px;font-weight:600;color:#ddd;}
-    .notif-item.unread .notif-title{color:#fff;}
-    .notif-sub{font-size:12px;color:#555;margin-top:2px;}
-    .notif-time{font-size:11px;color:#444;margin-top:3px;}
-    .unread-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:4px;}
-    @media(max-width:768px){
-      .sidebar{transform:translateX(-100%);}
-      .sidebar.open{transform:translateX(0);}
-      .main{margin-left:0;}
-      .mob-btn{display:block;}
-      .topbar{padding:11px 14px;}
-      .content{padding:12px;}
-      .stats-grid{grid-template-columns:1fr 1fr;}
-      .g2{grid-template-columns:1fr;}
-      .files-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
-      .release-card{flex-direction:column;align-items:flex-start;}
-      .msgs-wrap{height:calc(100vh - 180px);}
-      .msg{max-width:90%;}
-      #dash-grid{grid-template-columns:1fr!important;}
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NUR FUTURA — Client Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--gold:#f5b041;--brand:#8B2C00;--dark:#0a0a0a;--card:#141414;--card2:#1c1c1c;--border:rgba(255,255,255,.07);--light:#f4f4f4;--green:#2ecc71;--red:#e74c3c;--blue:#3498db;--warn:#f39c12;--sb:260px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);min-height:100vh;display:flex;}
+/* AUTH */
+#auth-wrap{position:fixed;inset:0;background:linear-gradient(135deg,#000,#0a0a0a 60%,#0d0800);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
+.abox{background:var(--card);border:1px solid rgba(245,176,65,.25);border-radius:20px;padding:38px;width:100%;max-width:420px;box-shadow:0 40px 80px rgba(0,0,0,.6);}
+.abrand{text-align:center;margin-bottom:28px;}
+.abrand .logo{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);letter-spacing:2px;}
+.abrand .sub{font-size:11px;color:#444;text-transform:uppercase;letter-spacing:3px;margin-top:4px;}
+.abox h2{font-size:19px;font-weight:700;margin-bottom:5px;}
+.abox p{color:#555;font-size:13px;margin-bottom:22px;}
+.abox input{display:block;width:100%;padding:13px 15px;background:#0f0f0f;border:1px solid var(--border);border-radius:9px;color:#fff;font-size:16px;margin-bottom:11px;font-family:'Inter',sans-serif;transition:border-color .2s;}
+.abox input:focus{outline:none;border-color:var(--gold);}
+.abtn{width:100%;padding:13px;background:var(--gold);color:#000;border:none;border-radius:9px;font-weight:700;font-size:15px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s;}
+.abtn:hover{box-shadow:0 0 20px rgba(245,176,65,.4);}
+.abtn:disabled{opacity:.6;cursor:not-allowed;}
+.aerr{color:var(--red);font-size:13px;margin-top:10px;display:none;text-align:center;line-height:1.5;}
+.afoot{text-align:center;margin-top:16px;font-size:12px;color:#444;}
+.afoot a{color:var(--gold);text-decoration:none;}
+.afoot a.dim{color:#444;}
+/* SIDEBAR */
+.sidebar{width:var(--sb);background:var(--card);border-right:1px solid var(--border);height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s;}
+.sb-brand{padding:22px 20px 15px;border-bottom:1px solid var(--border);}
+.sb-brand .nm{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);}
+.sb-tag{font-size:10px;background:rgba(245,176,65,.1);color:var(--gold);border:1px solid rgba(245,176,65,.2);padding:3px 8px;border-radius:20px;display:inline-block;margin-top:4px;letter-spacing:1px;text-transform:uppercase;}
+.cpill{margin:12px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;align-items:center;gap:10px;}
+.cav{width:34px;height:34px;border-radius:50%;background:rgba(245,176,65,.1);border:1px solid rgba(245,176,65,.25);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gold);font-weight:700;flex-shrink:0;}
+.cnm{font-size:13px;font-weight:600;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:155px;}
+.ctp{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.5px;}
+.sb-nav{flex:1;padding:8px 10px;overflow-y:auto;}
+.nlbl{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#333;padding:10px 12px 5px;}
+.nitem{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:8px;cursor:pointer;color:#555;font-size:13.5px;font-weight:500;margin-bottom:1px;border:none;background:none;width:100%;text-align:left;transition:.18s;}
+.nitem i{width:17px;text-align:center;font-size:14px;}
+.nitem:hover{color:#ddd;background:rgba(255,255,255,.04);}
+.nitem.active{color:var(--gold);background:rgba(245,176,65,.08);}
+.nbadge{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:auto;display:none;}
+.sb-foot{padding:12px 10px;border-top:1px solid var(--border);}
+.sout{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);color:var(--red);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;}
+.sout:hover{background:var(--red);color:#fff;}
+/* MOBILE */
+.mob-btn{display:none;background:none;border:none;color:var(--gold);font-size:22px;cursor:pointer;padding:4px;}
+.sb-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;}
+.sb-ov.on{display:block;}
+/* MAIN */
+.main{margin-left:var(--sb);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.tb-l{display:flex;align-items:center;gap:12px;}
+.tb-title{font-size:15px;font-weight:700;}
+.tb-title span{color:var(--gold);}
+.tb-r{display:flex;align-items:center;gap:12px;}
+.nbtn{position:relative;background:none;border:none;color:#555;font-size:18px;cursor:pointer;padding:4px;transition:.2s;}
+.nbtn:hover{color:var(--gold);}
+.ndot{position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--red);border-radius:50%;display:none;}
+.ndot.on{display:block;}
+.bklink{color:#444;font-size:12px;text-decoration:none;transition:.2s;}
+.bklink:hover{color:var(--gold);}
+.content{padding:24px;flex:1;}
+/* TABS */
+.tab{display:none;}
+.tab.on{display:block;animation:fi .3s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* LAYOUT HELPERS */
+.pghdr{margin-bottom:22px;}
+.pghdr h2{font-size:21px;font-weight:700;}
+.pghdr p{color:#555;font-size:13px;margin-top:3px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-hdr h3{font-size:14px;font-weight:700;color:#ddd;display:flex;align-items:center;gap:8px;}
+.card-hdr h3 i{color:var(--gold);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.fg label{font-size:11px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.fg input{background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;}
+.fg input:disabled{opacity:.4;}
+.fg select,.fg textarea{background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;}
+.fg textarea{resize:vertical;min-height:90px;}
+/* STATS */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.3s;}
+.scard:hover{border-color:rgba(245,176,65,.2);}
+.scard .ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px;}
+.ig{background:rgba(245,176,65,.1);color:var(--gold);}
+.ib{background:rgba(52,152,219,.1);color:var(--blue);}
+.iv{background:rgba(46,204,113,.1);color:var(--green);}
+.ir{background:rgba(231,76,60,.1);color:var(--red);}
+.sval{font-size:26px;font-weight:700;font-family:'Playfair Display',serif;color:#fff;line-height:1;}
+.slbl{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+/* RELEASES */
+.rel-grid{display:grid;gap:12px;}
+.rel-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:14px;transition:.2s;}
+.rel-card:hover{border-color:rgba(245,176,65,.2);}
+.rel-cover{width:58px;height:58px;border-radius:8px;object-fit:cover;background:#111;border:1px solid var(--border);flex-shrink:0;}
+.rel-ph{width:58px;height:58px;border-radius:8px;background:rgba(245,176,65,.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:20px;flex-shrink:0;}
+.rel-info{flex:1;min-width:0;}
+.rel-title{font-weight:700;font-size:14px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rel-meta{font-size:12px;color:#555;margin-top:2px;}
+.rel-plats{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+.pbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.pl{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2);}
+.pp{background:rgba(243,156,18,.1);color:var(--warn);border:1px solid rgba(243,156,18,.2);}
+.pr{background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.2);}
+.rel-roy{text-align:right;flex-shrink:0;}
+.roy-amt{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);font-weight:700;}
+.roy-lbl{font-size:10px;color:#444;text-transform:uppercase;}
+/* CAMPAIGNS */
+.camp-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:11px;transition:.2s;}
+.camp-card:hover{border-color:rgba(245,176,65,.2);}
+.camp-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;}
+.camp-nm{font-weight:700;font-size:14px;color:#ddd;}
+.camp-tp{font-size:11px;color:#555;margin-top:2px;}
+.stbadge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;flex-shrink:0;}
+.st-active{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2);}
+.st-pending{background:rgba(243,156,18,.1);color:var(--warn);border:1px solid rgba(243,156,18,.2);}
+.st-completed{background:rgba(52,152,219,.1);color:var(--blue);border:1px solid rgba(52,152,219,.2);}
+.st-paused{background:rgba(255,255,255,.05);color:#555;border:1px solid var(--border);}
+.prog{height:5px;background:rgba(255,255,255,.05);border-radius:3px;margin-bottom:9px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--gold));border-radius:3px;}
+.mlist{display:flex;flex-direction:column;gap:7px;}
+.mitem{display:flex;align-items:center;gap:9px;font-size:13px;}
+.mdot{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
+.mdone{background:rgba(46,204,113,.15);color:var(--green);border:1px solid rgba(46,204,113,.3);}
+.mpend{background:rgba(255,255,255,.04);color:#444;border:1px solid var(--border);}
+/* MESSAGES */
+.msgs-wrap{display:flex;flex-direction:column;height:calc(100vh - 230px);min-height:350px;}
+.msgs-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--card2);border-radius:12px 12px 0 0;border:1px solid var(--border);border-bottom:none;}
+.msg{max-width:74%;display:flex;flex-direction:column;gap:3px;}
+.msg-in{align-self:flex-start;}
+.msg-out{align-self:flex-end;}
+.msg-sender{font-weight:600;color:var(--gold);font-size:11px;margin-bottom:2px;}
+.bubble{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.5;}
+.msg-in .bubble{background:var(--card);border:1px solid var(--border);border-bottom-left-radius:3px;color:#ccc;}
+.msg-out .bubble{background:rgba(245,176,65,.1);border:1px solid rgba(245,176,65,.18);border-bottom-right-radius:3px;color:#ddd;}
+.msg-time{font-size:11px;color:#444;}
+.msg-out .msg-time{text-align:right;}
+.dsep{text-align:center;margin:6px 0;}
+.dsep span{font-size:11px;color:#333;background:var(--card2);padding:3px 10px;border-radius:20px;}
+.minp-wrap{display:flex;gap:10px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:0 0 12px 12px;}
+.minp{flex:1;padding:11px 14px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:14px;font-family:'Inter',sans-serif;resize:none;height:42px;transition:border-color .2s,height .2s;}
+.minp:focus{outline:none;border-color:var(--gold);height:76px;}
+.minp::placeholder{color:#333;}
+.msend{padding:0 16px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;white-space:nowrap;}
+.msend:hover{box-shadow:0 0 12px rgba(245,176,65,.4);}
+/* FILES */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.fcard{background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;transition:.2s;cursor:pointer;text-decoration:none;}
+.fcard:hover{border-color:rgba(245,176,65,.3);}
+.fico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.fi-pdf{background:rgba(231,76,60,.1);color:var(--red);}
+.fi-img{background:rgba(52,152,219,.1);color:var(--blue);}
+.fi-audio{background:rgba(46,204,113,.1);color:var(--green);}
+.fi-other{background:rgba(245,176,65,.1);color:var(--gold);}
+.fnm{font-size:12px;font-weight:600;color:#ddd;word-break:break-word;}
+.fdt{font-size:11px;color:#444;}
+/* INVOICES */
+.inv-sum{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;border-bottom:1px solid var(--border);}
+.inv-sc{background:var(--card2);border-radius:8px;padding:12px;text-align:center;border:1px solid var(--border);}
+.itbl{width:100%;border-collapse:collapse;}
+.itbl thead th{padding:10px 14px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#444;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2);}
+.itbl tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+.itbl tbody tr:last-child{border-bottom:none;}
+.itbl tbody tr:hover{background:rgba(255,255,255,.015);}
+.itbl tbody td{padding:12px 14px;font-size:13px;color:#bbb;vertical-align:middle;}
+.idl{padding:5px 11px;background:rgba(245,176,65,.08);border:1px solid rgba(245,176,65,.2);color:var(--gold);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:.2s;}
+.idl:hover{background:var(--gold);color:#000;}
+/* NOTIFICATIONS */
+.notif-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);}
+.notif-item:last-child{border-bottom:none;}
+.notif-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.notif-body{flex:1;}
+.notif-title{font-size:13px;font-weight:600;color:#ddd;}
+.notif-sub{font-size:12px;color:#555;margin-top:2px;}
+.notif-time{font-size:11px;color:#444;margin-top:3px;}
+.undot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px;}
+/* PROFILE */
+.prof-top{display:flex;flex-direction:column;align-items:center;padding:28px;background:var(--card2);border-radius:14px;border:1px solid var(--border);margin-bottom:16px;}
+.pav{width:72px;height:72px;border-radius:50%;background:rgba(245,176,65,.1);border:2px solid rgba(245,176,65,.3);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--gold);font-family:'Playfair Display',serif;font-weight:700;margin-bottom:10px;}
+.pnm{font-size:19px;font-weight:700;font-family:'Playfair Display',serif;}
+.pem{font-size:13px;color:#555;margin-top:3px;}
+.ptyp{margin-top:8px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;background:rgba(245,176,65,.1);color:var(--gold);border:1px solid rgba(245,176,65,.2);}
+/* MISC */
+.empty{text-align:center;padding:44px 20px;color:#444;}
+.empty i{font-size:36px;display:block;margin-bottom:12px;color:#222;}
+.empty p{font-size:13px;line-height:1.7;}
+.loading{padding:36px;text-align:center;color:#444;}
+.spin{width:20px;height:20px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;display:inline-block;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.btn{padding:9px 16px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:7px;font-family:'Inter',sans-serif;transition:.2s;}
+.btn-gold{background:var(--gold);color:#000;}
+.btn-ghost{background:rgba(255,255,255,.05);color:#bbb;border:1px solid var(--border);}
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:#fff;}
+.tip{background:rgba(245,176,65,.05);border:1px solid rgba(245,176,65,.2);border-radius:8px;padding:12px 14px;font-size:13px;color:#777;line-height:1.7;margin-bottom:14px;}
+.tip strong{color:var(--gold);}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .mob-btn{display:block;}
+  .topbar{padding:11px 14px;}
+  .content{padding:12px;}
+  .sgrid{grid-template-columns:1fr 1fr;}
+  .g2{grid-template-columns:1fr;}
+  .fgrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+  .rel-card{flex-direction:column;align-items:flex-start;}
+  .msgs-wrap{height:calc(100vh - 185px);}
+  .msg{max-width:90%;}
+  #dgrid{grid-template-columns:1fr!important;}
+}
+</style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
-<div id="auth-screen">
-  <div class="auth-wrap">
-    <div class="auth-brand">
+<!-- AUTH -->
+<div id="auth-wrap">
+  <div class="abox">
+    <div class="abrand">
       <div class="logo">NUR FUTURA</div>
-      <div class="tag">Client Portal</div>
+      <div class="sub">Client Portal</div>
     </div>
-    <div class="auth-box">
-      <h2>Welcome Back</h2>
-      <p>Sign in to access your dashboard, releases and campaigns.</p>
-      <input type="email" id="auth-email" placeholder="Your Email Address" autocomplete="email"/>
-      <input type="password" id="auth-pass" placeholder="Password" autocomplete="current-password"/>
-      <button class="auth-btn" id="login-btn" type="button">
-        <i class="fa-solid fa-right-to-bracket"></i> Sign In
-      </button>
-      <div class="auth-error" id="auth-error"></div>
-    </div>
-    <div class="auth-footer">
+    <h2>Welcome Back</h2>
+    <p>Sign in to access your dashboard and releases.</p>
+    <input type="email" id="auth-email" placeholder="Email Address" autocomplete="email">
+    <input type="password" id="auth-pass" placeholder="Password" autocomplete="current-password">
+    <button class="abtn" id="login-btn" type="button">
+      <i class="fa-solid fa-right-to-bracket"></i> Sign In
+    </button>
+    <div class="aerr" id="auth-err"></div>
+    <div class="afoot" style="margin-top:14px;">
       <a href="#" id="forgot-link">Forgot password?</a>
       &nbsp;·&nbsp;
-      <a href="index.html" style="color:#555;">Back to site</a>
+      <a href="index.html" class="dim">Back to site</a>
     </div>
   </div>
 </div>
 
-<div class="sb-overlay" id="sb-overlay"></div>
+<div class="sb-ov" id="sb-ov"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <div class="sb-brand">
-    <div class="name">NUR FUTURA</div>
+    <div class="nm">NUR FUTURA</div>
     <span class="sb-tag">Client Portal</span>
   </div>
-  <div class="client-pill">
-    <div class="c-avatar" id="c-avatar">?</div>
+  <div class="cpill">
+    <div class="cav" id="cav">?</div>
     <div>
-      <div class="c-name" id="c-name">Loading...</div>
-      <div class="c-type" id="c-type">—</div>
+      <div class="cnm" id="cnm">—</div>
+      <div class="ctp" id="ctp">—</div>
     </div>
   </div>
   <nav class="sb-nav">
-    <div class="nav-lbl">Overview</div>
-    <button class="nav-item active" data-tab="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
-    <div class="nav-lbl">My Work</div>
-    <button class="nav-item" data-tab="releases"><i class="fa-solid fa-compact-disc"></i> My Releases</button>
-    <button class="nav-item" data-tab="campaigns"><i class="fa-solid fa-rocket"></i> Campaigns <span class="n-badge" id="camp-badge"></span></button>
-    <div class="nav-lbl">Communication</div>
-    <button class="nav-item" data-tab="messages"><i class="fa-solid fa-comments"></i> Messages <span class="n-badge" id="msg-badge"></span></button>
-    <div class="nav-lbl">Resources</div>
-    <button class="nav-item" data-tab="files"><i class="fa-solid fa-folder-open"></i> My Files</button>
-    <button class="nav-item" data-tab="invoices"><i class="fa-solid fa-file-invoice-dollar"></i> Invoices</button>
-    <div class="nav-lbl">Support</div>
-    <button class="nav-item" data-tab="notifications"><i class="fa-solid fa-bell"></i> Notifications <span class="n-badge" id="notif-badge"></span></button>
-    <button class="nav-item" data-tab="support"><i class="fa-solid fa-headset"></i> Support</button>
-    <div class="nav-lbl">Account</div>
-    <button class="nav-item" data-tab="profile"><i class="fa-solid fa-user-circle"></i> My Profile</button>
+    <div class="nlbl">Overview</div>
+    <button class="nitem active" data-tab="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
+    <div class="nlbl">My Work</div>
+    <button class="nitem" data-tab="releases"><i class="fa-solid fa-compact-disc"></i> My Releases</button>
+    <button class="nitem" data-tab="campaigns"><i class="fa-solid fa-rocket"></i> Campaigns <span class="nbadge" id="camp-badge"></span></button>
+    <div class="nlbl">Communication</div>
+    <button class="nitem" data-tab="messages"><i class="fa-solid fa-comments"></i> Messages <span class="nbadge" id="msg-badge"></span></button>
+    <div class="nlbl">Resources</div>
+    <button class="nitem" data-tab="files"><i class="fa-solid fa-folder-open"></i> My Files</button>
+    <button class="nitem" data-tab="invoices"><i class="fa-solid fa-file-invoice-dollar"></i> Invoices</button>
+    <div class="nlbl">Support</div>
+    <button class="nitem" data-tab="notifications"><i class="fa-solid fa-bell"></i> Notifications <span class="nbadge" id="notif-badge"></span></button>
+    <button class="nitem" data-tab="support"><i class="fa-solid fa-headset"></i> Support</button>
+    <div class="nlbl">Account</div>
+    <button class="nitem" data-tab="profile"><i class="fa-solid fa-user-circle"></i> My Profile</button>
   </nav>
-  <div class="sb-footer">
-    <button class="signout-btn" id="signout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  <div class="sb-foot">
+    <button class="sout" id="signout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
   </div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="tb-left">
+    <div class="tb-l">
       <button class="mob-btn" id="mob-btn"><i class="fa-solid fa-bars"></i></button>
       <div class="tb-title" id="tb-title">Dashboard <span>Overview</span></div>
     </div>
-    <div class="tb-right">
-      <a href="index.html" class="back-link" title="Back to website"><i class="fa-solid fa-arrow-left"></i></a>
-      <button class="notif-btn" id="notif-btn"><i class="fa-solid fa-bell"></i><div class="notif-dot" id="notif-dot"></div></button>
+    <div class="tb-r">
+      <a href="index.html" class="bklink" title="Back to website"><i class="fa-solid fa-arrow-left"></i></a>
+      <button class="nbtn" id="notif-btn"><i class="fa-solid fa-bell"></i><div class="ndot" id="ndot"></div></button>
     </div>
   </div>
   <div class="content">
 
     <!-- DASHBOARD -->
-    <div class="tab-panel active" id="tab-dashboard">
-      <div class="pg-hdr"><h2 id="welcome-msg">Welcome back 👋</h2><p>Here's what's happening with your account</p></div>
-      <div class="stats-grid" id="dash-stats"><div class="loading"><span class="spin"></span></div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="dash-grid">
-        <div class="card"><div class="card-hdr"><h3><i class="fa-solid fa-compact-disc"></i> Recent Releases</h3></div><div id="dash-releases"><div class="loading"><span class="spin"></span></div></div></div>
-        <div class="card"><div class="card-hdr"><h3><i class="fa-solid fa-clock-rotate-left"></i> Activity</h3></div><div id="dash-activity"><div class="loading"><span class="spin"></span></div></div></div>
+    <div class="tab on" id="tab-dashboard">
+      <div class="pghdr"><h2 id="welcome-msg">Welcome back 👋</h2><p>Here's what's happening with your account</p></div>
+      <div class="sgrid" id="dash-stats"><div class="loading"><span class="spin"></span></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="dgrid">
+        <div class="card"><div class="card-hdr"><h3><i class="fa-solid fa-compact-disc"></i> Recent Releases</h3></div><div id="dash-rels"><div class="loading"><span class="spin"></span></div></div></div>
+        <div class="card"><div class="card-hdr"><h3><i class="fa-solid fa-clock-rotate-left"></i> Activity</h3></div><div id="dash-act"><div class="loading"><span class="spin"></span></div></div></div>
       </div>
     </div>
 
     <!-- RELEASES -->
-    <div class="tab-panel" id="tab-releases">
-      <div class="pg-hdr"><h2>My Releases</h2><p>Track your music across all platforms</p></div>
-      <div class="release-grid" id="releases-list"><div class="loading"><span class="spin"></span></div></div>
+    <div class="tab" id="tab-releases">
+      <div class="pghdr"><h2>My Releases</h2><p>Track your music across all platforms</p></div>
+      <div class="rel-grid" id="rels-list"><div class="loading"><span class="spin"></span></div></div>
     </div>
 
     <!-- CAMPAIGNS -->
-    <div class="tab-panel" id="tab-campaigns">
-      <div class="pg-hdr"><h2>Campaigns</h2><p>Your active and past marketing campaigns</p></div>
-      <div id="campaigns-list"><div class="loading"><span class="spin"></span></div></div>
+    <div class="tab" id="tab-campaigns">
+      <div class="pghdr"><h2>Campaigns</h2><p>Your active and past marketing campaigns</p></div>
+      <div id="camps-list"><div class="loading"><span class="spin"></span></div></div>
     </div>
 
     <!-- MESSAGES -->
-    <div class="tab-panel" id="tab-messages">
-      <div class="pg-hdr" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div class="tab" id="tab-messages">
+      <div class="pghdr" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">
         <div><h2>Messages</h2><p>Direct line to your Nur Futura manager</p></div>
-        <button id="mark-read-btn" class="msg-send" style="padding:8px 14px;font-size:12px;"><i class="fa-solid fa-check-double"></i> Mark All Read</button>
+        <button class="msend" id="mark-read-btn" style="padding:8px 14px;font-size:12px;"><i class="fa-solid fa-check-double"></i> Mark All Read</button>
       </div>
       <div class="msgs-wrap">
         <div class="msgs-list" id="msgs-list"><div class="loading"><span class="spin"></span></div></div>
-        <div class="msgs-input-wrap">
-          <textarea class="msg-input" id="msg-input" placeholder="Type your message..."></textarea>
-          <button class="msg-send" id="msg-send-btn"><i class="fa-solid fa-paper-plane"></i> Send</button>
+        <div class="minp-wrap">
+          <textarea class="minp" id="msg-inp" placeholder="Type your message..."></textarea>
+          <button class="msend" id="msg-send"><i class="fa-solid fa-paper-plane"></i> Send</button>
         </div>
       </div>
     </div>
 
     <!-- FILES -->
-    <div class="tab-panel" id="tab-files">
-      <div class="pg-hdr"><h2>My Files</h2><p>Files and assets shared by your manager</p></div>
-      <div class="files-grid" id="files-list"><div class="loading" style="grid-column:1/-1;"><span class="spin"></span></div></div>
+    <div class="tab" id="tab-files">
+      <div class="pghdr"><h2>My Files</h2><p>Files shared by your manager</p></div>
+      <div class="fgrid" id="files-list"><div class="loading" style="grid-column:1/-1;"><span class="spin"></span></div></div>
     </div>
 
     <!-- INVOICES -->
-    <div class="tab-panel" id="tab-invoices">
-      <div class="pg-hdr"><h2>Invoices</h2><p>Your billing history and outstanding payments</p></div>
-      <div class="card" style="padding:0;overflow:hidden;"><div id="invoices-list"><div class="loading"><span class="spin"></span></div></div></div>
+    <div class="tab" id="tab-invoices">
+      <div class="pghdr"><h2>Invoices</h2><p>Your billing history</p></div>
+      <div class="card" style="padding:0;overflow:hidden;"><div id="inv-list"><div class="loading"><span class="spin"></span></div></div></div>
     </div>
 
     <!-- NOTIFICATIONS -->
-    <div class="tab-panel" id="tab-notifications">
-      <div class="pg-hdr" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div class="tab" id="tab-notifications">
+      <div class="pghdr" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">
         <div><h2>Notifications</h2><p>Recent updates on your account</p></div>
-        <button id="clear-notifs-btn" class="msg-send" style="padding:8px 14px;font-size:12px;"><i class="fa-solid fa-check-double"></i> Mark All Read</button>
+        <button class="msend" id="clear-notifs-btn" style="padding:8px 14px;font-size:12px;"><i class="fa-solid fa-check-double"></i> Mark All Read</button>
       </div>
       <div id="notifs-list"><div class="loading"><span class="spin"></span></div></div>
     </div>
 
     <!-- SUPPORT -->
-    <div class="tab-panel" id="tab-support">
-      <div class="pg-hdr"><h2>Support</h2><p>Get help from the Nur Futura team</p></div>
+    <div class="tab" id="tab-support">
+      <div class="pghdr"><h2>Support</h2><p>Get help from the Nur Futura team</p></div>
       <div class="card">
         <div class="card-hdr"><h3><i class="fa-solid fa-headset"></i> Submit a Request</h3></div>
-        <div class="fg" style="margin-bottom:12px;"><label>Subject</label>
-          <select id="sup-subject" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;">
+        <div class="fg">
+          <label>Topic</label>
+          <select id="sup-subject">
             <option value="">Select a topic...</option>
             <option>Release Issue</option>
             <option>Campaign Query</option>
@@ -371,35 +366,30 @@
             <option>General Enquiry</option>
           </select>
         </div>
-        <div class="fg" style="margin-bottom:12px;"><label>Message</label>
-          <textarea id="sup-message" rows="4" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;color:#fff;padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;width:100%;resize:vertical;" placeholder="Describe your issue or question..."></textarea>
+        <div class="fg">
+          <label>Message</label>
+          <textarea id="sup-msg" placeholder="Describe your issue or question..."></textarea>
         </div>
-        <button class="msg-send" id="sup-send-btn" style="padding:11px 22px;font-size:13px;"><i class="fa-solid fa-paper-plane"></i> Send Request</button>
-        <div id="sup-confirm" style="display:none;margin-top:12px;padding:12px 14px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:8px;color:var(--success);font-size:13px;"><i class="fa-solid fa-check-circle"></i> Request sent! Your manager will respond via Messages.</div>
+        <button class="msend" id="sup-send" style="padding:11px 22px;font-size:13px;"><i class="fa-solid fa-paper-plane"></i> Send Request</button>
+        <div id="sup-ok" style="display:none;margin-top:12px;padding:12px 14px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:8px;color:var(--green);font-size:13px;"><i class="fa-solid fa-check-circle"></i> Request sent! Your manager will respond via Messages.</div>
       </div>
       <div class="card" style="margin-top:0;">
         <div class="card-hdr"><h3><i class="fa-solid fa-circle-info"></i> Quick Contacts</h3></div>
-        <div style="display:grid;gap:12px;">
-          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card2);border-radius:8px;border:1px solid var(--border);">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,176,65,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><i class="fa-solid fa-envelope"></i></div>
-            <div><div style="font-size:13px;font-weight:600;color:#ddd;">Email</div><a href="mailto:hello@nurfuturamarketing.com.ng" style="font-size:12px;color:#555;text-decoration:none;">hello@nurfuturamarketing.com.ng</a></div>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card2);border-radius:8px;border:1px solid var(--border);">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,176,65,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><i class="fa-brands fa-instagram"></i></div>
-            <div><div style="font-size:13px;font-weight:600;color:#ddd;">Instagram</div><a href="https://instagram.com/nur.futura" target="_blank" style="font-size:12px;color:#555;text-decoration:none;">@nur.futura</a></div>
-          </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card2);border-radius:8px;border:1px solid var(--border);margin-bottom:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,176,65,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><i class="fa-solid fa-envelope"></i></div>
+          <div><div style="font-size:13px;font-weight:600;color:#ddd;">Email</div><a href="mailto:hello@nurfuturamarketing.com.ng" style="font-size:12px;color:#555;text-decoration:none;">hello@nurfuturamarketing.com.ng</a></div>
         </div>
       </div>
     </div>
 
     <!-- PROFILE -->
-    <div class="tab-panel" id="tab-profile">
-      <div class="pg-hdr"><h2>My Profile</h2><p>Your account details</p></div>
+    <div class="tab" id="tab-profile">
+      <div class="pghdr"><h2>My Profile</h2><p>Your account details</p></div>
       <div class="prof-top">
-        <div class="prof-avatar" id="prof-avatar">?</div>
-        <div class="prof-name" id="prof-name">—</div>
-        <div class="prof-email" id="prof-email">—</div>
-        <div class="prof-type" id="prof-type">—</div>
+        <div class="pav" id="pav">?</div>
+        <div class="pnm" id="pnm">—</div>
+        <div class="pem" id="pem">—</div>
+        <div class="ptyp" id="ptyp">—</div>
       </div>
       <div class="card">
         <div class="card-hdr"><h3><i class="fa-solid fa-user"></i> Account Information</h3></div>
@@ -409,505 +399,439 @@
           <div class="fg"><label>Phone</label><input id="p-phone" disabled></div>
           <div class="fg"><label>Account Type</label><input id="p-type" disabled></div>
         </div>
-        <div style="margin-top:8px;padding:12px 14px;background:rgba(245,176,65,.04);border:1px solid rgba(245,176,65,.1);border-radius:8px;font-size:13px;color:#666;">
-          <i class="fa-solid fa-lock" style="color:var(--gold);margin-right:6px;"></i>
-          To update your profile contact <strong style="color:var(--gold);">hello@nurfuturamarketing.com.ng</strong>
-        </div>
+        <div class="tip"><i class="fa-solid fa-lock" style="color:var(--gold);margin-right:6px;"></i>To update your profile contact <strong>hello@nurfuturamarketing.com.ng</strong></div>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- FIREBASE SDKs — load first, then init app -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- FIREBASE — loaded before main script, scripts at bottom so DOM already exists -->
+<script data-cfasync="false" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script data-cfasync="false" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script data-cfasync="false" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script data-cfasync="false">
+// Scripts at bottom of body — DOM ready, SDKs loaded.
 
-<script>
-// ─────────────────────────────────────────────────────────
-//  Everything inside DOMContentLoaded — guarantees DOM +
-//  Firebase SDKs are both ready before any code runs
-// ─────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
+firebase.initializeApp({
+  apiKey:            "AIzaSyA5RUfGUA68-RNyMZPlxaVYj85h5OiJdJw",
+  authDomain:        "cbt-app-5907f.firebaseapp.com",
+  projectId:         "cbt-app-5907f",
+  storageBucket:     "cbt-app-5907f.firebasestorage.app",
+  messagingSenderId: "705323924101",
+  appId:             "1:705323924101:web:ad9f153f25a0685a1287ec"
+});
 
-  // ── FIREBASE INIT ──────────────────────────────────────
-  if (!firebase.apps.length) {
-    firebase.initializeApp({
-      apiKey:            "AIzaSyA5RUfGUA68-RNyMZPlxaVYj85h5OiJdJw",
-      authDomain:        "cbt-app-5907f.firebaseapp.com",
-      projectId:         "cbt-app-5907f",
-      storageBucket:     "cbt-app-5907f.firebasestorage.app",
-      messagingSenderId: "705323924101",
-      appId:             "1:705323924101:web:ad9f153f25a0685a1287ec"
+var auth = firebase.auth();
+var db   = firebase.firestore();
+
+// ── STATE ──────────────────────────────────────────
+var currentUser = null;
+var clientData  = null;
+var msgUnsub    = null;
+var unreadUnsub = null;
+
+// ── HELPERS ────────────────────────────────────────
+function g(id){ return document.getElementById(id); }
+function esc(t){ var d=document.createElement('div'); d.appendChild(document.createTextNode(t)); return d.innerHTML; }
+function fmtDate(ts){ if(!ts) return '—'; var d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+function fmtTime(ts){ if(!ts) return ''; var d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+function initials(n){ return ((n||'?').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().substring(0,2))||'?'; }
+function sortByTs(arr, field, desc){
+  return arr.slice().sort(function(a,b){
+    var ta = a[field]?(a[field].toDate?a[field].toDate().getTime():new Date(a[field]).getTime()):0;
+    var tb = b[field]?(b[field].toDate?b[field].toDate().getTime():new Date(b[field]).getTime()):0;
+    return desc ? tb-ta : ta-tb;
+  });
+}
+function fileIco(name){
+  var ext=(name||'').split('.').pop().toLowerCase();
+  if(ext==='pdf') return {cls:'fi-pdf',fa:'fa-file-pdf'};
+  if(['jpg','jpeg','png','gif','webp'].indexOf(ext)>-1) return {cls:'fi-img',fa:'fa-image'};
+  if(['mp3','wav','aac','ogg'].indexOf(ext)>-1) return {cls:'fi-audio',fa:'fa-music'};
+  return {cls:'fi-other',fa:'fa-file'};
+}
+
+// ── AUTH ───────────────────────────────────────────
+g('login-btn').addEventListener('click', function(){
+  var email = g('auth-email').value.trim();
+  var pass  = g('auth-pass').value;
+  var errEl = g('auth-err');
+  var btn   = g('login-btn');
+  errEl.style.display = 'none';
+  if(!email){ errEl.style.display='block'; errEl.textContent='Enter your email address.'; return; }
+  if(!pass){  errEl.style.display='block'; errEl.textContent='Enter your password.'; return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Signing in...';
+  auth.signInWithEmailAndPassword(email, pass).catch(function(e){
+    var msg = 'Sign-in failed. Please try again.';
+    if(e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') msg='Wrong email or password.';
+    else if(e.code==='auth/invalid-email')           msg='Invalid email address.';
+    else if(e.code==='auth/too-many-requests')        msg='Too many attempts. Please wait.';
+    else if(e.code==='auth/network-request-failed')   msg='Network error. Check your connection.';
+    else if(e.code==='auth/operation-not-allowed')    msg='Email sign-in not enabled. Contact your manager.';
+    errEl.style.display='block'; errEl.textContent=msg;
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+  });
+});
+
+g('auth-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') g('login-btn').click(); });
+
+g('forgot-link').addEventListener('click', function(e){
+  e.preventDefault();
+  var email = g('auth-email').value.trim();
+  var errEl = g('auth-err');
+  if(!email){ errEl.style.display='block'; errEl.style.color='var(--red)'; errEl.textContent='Enter your email above first.'; return; }
+  auth.sendPasswordResetEmail(email).then(function(){
+    errEl.style.display='block'; errEl.style.color='var(--green)'; errEl.textContent='Reset link sent to '+email+'.';
+  }).catch(function(e){ errEl.style.display='block'; errEl.style.color='var(--red)'; errEl.textContent=e.message; });
+});
+
+g('signout-btn').addEventListener('click', function(){
+  if(msgUnsub){ msgUnsub(); msgUnsub=null; }
+  if(unreadUnsub){ unreadUnsub(); unreadUnsub=null; }
+  auth.signOut();
+});
+
+auth.onAuthStateChanged(function(user){
+  if(user){
+    currentUser = user;
+    g('auth-wrap').style.display = 'none';
+    loadProfile();
+  } else {
+    currentUser = null; clientData = null;
+    g('auth-wrap').style.display = 'flex';
+    var btn = g('login-btn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+    g('auth-err').style.display = 'none';
+  }
+});
+
+// ── MOBILE ─────────────────────────────────────────
+g('mob-btn').addEventListener('click', function(){ g('sidebar').classList.add('open'); g('sb-ov').classList.add('on'); });
+g('sb-ov').addEventListener('click', function(){ g('sidebar').classList.remove('open'); g('sb-ov').classList.remove('on'); });
+
+// ── TABS ───────────────────────────────────────────
+document.querySelectorAll('.nitem[data-tab]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var name = btn.getAttribute('data-tab');
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+    document.querySelectorAll('.nitem').forEach(function(b){ b.classList.remove('active'); });
+    g('tab-'+name).classList.add('on');
+    btn.classList.add('active');
+    g('tb-title').innerHTML = btn.textContent.trim().replace(/\s*\d+\s*$/,'').replace(/^\S+\s*/,'') + ' <span>View</span>';
+    g('sidebar').classList.remove('open'); g('sb-ov').classList.remove('on');
+    if(name==='messages') loadMessages();
+    if(name==='notifications') loadNotifications();
+  });
+});
+
+g('notif-btn').addEventListener('click', function(){
+  document.querySelector('[data-tab="messages"]').click();
+});
+
+// ── PROFILE ────────────────────────────────────────
+function loadProfile(){
+  db.collection('nf_clients').doc(currentUser.uid).get().then(function(snap){
+    clientData = snap.exists ? snap.data() : {name:currentUser.email.split('@')[0],email:currentUser.email,type:'Client',phone:''};
+    renderProfile();
+    loadAll();
+  }).catch(function(){
+    clientData = {name:currentUser.email.split('@')[0],email:currentUser.email,type:'Client',phone:''};
+    renderProfile();
+    loadAll();
+  });
+}
+
+function renderProfile(){
+  var name = clientData.name || currentUser.email.split('@')[0];
+  var type = clientData.type || 'Client';
+  var ini  = initials(name);
+  g('cav').textContent=ini; g('cnm').textContent=name; g('ctp').textContent=type;
+  g('pav').textContent=ini; g('pnm').textContent=name;
+  g('pem').textContent=clientData.email||currentUser.email;
+  g('ptyp').textContent=type;
+  g('welcome-msg').textContent='Welcome back, '+name.split(' ')[0]+' 👋';
+  g('p-name').value=name;
+  g('p-email').value=clientData.email||currentUser.email;
+  g('p-phone').value=clientData.phone||'—';
+  g('p-type').value=type;
+}
+
+// ── LOAD ALL ───────────────────────────────────────
+function loadAll(){
+  loadDashboard();
+  loadReleases();
+  loadCampaigns();
+  loadFiles();
+  loadInvoices();
+  watchUnread();
+}
+
+// ── DASHBOARD ──────────────────────────────────────
+function loadDashboard(){
+  var uid = currentUser.uid;
+  Promise.all([
+    db.collection('nf_releases').where('clientUid','==',uid).get(),
+    db.collection('nf_campaigns').where('clientUid','==',uid).get(),
+    db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').where('read','==',false).get(),
+    db.collection('nf_invoices').where('clientUid','==',uid).where('status','==','pending').get()
+  ]).then(function(r){
+    var rels=r[0].docs.map(function(d){return Object.assign({id:d.id},d.data());});
+    var camps=r[1].docs.map(function(d){return Object.assign({id:d.id},d.data());});
+    var unread=r[2].size, pending=r[3].size;
+    var royalties=rels.reduce(function(s,rel){return s+(parseFloat(rel.royalties)||0);},0);
+
+    g('dash-stats').innerHTML=
+      '<div class="scard"><div class="ico ig"><i class="fa-solid fa-compact-disc"></i></div><div class="sval">'+rels.length+'</div><div class="slbl">Releases</div></div>'+
+      '<div class="scard"><div class="ico iv"><i class="fa-solid fa-rocket"></i></div><div class="sval">'+camps.filter(function(c){return c.status==='active';}).length+'</div><div class="slbl">Active Campaigns</div></div>'+
+      (royalties>0
+        ?'<div class="scard"><div class="ico ig"><i class="fa-solid fa-coins"></i></div><div class="sval" style="font-size:16px;margin-top:4px;">&#8358;'+royalties.toLocaleString()+'</div><div class="slbl">Total Royalties</div></div>'
+        :'<div class="scard"><div class="ico ib"><i class="fa-solid fa-comments"></i></div><div class="sval">'+unread+'</div><div class="slbl">Unread Messages</div></div>')+
+      '<div class="scard"><div class="ico ir"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="sval">'+pending+'</div><div class="slbl">Pending Invoices</div></div>';
+
+    var sorted = sortByTs(rels,'releaseDate',true);
+    g('dash-rels').innerHTML = sorted.length
+      ? sorted.slice(0,4).map(function(rel){
+          return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);">'+
+            (rel.cover?'<img src="'+rel.cover+'" style="width:38px;height:38px;border-radius:6px;object-fit:cover;flex-shrink:0;">'
+              :'<div style="width:38px;height:38px;border-radius:6px;background:rgba(245,176,65,.08);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><i class="fa-solid fa-music"></i></div>')+
+            '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(rel.title)+'</div><div style="font-size:11px;color:#555;">'+fmtDate(rel.releaseDate)+'</div></div>'+
+            '<span class="stbadge st-'+(rel.status||'pending')+'">'+( rel.status||'pending')+'</span></div>';
+        }).join('')
+      : '<div class="empty" style="padding:18px;"><i class="fa-solid fa-compact-disc"></i><p>No releases yet.</p></div>';
+
+    var acts=[];
+    if(unread>0) acts.push({cls:'ib',fa:'fa-comments',text:unread+' unread message'+(unread>1?'s':''),sub:'From your manager'});
+    sortByTs(rels,'releaseDate',true).slice(0,2).forEach(function(rel){acts.push({cls:'ig',fa:'fa-compact-disc',text:'Release: '+rel.title,sub:fmtDate(rel.releaseDate)});});
+    camps.slice(0,2).forEach(function(c){acts.push({cls:'iv',fa:'fa-rocket',text:'Campaign: '+c.title,sub:c.status});});
+
+    g('dash-act').innerHTML = acts.length
+      ? '<div>'+acts.slice(0,5).map(function(a){
+          return '<div style="display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);">'+
+            '<div class="ico '+a.cls+'" style="flex-shrink:0;"><i class="fa-solid '+a.fa+'"></i></div>'+
+            '<div><div style="font-size:13px;font-weight:600;color:#ddd;">'+a.text+'</div><div style="font-size:12px;color:#444;">'+a.sub+'</div></div></div>';
+        }).join('')+'</div>'
+      : '<div class="empty" style="padding:18px;"><i class="fa-solid fa-clock-rotate-left"></i><p>No recent activity.</p></div>';
+
+  }).catch(function(e){ console.warn('Dashboard error:',e); g('dash-stats').innerHTML='<p style="color:#444;padding:16px;font-size:13px;">Could not load stats. Check console.</p>'; });
+}
+
+// ── RELEASES ───────────────────────────────────────
+function loadReleases(){
+  db.collection('nf_releases').where('clientUid','==',currentUser.uid).get().then(function(snap){
+    var items = sortByTs(snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}), 'releaseDate', true);
+    if(!items.length){ g('rels-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>No releases yet.<br>Your manager will add them here.</p></div>'; return; }
+    g('rels-list').innerHTML=items.map(function(r){
+      var plats=r.platforms||{};
+      var pbadges=Object.keys(plats).map(function(p){
+        var icons={spotify:'fa-spotify',apple:'fa-apple',youtube:'fa-youtube',boomplay:'fa-music',tidal:'fa-music',deezer:'fa-music',amazon:'fa-amazon',audiomack:'fa-music'};
+        return '<span class="pbadge p'+plats[p].charAt(0)+'"><i class="fa-brands '+(icons[p.toLowerCase()]||'fa-music')+'"></i> '+p+'</span>';
+      }).join('');
+      return '<div class="rel-card">'+
+        (r.cover?'<img class="rel-cover" src="'+r.cover+'" alt="">':'<div class="rel-ph"><i class="fa-solid fa-music"></i></div>')+
+        '<div class="rel-info"><div class="rel-title">'+esc(r.title)+'</div>'+
+        '<div class="rel-meta">'+esc(r.artist||'')+(r.releaseDate?' · '+fmtDate(r.releaseDate):'')+(r.type?' · '+r.type:'')+'</div>'+
+        (pbadges?'<div class="rel-plats">'+pbadges+'</div>':'')+'</div>'+
+        (r.royalties?'<div class="rel-roy"><div class="roy-amt">&#8358;'+Number(r.royalties).toLocaleString()+'</div><div class="roy-lbl">Royalties</div></div>':'')+'</div>';
+    }).join('');
+  }).catch(function(){ g('rels-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>Could not load releases.</p></div>'; });
+}
+
+// ── CAMPAIGNS ──────────────────────────────────────
+function loadCampaigns(){
+  db.collection('nf_campaigns').where('clientUid','==',currentUser.uid).get().then(function(snap){
+    var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+    items.sort(function(a,b){ return (b.status==='active'?1:0)-(a.status==='active'?1:0); });
+    var active = items.filter(function(c){return c.status==='active';}).length;
+    var cb = g('camp-badge');
+    if(cb){ if(active>0){cb.style.display='inline';cb.textContent=active;}else{cb.style.display='none';} }
+    if(!items.length){ g('camps-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><p>No campaigns yet.<br>Your manager will add them here.</p></div>'; return; }
+    g('camps-list').innerHTML=items.map(function(c){
+      var ms=c.milestones||[], done=ms.filter(function(m){return m.done;}).length, total=ms.length;
+      var pct=total?Math.round((done/total)*100):0;
+      return '<div class="camp-card">'+
+        '<div class="camp-top"><div><div class="camp-nm">'+esc(c.title)+'</div><div class="camp-tp">'+esc(c.type||'')+(c.startDate?' · Started '+fmtDate(c.startDate):'')+'</div></div>'+
+        '<span class="stbadge st-'+(c.status||'pending')+'">'+( c.status||'pending')+'</span></div>'+
+        (total?'<div class="prog"><div class="prog-fill" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:#555;margin-bottom:8px;">'+done+'/'+total+' milestones ('+pct+'%)</div>':'')+
+        (ms.length?'<div class="mlist">'+ms.map(function(m){
+          return '<div class="mitem"><div class="mdot '+(m.done?'mdone':'mpend')+'">'+(m.done?'<i class="fa-solid fa-check"></i>':'')+'</div>'+
+            '<span style="'+(m.done?'color:#555;text-decoration:line-through;':'color:#bbb;')+'">'+esc(m.title)+'</span></div>';
+        }).join('')+'</div>':'')+'</div>';
+    }).join('');
+  }).catch(function(){ g('camps-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><p>Could not load campaigns.</p></div>'; });
+}
+
+// ── MESSAGES ───────────────────────────────────────
+function loadMessages(){
+  if(msgUnsub){ msgUnsub(); msgUnsub=null; }
+  var uid=currentUser.uid, listEl=g('msgs-list');
+  listEl.innerHTML='<div class="loading"><span class="spin"></span></div>';
+  db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').where('read','==',false).get()
+    .then(function(snap){ snap.docs.forEach(function(d){d.ref.update({read:true});}); });
+  msgUnsub = db.collection('nf_messages').where('clientUid','==',uid)
+    .onSnapshot(function(snap){
+      var msgs = sortByTs(snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}), 'timestamp', false);
+      if(!msgs.length){ listEl.innerHTML='<div class="empty"><i class="fa-solid fa-comments"></i><p>No messages yet.</p></div>'; return; }
+      var lastDate='';
+      listEl.innerHTML=msgs.map(function(m){
+        var isAdmin=m.from==='admin';
+        var ts=m.timestamp?(m.timestamp.toDate?m.timestamp.toDate():new Date(m.timestamp)):new Date();
+        var day=ts.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+        var sep='';
+        if(day!==lastDate){lastDate=day;sep='<div class="dsep"><span>'+day+'</span></div>';}
+        return sep+'<div class="msg '+(isAdmin?'msg-in':'msg-out')+'">'+
+          (isAdmin?'<div class="msg-sender">Nur Futura Team</div>':'')+
+          '<div class="bubble">'+esc(m.text)+'</div>'+
+          '<div class="msg-time">'+fmtTime(m.timestamp)+'</div></div>';
+      }).join('');
+      listEl.scrollTop=listEl.scrollHeight;
+    }, function(e){ listEl.innerHTML='<div class="empty"><i class="fa-solid fa-comments"></i><p>Could not load messages.</p></div>'; console.warn(e); });
+}
+
+g('msg-send').addEventListener('click', function(){
+  var text=g('msg-inp').value.trim();
+  if(!text||!currentUser) return;
+  g('msg-inp').value='';
+  db.collection('nf_messages').add({clientUid:currentUser.uid,text:text,from:'client',read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+});
+g('msg-inp').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();g('msg-send').click();}});
+
+g('mark-read-btn').addEventListener('click',function(){
+  if(!currentUser) return;
+  db.collection('nf_messages').where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false).get()
+    .then(function(snap){var b=db.batch();snap.docs.forEach(function(d){b.update(d.ref,{read:true});});return b.commit();});
+});
+
+// ── FILES ──────────────────────────────────────────
+function loadFiles(){
+  db.collection('nf_files').where('clientUid','==',currentUser.uid).get().then(function(snap){
+    var items=sortByTs(snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}), 'uploadDate', true);
+    if(!items.length){ g('files-list').innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fa-solid fa-folder-open"></i><p>No files yet.</p></div>'; return; }
+    g('files-list').innerHTML=items.map(function(f){
+      var ico=fileIco(f.name);
+      return '<a href="'+(f.url||'#')+'" target="_blank" class="fcard">'+
+        '<div class="fico '+ico.cls+'"><i class="fa-solid '+ico.fa+'"></i></div>'+
+        '<div class="fnm">'+esc(f.name)+'</div>'+
+        '<div class="fdt">'+fmtDate(f.uploadDate)+'</div></a>';
+    }).join('');
+  }).catch(function(){ g('files-list').innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fa-solid fa-folder-open"></i><p>Could not load files.</p></div>'; });
+}
+
+// ── INVOICES ───────────────────────────────────────
+function loadInvoices(){
+  db.collection('nf_invoices').where('clientUid','==',currentUser.uid).get().then(function(snap){
+    var items=sortByTs(snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}), 'date', true);
+    if(!items.length){ g('inv-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><p>No invoices yet.</p></div>'; return; }
+    var pend=items.filter(function(i){return i.status!=='paid';}).reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
+    var paid=items.filter(function(i){return i.status==='paid';}).reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
+    var stMap={
+      paid:'<span class="stbadge st-active">Paid</span>',
+      pending:'<span class="stbadge st-pending">Pending</span>',
+      overdue:'<span class="stbadge" style="background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.2);">Overdue</span>'
+    };
+    g('inv-list').innerHTML=
+      '<div class="inv-sum">'+
+        '<div class="inv-sc"><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Pending</div><div style="font-family:\'Playfair Display\',serif;font-size:20px;color:var(--warn);">&#8358;'+pend.toLocaleString()+'</div></div>'+
+        '<div class="inv-sc"><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Paid</div><div style="font-family:\'Playfair Display\',serif;font-size:20px;color:var(--green);">&#8358;'+paid.toLocaleString()+'</div></div>'+
+      '</div>'+
+      '<table class="itbl"><thead><tr><th>Invoice</th><th>Date</th><th>Due</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>'+
+      items.map(function(inv){
+        return '<tr><td style="font-weight:600;color:#ddd;">'+(inv.title||'Invoice')+'</td>'+
+          '<td>'+fmtDate(inv.date)+'</td>'+
+          '<td>'+fmtDate(inv.dueDate)+'</td>'+
+          '<td style="font-family:\'Playfair Display\',serif;font-size:16px;color:#ddd;">&#8358;'+Number(inv.amount||0).toLocaleString()+'</td>'+
+          '<td>'+(stMap[inv.status]||stMap['pending'])+'</td>'+
+          '<td>'+(inv.fileUrl?'<a href="'+inv.fileUrl+'" target="_blank" class="idl"><i class="fa-solid fa-download"></i> Download</a>':'<span style="color:#333;">—</span>')+'</td></tr>';
+      }).join('')+'</tbody></table>';
+  }).catch(function(){ g('inv-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><p>Could not load invoices.</p></div>'; });
+}
+
+// ── NOTIFICATIONS ──────────────────────────────────
+function loadNotifications(){
+  var uid=currentUser.uid, listEl=g('notifs-list');
+  if(!listEl) return;
+  listEl.innerHTML='<div class="loading"><span class="spin"></span></div>';
+  Promise.all([
+    db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').get(),
+    db.collection('nf_releases').where('clientUid','==',uid).get(),
+    db.collection('nf_invoices').where('clientUid','==',uid).get()
+  ]).then(function(r){
+    var notifs=[];
+    r[0].docs.forEach(function(d){
+      var data=d.data();
+      notifs.push({cls:'ib',fa:'fa-comments',title:'Message from Nur Futura',sub:(data.text||'').substring(0,60),ts:data.timestamp,read:data.read});
     });
-  }
-  var auth = firebase.auth();
-  var db   = firebase.firestore();
-
-  // ── STATE ──────────────────────────────────────────────
-  var currentUser    = null;
-  var clientData     = null;
-  var msgUnsub       = null;
-  var unreadUnsub    = null;
-
-  // ── HELPERS ────────────────────────────────────────────
-  function g(id) { return document.getElementById(id); }
-  function fmtDate(ts) {
-    if (!ts) return '—';
-    var d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-  }
-  function fmtTime(ts) {
-    if (!ts) return '';
-    var d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-  }
-  function initials(name) {
-    return (name||'?').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().substring(0,2) || '?';
-  }
-  function esc(t) {
-    var d = document.createElement('div');
-    d.appendChild(document.createTextNode(t));
-    return d.innerHTML;
-  }
-  function fileIconClass(name) {
-    var ext = (name||'').split('.').pop().toLowerCase();
-    if (ext==='pdf') return 'pdf';
-    if (['jpg','jpeg','png','gif','webp'].includes(ext)) return 'img';
-    if (['doc','docx','txt'].includes(ext)) return 'doc';
-    if (['mp3','wav','aac','ogg'].includes(ext)) return 'audio';
-    return 'other';
-  }
-  function fileIconFA(name) {
-    var c = fileIconClass(name);
-    return {pdf:'fa-file-pdf',img:'fa-image',doc:'fa-file-word',audio:'fa-music',other:'fa-file'}[c];
-  }
-
-  // ── AUTH ───────────────────────────────────────────────
-  g('login-btn').addEventListener('click', function() {
-    var email = g('auth-email').value.trim();
-    var pass  = g('auth-pass').value;
-    var errEl = g('auth-error');
-    var btn   = g('login-btn');
-    errEl.style.display = 'none';
-    if (!email) { errEl.style.display='block'; errEl.textContent='Enter your email address.'; return; }
-    if (!pass)  { errEl.style.display='block'; errEl.textContent='Enter your password.'; return; }
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spin"></span> Signing in...';
-    auth.signInWithEmailAndPassword(email, pass)
-      .catch(function(e) {
-        var msg = 'Sign-in failed. Please try again.';
-        if (e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') msg = 'Wrong email or password.';
-        else if (e.code==='auth/invalid-email')          msg = 'Invalid email address.';
-        else if (e.code==='auth/too-many-requests')      msg = 'Too many attempts. Please wait.';
-        else if (e.code==='auth/network-request-failed') msg = 'Network error. Check your connection.';
-        else if (e.code==='auth/operation-not-allowed')  msg = 'Email sign-in not enabled. Contact your manager.';
-        errEl.style.display = 'block';
-        errEl.textContent   = msg;
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
-      });
-  });
-
-  g('auth-pass').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') g('login-btn').click();
-  });
-
-  g('forgot-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    var email = g('auth-email').value.trim();
-    var errEl = g('auth-error');
-    if (!email) { errEl.style.display='block'; errEl.textContent='Enter your email above first.'; return; }
-    auth.sendPasswordResetEmail(email)
-      .then(function() { errEl.style.display='block'; errEl.style.color='var(--success)'; errEl.textContent='Reset link sent to '+email+'. Check your inbox.'; })
-      .catch(function(e) { errEl.style.display='block'; errEl.style.color='var(--danger)'; errEl.textContent=e.message; });
-  });
-
-  g('signout-btn').addEventListener('click', function() {
-    if (msgUnsub)    { msgUnsub(); msgUnsub = null; }
-    if (unreadUnsub) { unreadUnsub(); unreadUnsub = null; }
-    auth.signOut();
-  });
-
-  auth.onAuthStateChanged(function(user) {
-    if (user) {
-      currentUser = user;
-      g('auth-screen').style.display = 'none';
-      loadProfile();
-    } else {
-      currentUser = null; clientData = null;
-      g('auth-screen').style.display = 'flex';
-      var btn = g('login-btn');
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
-      g('auth-error').style.display = 'none';
-    }
-  });
-
-  // ── MOBILE SIDEBAR ─────────────────────────────────────
-  g('mob-btn').addEventListener('click', function() {
-    g('sidebar').classList.add('open');
-    g('sb-overlay').classList.add('active');
-  });
-  g('sb-overlay').addEventListener('click', function() {
-    g('sidebar').classList.remove('open');
-    g('sb-overlay').classList.remove('active');
-  });
-
-  // ── TABS ───────────────────────────────────────────────
-  document.querySelectorAll('.nav-item[data-tab]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var name = btn.getAttribute('data-tab');
-      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-      document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
-      g('tab-'+name).classList.add('active');
-      btn.classList.add('active');
-      g('tb-title').innerHTML = btn.textContent.trim().replace(/\s*\d+\s*$/, '').replace(/^\S+\s*/, '') + ' <span>View</span>';
-      g('sidebar').classList.remove('open');
-      g('sb-overlay').classList.remove('active');
-      if (name === 'messages') loadMessages();
+    r[1].docs.forEach(function(d){
+      var data=d.data();
+      notifs.push({cls:'ig',fa:'fa-compact-disc',title:'Release: '+data.title,sub:'Status: '+(data.status||'pending'),ts:data.releaseDate,read:true});
     });
-  });
+    r[2].docs.forEach(function(d){
+      var data=d.data();
+      notifs.push({cls:data.status==='pending'?'ir':'iv',fa:'fa-file-invoice-dollar',title:'Invoice: '+(data.title||'Invoice'),sub:'&#8358;'+Number(data.amount||0).toLocaleString()+' — '+(data.status||'pending'),ts:data.date,read:data.status==='paid'});
+    });
+    notifs=sortByTs(notifs,'ts',true);
+    var unread=notifs.filter(function(n){return !n.read;}).length;
+    var nb=g('notif-badge');
+    if(nb){if(unread>0){nb.style.display='inline';nb.textContent=unread;}else{nb.style.display='none';}}
+    if(!notifs.length){listEl.innerHTML='<div class="empty"><i class="fa-solid fa-bell"></i><p>No notifications yet.</p></div>'; return;}
+    listEl.innerHTML='<div class="card" style="padding:4px 18px;">'+notifs.map(function(n){
+      return '<div class="notif-item">'+
+        '<div class="notif-ico ico '+n.cls+'"><i class="fa-solid '+n.fa+'"></i></div>'+
+        '<div class="notif-body"><div class="notif-title">'+n.title+'</div>'+
+        '<div class="notif-sub">'+n.sub+'</div>'+
+        '<div class="notif-time">'+fmtDate(n.ts)+'</div></div>'+
+        (!n.read?'<div class="undot"></div>':'')+'</div>';
+    }).join('')+'</div>';
+  }).catch(function(e){listEl.innerHTML='<div class="empty"><i class="fa-solid fa-bell"></i><p>Could not load notifications.</p></div>';console.warn(e);});
+}
 
-  g('notif-btn').addEventListener('click', function() {
-    document.querySelector('[data-tab="messages"]').click();
-  });
+g('clear-notifs-btn').addEventListener('click',function(){
+  if(!currentUser) return;
+  db.collection('nf_messages').where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false).get()
+    .then(function(snap){var b=db.batch();snap.docs.forEach(function(d){b.update(d.ref,{read:true});});return b.commit();})
+    .then(function(){loadNotifications();});
+});
 
-  // ── LOAD PROFILE ───────────────────────────────────────
-  function loadProfile() {
-    db.collection('nf_clients').doc(currentUser.uid).get()
-      .then(function(snap) {
-        clientData = snap.exists ? snap.data() : { name: currentUser.email.split('@')[0], email: currentUser.email, type: 'Client', phone: '' };
-        updateProfileUI();
-        loadAll();
-      })
-      .catch(function() {
-        clientData = { name: currentUser.email.split('@')[0], email: currentUser.email, type: 'Client', phone: '' };
-        updateProfileUI();
-        loadAll();
-      });
-  }
+// ── SUPPORT ────────────────────────────────────────
+g('sup-send').addEventListener('click',function(){
+  var subject=g('sup-subject').value, message=g('sup-msg').value.trim();
+  if(!subject){g('sup-subject').style.borderColor='var(--red)'; return;}
+  if(!message){g('sup-msg').style.borderColor='var(--red)'; return;}
+  g('sup-subject').style.borderColor=''; g('sup-msg').style.borderColor='';
+  g('sup-send').disabled=true;
+  db.collection('nf_messages').add({
+    clientUid:currentUser.uid,
+    text:'[SUPPORT — '+subject+']\n\n'+message,
+    from:'client',read:false,type:'support',
+    timestamp:firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(){
+    g('sup-ok').style.display='block';
+    g('sup-msg').value=''; g('sup-subject').value='';
+    g('sup-send').disabled=false;
+    setTimeout(function(){g('sup-ok').style.display='none';},5000);
+  }).catch(function(){ g('sup-send').disabled=false; });
+});
 
-  function updateProfileUI() {
-    var name = clientData.name || currentUser.email.split('@')[0];
-    var type = clientData.type || 'Client';
-    var ini  = initials(name);
-    g('c-avatar').textContent    = ini;
-    g('c-name').textContent      = name;
-    g('c-type').textContent      = type;
-    g('welcome-msg').textContent = 'Welcome back, ' + name.split(' ')[0] + ' 👋';
-    g('prof-avatar').textContent = ini;
-    g('prof-name').textContent   = name;
-    g('prof-email').textContent  = clientData.email || currentUser.email;
-    g('prof-type').textContent   = type;
-    g('p-name').value  = name;
-    g('p-email').value = clientData.email || currentUser.email;
-    g('p-phone').value = clientData.phone || '—';
-    g('p-type').value  = type;
-  }
+// ── UNREAD WATCHER ─────────────────────────────────
+function watchUnread(){
+  if(unreadUnsub){unreadUnsub();unreadUnsub=null;}
+  unreadUnsub = db.collection('nf_messages')
+    .where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false)
+    .onSnapshot(function(snap){
+      var count=snap.size;
+      var badge=g('msg-badge'), dot=g('ndot');
+      if(count>0){if(badge){badge.style.display='inline';badge.textContent=count;}if(dot)dot.classList.add('on');}
+      else{if(badge)badge.style.display='none';if(dot)dot.classList.remove('on');}
+    },function(){});
+}
 
-  // ── LOAD ALL ───────────────────────────────────────────
-  function loadAll() {
-    loadDashboard();
-    loadReleases();
-    loadCampaigns();
-    loadFiles();
-    loadInvoices();
-    watchUnread();
-  }
-
-  // ── DASHBOARD ──────────────────────────────────────────
-  function loadDashboard() {
-    var uid = currentUser.uid;
-    Promise.all([
-      db.collection('nf_releases').where('clientUid','==',uid).get(),
-      db.collection('nf_campaigns').where('clientUid','==',uid).get(),
-      db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').where('read','==',false).get(),
-      db.collection('nf_invoices').where('clientUid','==',uid).where('status','==','pending').get()
-    ]).then(function(r) {
-      var rels  = r[0].docs.map(function(d){return Object.assign({id:d.id},d.data());});
-      var camps = r[1].docs.map(function(d){return Object.assign({id:d.id},d.data());});
-      var unread  = r[2].size;
-      var pending = r[3].size;
-      var royalties = rels.reduce(function(s,rel){return s+(parseFloat(rel.royalties)||0);},0);
-
-      g('dash-stats').innerHTML =
-        '<div class="stat-card"><div class="stat-icon ic-gold"><i class="fa-solid fa-compact-disc"></i></div><div class="stat-val">'+rels.length+'</div><div class="stat-lbl">Releases</div></div>'+
-        '<div class="stat-card"><div class="stat-icon ic-green"><i class="fa-solid fa-rocket"></i></div><div class="stat-val">'+camps.filter(function(c){return c.status==='active';}).length+'</div><div class="stat-lbl">Active Campaigns</div></div>'+
-        (royalties>0
-          ? '<div class="stat-card"><div class="stat-icon ic-gold"><i class="fa-solid fa-coins"></i></div><div class="stat-val" style="font-size:16px;margin-top:4px;">&#8358;'+royalties.toLocaleString()+'</div><div class="stat-lbl">Total Royalties</div></div>'
-          : '<div class="stat-card"><div class="stat-icon ic-blue"><i class="fa-solid fa-comments"></i></div><div class="stat-val">'+unread+'</div><div class="stat-lbl">Unread Messages</div></div>')+
-        '<div class="stat-card"><div class="stat-icon ic-red"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="stat-val">'+pending+'</div><div class="stat-lbl">Pending Invoices</div></div>';
-
-      g('dash-releases').innerHTML = rels.length
-        ? rels.slice(0,4).map(function(rel) {
-            return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);">'+
-              (rel.cover
-                ? '<img src="'+rel.cover+'" style="width:38px;height:38px;border-radius:6px;object-fit:cover;flex-shrink:0;">'
-                : '<div style="width:38px;height:38px;border-radius:6px;background:rgba(245,176,65,.08);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><i class="fa-solid fa-music"></i></div>')+
-              '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+rel.title+'</div><div style="font-size:11px;color:#555;">'+fmtDate(rel.releaseDate)+'</div></div>'+
-              '<span class="st-badge st-'+(rel.status||'pending')+'">'+( rel.status||'pending')+'</span></div>';
-          }).join('')
-        : '<div class="empty" style="padding:18px;"><i class="fa-solid fa-compact-disc"></i><p>No releases yet.</p></div>';
-
-      var acts = [];
-      if (unread>0) acts.push({ic:'ic-blue',fa:'fa-comments',text:unread+' unread message'+(unread>1?'s':''),sub:'From your manager'});
-      rels.slice(0,2).forEach(function(r){acts.push({ic:'ic-gold',fa:'fa-compact-disc',text:'Release: '+r.title,sub:fmtDate(r.releaseDate)});});
-      camps.slice(0,2).forEach(function(c){acts.push({ic:'ic-green',fa:'fa-rocket',text:'Campaign: '+c.title,sub:c.status});});
-
-      g('dash-activity').innerHTML = acts.length
-        ? '<div class="activity">'+acts.slice(0,5).map(function(a){
-            return '<div class="act-item"><div class="act-icon '+a.ic+'"><i class="fa-solid '+a.fa+'"></i></div><div class="act-text"><strong>'+a.text+'</strong><span>'+a.sub+'</span></div></div>';
-          }).join('')+'</div>'
-        : '<div class="empty" style="padding:18px;"><i class="fa-solid fa-clock-rotate-left"></i><p>No recent activity.</p></div>';
-    }).catch(function(e){ console.warn('Dashboard error:',e); });
-  }
-
-  // ── RELEASES ───────────────────────────────────────────
-  function loadReleases() {
-    db.collection('nf_releases').where('clientUid','==',currentUser.uid).get()
-      .then(function(snap) {
-        var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-        if (!items.length) { g('releases-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>No releases found.<br>Your manager will add your releases here.</p></div>'; return; }
-        g('releases-list').innerHTML = items.map(function(r) {
-          var plats = r.platforms || {};
-          var pbadges = Object.keys(plats).map(function(p) {
-            var icons = {spotify:'fa-spotify',apple:'fa-apple',youtube:'fa-youtube',boomplay:'fa-music',tidal:'fa-music',deezer:'fa-music',amazon:'fa-amazon',audiomack:'fa-music'};
-            return '<span class="plat-badge pb-'+(plats[p]||'pending')+'"><i class="fa-brands '+(icons[p.toLowerCase()]||'fa-music')+'"></i> '+p+'</span>';
-          }).join('');
-          return '<div class="release-card">'+
-            (r.cover ? '<img class="rel-cover" src="'+r.cover+'" alt="'+r.title+'">' : '<div class="rel-placeholder"><i class="fa-solid fa-music"></i></div>')+
-            '<div class="rel-info"><div class="rel-title">'+r.title+'</div>'+
-            '<div class="rel-meta">'+r.artist+(r.releaseDate?' · '+fmtDate(r.releaseDate):'')+(r.type?' · '+r.type:'')+'</div>'+
-            (pbadges?'<div class="rel-plats">'+pbadges+'</div>':'')+'</div>'+
-            (r.royalties?'<div class="rel-royalty"><div class="royalty-amt">&#8358;'+Number(r.royalties).toLocaleString()+'</div><div class="royalty-lbl">Royalties</div></div>':'')+'</div>';
-        }).join('');
-      }).catch(function(){ g('releases-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>Could not load releases.</p></div>'; });
-  }
-
-  // ── CAMPAIGNS ──────────────────────────────────────────
-  function loadCampaigns() {
-    db.collection('nf_campaigns').where('clientUid','==',currentUser.uid).get()
-      .then(function(snap) {
-        var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-        var active = items.filter(function(c){return c.status==='active';}).length;
-        var cb = g('camp-badge');
-        if (cb) { if(active>0){cb.style.display='inline';cb.textContent=active;}else{cb.style.display='none';} }
-        if (!items.length) { g('campaigns-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><p>No campaigns yet.<br>Your manager will add your campaigns here.</p></div>'; return; }
-        items.sort(function(a,b){ var ta=a.startDate?(a.startDate.toDate?a.startDate.toDate().getTime():0):0; var tb=b.startDate?(b.startDate.toDate?b.startDate.toDate().getTime():0):0; return tb-ta; });
-        g('campaigns-list').innerHTML = items.map(function(c) {
-          var ms    = c.milestones || [];
-          var done  = ms.filter(function(m){return m.done;}).length;
-          var total = ms.length;
-          var pct   = total ? Math.round((done/total)*100) : 0;
-          return '<div class="camp-card">'+
-            '<div class="camp-top"><div><div class="camp-name">'+c.title+'</div><div class="camp-type">'+c.type+(c.startDate?' · Started '+fmtDate(c.startDate):'')+'</div></div>'+
-            '<span class="st-badge st-'+(c.status||'pending')+'">'+( c.status||'pending')+'</span></div>'+
-            (total?'<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:#555;margin-bottom:8px;">'+done+'/'+total+' milestones ('+pct+'%)</div>':'')+
-            (ms.length?'<div class="milestones">'+ms.map(function(m){
-              return '<div class="ms-item"><div class="ms-dot '+(m.done?'ms-done-dot':'ms-pend-dot')+'">'+(m.done?'<i class="fa-solid fa-check"></i>':'')+'</div><span class="'+(m.done?'ms-done-txt':'ms-pend-txt')+'">'+esc(m.title)+'</span></div>';
-            }).join('')+'</div>':'')+'</div>';
-        }).join('');
-      }).catch(function(){ g('campaigns-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><p>Could not load campaigns.</p></div>'; });
-  }
-
-  // ── MESSAGES ───────────────────────────────────────────
-  function loadMessages() {
-    if (msgUnsub) { msgUnsub(); msgUnsub = null; }
-    var uid  = currentUser.uid;
-    var list = g('msgs-list');
-    list.innerHTML = '<div class="loading"><span class="spin"></span></div>';
-    // Mark admin messages as read
-    db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').where('read','==',false).get()
-      .then(function(snap) { snap.docs.forEach(function(d){d.ref.update({read:true});}); });
-    // Real-time listener
-    msgUnsub = db.collection('nf_messages').where('clientUid','==',uid)
-      .onSnapshot(function(snap) {
-        var msgs = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}).sort(function(a,b){ var ta=a.timestamp?(a.timestamp.toDate?a.timestamp.toDate().getTime():new Date(a.timestamp).getTime()):0; var tb=b.timestamp?(b.timestamp.toDate?b.timestamp.toDate().getTime():new Date(b.timestamp).getTime()):0; return ta-tb; });
-        if (!msgs.length) { list.innerHTML='<div class="empty"><i class="fa-solid fa-comments"></i><p>No messages yet.<br>Send a message below.</p></div>'; return; }
-        var lastDate = '';
-        list.innerHTML = msgs.map(function(m) {
-          var isAdmin = m.from === 'admin';
-          var ts  = m.timestamp ? (m.timestamp.toDate?m.timestamp.toDate():new Date(m.timestamp)) : new Date();
-          var day = ts.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-          var sep = '';
-          if (day !== lastDate) { lastDate=day; sep='<div class="msg-date-sep"><span>'+day+'</span></div>'; }
-          return sep+'<div class="msg '+(isAdmin?'msg-in':'msg-out')+'">'+
-            (isAdmin?'<div class="msg-sender">Nur Futura Team</div>':'')+
-            '<div class="msg-bubble">'+esc(m.text)+'</div>'+
-            '<div class="msg-time">'+fmtTime(m.timestamp)+'</div></div>';
-        }).join('');
-        list.scrollTop = list.scrollHeight;
-      }, function(e){ list.innerHTML='<div class="empty"><i class="fa-solid fa-comments"></i><p>Could not load messages.</p></div>'; console.warn(e); });
-  }
-
-  g('msg-send-btn').addEventListener('click', sendMsg);
-  g('msg-input').addEventListener('keydown', function(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} });
-  function sendMsg() {
-    var text = g('msg-input').value.trim();
-    if (!text || !currentUser) return;
-    g('msg-input').value = '';
-    db.collection('nf_messages').add({ clientUid:currentUser.uid, text:text, from:'client', read:false, timestamp:firebase.firestore.FieldValue.serverTimestamp() });
-  }
-
-  g('mark-read-btn').addEventListener('click', function() {
-    if (!currentUser) return;
-    db.collection('nf_messages').where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false).get()
-      .then(function(snap){ var b=db.batch(); snap.docs.forEach(function(d){b.update(d.ref,{read:true});}); return b.commit(); });
-  });
-
-  // ── FILES ──────────────────────────────────────────────
-  function loadFiles() {
-    db.collection('nf_files').where('clientUid','==',currentUser.uid).get()
-      .then(function(snap) {
-        var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-        if (!items.length) { g('files-list').innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fa-solid fa-folder-open"></i><p>No files yet.<br>Your manager will upload files here.</p></div>'; return; }
-        g('files-list').innerHTML = items.map(function(f) {
-          return '<a href="'+(f.url||'#')+'" target="_blank" class="file-card">'+
-            '<div class="file-icon fi-'+fileIconClass(f.name)+'"><i class="fa-solid '+fileIconFA(f.name)+'"></i></div>'+
-            '<div class="file-name">'+esc(f.name)+'</div>'+
-            '<div class="file-date">'+fmtDate(f.uploadDate)+'</div></a>';
-        }).join('');
-      }).catch(function(){ g('files-list').innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fa-solid fa-folder-open"></i><p>Could not load files.</p></div>'; });
-  }
-
-  // ── INVOICES ───────────────────────────────────────────
-  function loadInvoices() {
-    db.collection('nf_invoices').where('clientUid','==',currentUser.uid).get()
-      .then(function(snap) {
-        var items = snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
-        if (!items.length) { g('invoices-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><p>No invoices yet.</p></div>'; return; }
-        var pendAmt = items.filter(function(i){return i.status!=='paid';}).reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
-        var paidAmt = items.filter(function(i){return i.status==='paid';}).reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
-        var statusMap = {
-          paid:'<span class="st-badge st-active">Paid</span>',
-          pending:'<span class="st-badge st-pending">Pending</span>',
-          overdue:'<span class="st-badge" style="background:rgba(231,76,60,.1);color:var(--danger);border:1px solid rgba(231,76,60,.2);">Overdue</span>'
-        };
-        g('invoices-list').innerHTML =
-          '<div class="inv-summary">'+
-            '<div class="inv-summary-card"><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Pending</div><div style="font-family:\'Playfair Display\',serif;font-size:20px;color:var(--warning);">&#8358;'+pendAmt.toLocaleString()+'</div></div>'+
-            '<div class="inv-summary-card"><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Paid</div><div style="font-family:\'Playfair Display\',serif;font-size:20px;color:var(--success);">&#8358;'+paidAmt.toLocaleString()+'</div></div>'+
-          '</div>'+
-          '<table class="inv-tbl"><thead><tr><th>Invoice</th><th>Date</th><th>Due</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>'+
-          items.map(function(inv) {
-            return '<tr><td style="font-weight:600;color:#ddd;">'+(inv.title||'Invoice')+'</td>'+
-              '<td>'+fmtDate(inv.date)+'</td>'+
-              '<td>'+fmtDate(inv.dueDate)+'</td>'+
-              '<td style="font-family:\'Playfair Display\',serif;font-size:16px;color:#ddd;">&#8358;'+Number(inv.amount||0).toLocaleString()+'</td>'+
-              '<td>'+(statusMap[inv.status]||statusMap['pending'])+'</td>'+
-              '<td>'+(inv.fileUrl?'<a href="'+inv.fileUrl+'" target="_blank" class="inv-dl"><i class="fa-solid fa-download"></i> Download</a>':'<span style="color:#333;font-size:12px;">—</span>')+'</td></tr>';
-          }).join('')+'</tbody></table>';
-      }).catch(function(){ g('invoices-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><p>Could not load invoices.</p></div>'; });
-  }
-
-  // ── UNREAD WATCHER ─────────────────────────────────────
-  function watchUnread() {
-    if (unreadUnsub) { unreadUnsub(); }
-    unreadUnsub = db.collection('nf_messages')
-      .where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false)
-      .onSnapshot(function(snap) {
-        var count = snap.size;
-        var badge = g('msg-badge');
-        var dot   = g('notif-dot');
-        if (count > 0) { if(badge){badge.style.display='inline';badge.textContent=count;} if(dot) dot.classList.add('on'); }
-        else           { if(badge) badge.style.display='none'; if(dot) dot.classList.remove('on'); }
-      }, function(){});
-  }
-
-  // ── NOTIFICATIONS ──────────────────────────────────────
-  function loadNotifications() {
-    var uid = currentUser.uid;
-    var listEl = g('notifs-list');
-    if (!listEl) return;
-    // Notifications are built from messages + releases + invoices
-    Promise.all([
-      db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').get(),
-      db.collection('nf_releases').where('clientUid','==',uid).get(),
-      db.collection('nf_invoices').where('clientUid','==',uid).get()
-    ]).then(function(r) {
-      var notifs = [];
-      r[0].docs.forEach(function(d) {
-        var data = d.data();
-        notifs.push({ type:'message', icon:'ic-blue', fa:'fa-comments', title:'New message from Nur Futura', sub:data.text?data.text.substring(0,60)+'…':'', ts:data.timestamp, read:data.read, id:d.id });
-      });
-      r[1].docs.forEach(function(d) {
-        var data = d.data();
-        notifs.push({ type:'release', icon:'ic-gold', fa:'fa-compact-disc', title:'Release: '+data.title, sub:'Status: '+(data.status||'pending'), ts:data.releaseDate, read:true, id:d.id });
-      });
-      r[2].docs.forEach(function(d) {
-        var data = d.data();
-        notifs.push({ type:'invoice', icon: data.status==='pending'?'ic-red':'ic-green', fa:'fa-file-invoice-dollar', title:'Invoice: '+(data.title||'Invoice'), sub:'₦'+Number(data.amount||0).toLocaleString()+' — '+data.status, ts:data.date, read:data.status==='paid', id:d.id });
-      });
-      // Sort by timestamp desc
-      notifs.sort(function(a,b) {
-        var ta = a.ts?( a.ts.toDate?a.ts.toDate():new Date(a.ts)):new Date(0);
-        var tb = b.ts?( b.ts.toDate?b.ts.toDate():new Date(b.ts)):new Date(0);
-        return tb-ta;
-      });
-      var unreadCount = notifs.filter(function(n){return !n.read;}).length;
-      var nb = g('notif-badge');
-      if (nb) { if(unreadCount>0){nb.style.display='inline';nb.textContent=unreadCount;}else{nb.style.display='none';} }
-      if (!notifs.length) { listEl.innerHTML='<div class="empty"><i class="fa-solid fa-bell"></i><p>No notifications yet.</p></div>'; return; }
-      listEl.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:4px 18px;">'+
-        notifs.map(function(n) {
-          return '<div class="notif-item '+(n.read?'':'unread')+'">'+
-            '<div class="notif-icon '+n.icon+'"><i class="fa-solid '+n.fa+'"></i></div>'+
-            '<div class="notif-body"><div class="notif-title">'+n.title+'</div>'+
-            '<div class="notif-sub">'+esc(n.sub)+'</div>'+
-            '<div class="notif-time">'+fmtDate(n.ts)+'</div></div>'+
-            (!n.read?'<div class="unread-dot"></div>':'')+'</div>';
-        }).join('')+'</div>';
-    }).catch(function(e){ listEl.innerHTML='<div class="empty"><i class="fa-solid fa-bell"></i><p>Could not load notifications.</p></div>'; console.warn(e); });
-  }
-
-  g('clear-notifs-btn').addEventListener('click', function() {
-    if (!currentUser) return;
-    db.collection('nf_messages').where('clientUid','==',currentUser.uid).where('from','==','admin').where('read','==',false).get()
-      .then(function(snap){ var b=db.batch(); snap.docs.forEach(function(d){b.update(d.ref,{read:true});}); return b.commit(); })
-      .then(function(){ loadNotifications(); });
-  });
-
-  // ── SUPPORT ────────────────────────────────────────────
-  g('sup-send-btn').addEventListener('click', function() {
-    var subject = g('sup-subject').value;
-    var message = g('sup-message').value.trim();
-    if (!subject) { g('sup-subject').style.borderColor='var(--danger)'; return; }
-    if (!message) { g('sup-message').style.borderColor='var(--danger)'; return; }
-    g('sup-subject').style.borderColor=''; g('sup-message').style.borderColor='';
-    g('sup-send-btn').disabled = true;
-    var fullMsg = '[SUPPORT REQUEST — '+subject+']
-
-'+message;
-    db.collection('nf_messages').add({
-      clientUid: currentUser.uid,
-      text: fullMsg,
-      from: 'client',
-      read: false,
-      type: 'support',
-      subject: subject,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(function() {
-      g('sup-confirm').style.display = 'block';
-      g('sup-message').value = '';
-      g('sup-subject').value = '';
-      g('sup-send-btn').disabled = false;
-      setTimeout(function(){ g('sup-confirm').style.display='none'; }, 5000);
-    }).catch(function(e){ g('sup-send-btn').disabled=false; console.warn(e); });
-  });
-
-  // Load notifications when tab opened
-  document.querySelectorAll('.nav-item[data-tab="notifications"]').forEach(function(btn) {
-    btn.addEventListener('click', function(){ setTimeout(loadNotifications, 100); });
-  });
-
-  // ── RESPONSIVE DASHBOARD ───────────────────────────────
-  function checkGrid() { var gr=g('dash-grid'); if(gr) gr.style.gridTemplateColumns=window.innerWidth<768?'1fr':'1fr 1fr'; }
-  window.addEventListener('resize', checkGrid, {passive:true});
-  checkGrid();
-
-}); // end DOMContentLoaded
+// ── RESPONSIVE ─────────────────────────────────────
+function checkGrid(){var gr=g('dgrid');if(gr)gr.style.gridTemplateColumns=window.innerWidth<768?'1fr':'1fr 1fr';}
+window.addEventListener('resize',checkGrid,{passive:true});
+checkGrid();
 </script>
 </body>
 </html>

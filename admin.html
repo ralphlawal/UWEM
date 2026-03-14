@@ -502,15 +502,13 @@
 <div id="toast"><i class="fa-solid fa-check-circle"></i><span id="toast-msg">Saved!</span></div>
 
 <!-- FIREBASE SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script data-cfasync="false" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script data-cfasync="false" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script data-cfasync="false" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-
-  // ── FIREBASE ────────────────────────────────────────
-  if (!firebase.apps.length) {
+<script data-cfasync="false">
+// Scripts at bottom of body - DOM exists, SDKs loaded. No wrapper needed.
+if (!firebase.apps.length) {
     firebase.initializeApp({
       apiKey:            "AIzaSyA5RUfGUA68-RNyMZPlxaVYj85h5OiJdJw",
       authDomain:        "cbt-app-5907f.firebaseapp.com",
@@ -1065,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e){ toast('Error: '+e.message,'error'); });
   };
 
-}); // end DOMContentLoaded
+// end of script
 </script>
 </body>
 </html>
