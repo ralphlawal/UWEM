@@ -267,6 +267,8 @@ body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);mi
     <div class="nlbl">Resources</div>
     <button class="nitem" data-tab="files"><i class="fa-solid fa-folder-open"></i> My Files</button>
     <button class="nitem" data-tab="invoices"><i class="fa-solid fa-file-invoice-dollar"></i> Invoices</button>
+    <div class="nlbl">Updates</div>
+    <button class="nitem" data-tab="announcements"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
     <div class="nlbl">Support</div>
     <button class="nitem" data-tab="notifications"><i class="fa-solid fa-bell"></i> Notifications <span class="nbadge" id="notif-badge"></span></button>
     <button class="nitem" data-tab="support"><i class="fa-solid fa-headset"></i> Support</button>
@@ -341,6 +343,12 @@ body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);mi
       <div class="card" style="padding:0;overflow:hidden;"><div id="inv-list"><div class="loading"><span class="spin"></span></div></div></div>
     </div>
 
+    <!-- ANNOUNCEMENTS -->
+    <div class="tab" id="tab-announcements">
+      <div class="pghdr"><h2>Announcements</h2><p>Latest news from Nur Futura</p></div>
+      <div id="ann-content"><div class="loading"><span class="spin"></span></div></div>
+    </div>
+
     <!-- NOTIFICATIONS -->
     <div class="tab" id="tab-notifications">
       <div class="pghdr" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">
@@ -412,6 +420,10 @@ body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);mi
 <script data-cfasync="false" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script data-cfasync="false">
 // Scripts at bottom of body — DOM ready, SDKs loaded.
+
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('Unhandled promise rejection:', e.reason);
+});
 
 firebase.initializeApp({
   apiKey:            "AIzaSyA5RUfGUA68-RNyMZPlxaVYj85h5OiJdJw",
@@ -525,6 +537,7 @@ document.querySelectorAll('.nitem[data-tab]').forEach(function(btn){
     g('sidebar').classList.remove('open'); g('sb-ov').classList.remove('on');
     if(name==='messages') loadMessages();
     if(name==='notifications') loadNotifications();
+    if(name==='announcements') loadAnnouncements();
   });
 });
 
@@ -616,7 +629,7 @@ function loadDashboard(){
         }).join('')+'</div>'
       : '<div class="empty" style="padding:18px;"><i class="fa-solid fa-clock-rotate-left"></i><p>No recent activity.</p></div>';
 
-  }).catch(function(e){ console.warn('Dashboard error:',e); g('dash-stats').innerHTML='<p style="color:#444;padding:16px;font-size:13px;">Could not load stats. Check console.</p>'; });
+  }).catch(function(e){ console.error('Dashboard error:',e.code, e.message); g('dash-stats').innerHTML='<p style="color:var(--red);padding:16px;font-size:13px;">Error: '+e.code+' — '+e.message+'</p>'; });
 }
 
 // ── RELEASES ───────────────────────────────────────
@@ -626,9 +639,10 @@ function loadReleases(){
     if(!items.length){ g('rels-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>No releases yet.<br>Your manager will add them here.</p></div>'; return; }
     g('rels-list').innerHTML=items.map(function(r){
       var plats=r.platforms||{};
-      var pbadges=Object.keys(plats).map(function(p){
+      var pbadges=Object.keys(plats).map(function(pt){
         var icons={spotify:'fa-spotify',apple:'fa-apple',youtube:'fa-youtube',boomplay:'fa-music',tidal:'fa-music',deezer:'fa-music',amazon:'fa-amazon',audiomack:'fa-music'};
-        return '<span class="pbadge p'+plats[p].charAt(0)+'"><i class="fa-brands '+(icons[p.toLowerCase()]||'fa-music')+'"></i> '+p+'</span>';
+        var url=r.platformLinks&&r.platformLinks[pt.toLowerCase()]?r.platformLinks[pt.toLowerCase()]:'#';
+        return '<a href="'+url+'" target="_blank" class="pbadge p'+plats[pt].charAt(0)+'" style="text-decoration:none;"><i class="fa-brands '+(icons[p.toLowerCase()]||'fa-music')+'"></i> '+p+'</span>';
       }).join('');
       return '<div class="rel-card">'+
         (r.cover?'<img class="rel-cover" src="'+r.cover+'" alt="">':'<div class="rel-ph"><i class="fa-solid fa-music"></i></div>')+
@@ -637,7 +651,7 @@ function loadReleases(){
         (pbadges?'<div class="rel-plats">'+pbadges+'</div>':'')+'</div>'+
         (r.royalties?'<div class="rel-roy"><div class="roy-amt">&#8358;'+Number(r.royalties).toLocaleString()+'</div><div class="roy-lbl">Royalties</div></div>':'')+'</div>';
     }).join('');
-  }).catch(function(){ g('rels-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>Could not load releases.</p></div>'; });
+  }).catch(function(e){ console.error('Releases error:',e.code,e.message); g('rels-list').innerHTML='<div class="empty"><i class="fa-solid fa-compact-disc"></i><p>Error loading releases:<br>'+e.code+'</p></div>'; });
 }
 
 // ── CAMPAIGNS ──────────────────────────────────────
@@ -661,7 +675,7 @@ function loadCampaigns(){
             '<span style="'+(m.done?'color:#555;text-decoration:line-through;':'color:#bbb;')+'">'+esc(m.title)+'</span></div>';
         }).join('')+'</div>':'')+'</div>';
     }).join('');
-  }).catch(function(){ g('camps-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><p>Could not load campaigns.</p></div>'; });
+  }).catch(function(e){ console.error('Campaigns error:',e.code,e.message); g('camps-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><p>Error: '+e.code+'</p></div>'; });
 }
 
 // ── MESSAGES ───────────────────────────────────────
@@ -694,7 +708,7 @@ function loadMessages(){
 g('msg-send').addEventListener('click', function(){
   var text=g('msg-inp').value.trim();
   if(!text||!currentUser) return;
-  g('msg-inp').value='';
+  g('msg-inp').value=''; g('msg-inp').style.height='42px';
   db.collection('nf_messages').add({clientUid:currentUser.uid,text:text,from:'client',read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
 });
 g('msg-inp').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();g('msg-send').click();}});
@@ -717,7 +731,7 @@ function loadFiles(){
         '<div class="fnm">'+esc(f.name)+'</div>'+
         '<div class="fdt">'+fmtDate(f.uploadDate)+'</div></a>';
     }).join('');
-  }).catch(function(){ g('files-list').innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fa-solid fa-folder-open"></i><p>Could not load files.</p></div>'; });
+  }).catch(function(e){ console.error('Files error:',e.code,e.message); g('files-list').innerHTML='<div class="empty" style="grid-column:1/-1;"><i class="fa-solid fa-folder-open"></i><p>Error: '+e.code+'</p></div>'; });
 }
 
 // ── INVOICES ───────────────────────────────────────
@@ -746,7 +760,7 @@ function loadInvoices(){
           '<td>'+(stMap[inv.status]||stMap['pending'])+'</td>'+
           '<td>'+(inv.fileUrl?'<a href="'+inv.fileUrl+'" target="_blank" class="idl"><i class="fa-solid fa-download"></i> Download</a>':'<span style="color:#333;">—</span>')+'</td></tr>';
       }).join('')+'</tbody></table>';
-  }).catch(function(){ g('inv-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><p>Could not load invoices.</p></div>'; });
+  }).catch(function(e){ console.error('Invoices error:',e.code,e.message); g('inv-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><p>Error: '+e.code+'</p></div>'; });
 }
 
 // ── NOTIFICATIONS ──────────────────────────────────
@@ -816,6 +830,26 @@ g('sup-send').addEventListener('click',function(){
 });
 
 // ── UNREAD WATCHER ─────────────────────────────────
+function loadAnnouncements(){
+  var el = g('ann-content');
+  if(!el) return;
+  db.collection('site').doc('announcement').get().then(function(snap){
+    if(!snap.exists || !snap.data().title){
+      el.innerHTML='<div class="empty"><i class="fa-solid fa-bullhorn"></i><p>No announcements yet.</p></div>';
+      return;
+    }
+    var d = snap.data();
+    var features = (d.features||'').split(',').map(function(f){return f.trim();}).filter(Boolean);
+    el.innerHTML='<div class="card">'+
+      (d.badge?'<div style="display:inline-block;padding:4px 12px;background:rgba(245,176,65,.12);color:var(--gold);border:1px solid rgba(245,176,65,.25);border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">'+esc(d.badge)+'</div>':'')+
+      '<h2 style="font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:12px;">'+esc(d.title||'')+'</h2>'+
+      '<p style="color:#888;font-size:14px;line-height:1.8;margin-bottom:16px;">'+esc(d.body||'')+'</p>'+
+      (features.length?'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">'+features.map(function(f){return '<span style="padding:5px 12px;background:rgba(245,176,65,.08);border:1px solid rgba(245,176,65,.15);border-radius:20px;font-size:12px;color:var(--gold);">✓ '+esc(f)+'</span>';}).join('')+'</div>':'')+
+      (d.linkUrl&&d.linkText?'<a href="'+esc(d.linkUrl)+'" target="_blank" class="msend" style="padding:11px 22px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;"><i class="fa-solid fa-arrow-right"></i> '+esc(d.linkText)+'</a>':'')+
+    '</div>';
+  }).catch(function(e){ el.innerHTML='<div class="empty"><i class="fa-solid fa-bullhorn"></i><p>Could not load announcements.</p></div>'; console.warn(e); });
+}
+
 function watchUnread(){
   if(unreadUnsub){unreadUnsub();unreadUnsub=null;}
   unreadUnsub = db.collection('nf_messages')
