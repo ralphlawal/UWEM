@@ -550,7 +550,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── CLIENTS ────────────────────────────────────────────────────────
   function loadClientsTable(){db.collection('nf_clients').get().then(function(snap){allClients=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});renderClients(allClients);});}
-  function renderClients(items){var e=g('clients-tbl');if(!items.length){e.innerHTML='<p style="padding:16px;color:#444;font-size:13px;">No clients yet.</p>';return;}e.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Phone</th><th>Actions</th></tr></thead><tbody>'+items.map(function(c){return '<tr><td style="font-weight:600;color:#ddd;">'+esc(c.name||'')+'</td><td style="color:#888;">'+esc(c.email||'')+'</td><td><span class="badge bgo">'+esc(c.type||'Client')+'</span></td><td style="color:#555;">'+esc(c.phone||'—')+'</td><td class="tda"><button class="btn bgh xs" onclick="openDetail(\''+c.id+'\',\''+c.name.replace(/'/g,"\\'")+'\',' + '\''+esc(c.type||'Client')+'\')"><i class="fa-solid fa-folder-open"></i> Manage</button><button class="btn bgh xs" onclick="editClient(\''+c.id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn br xs" onclick="delClient(\''+c.id+'\')"><i class="fa-solid fa-trash"></i></button></td></tr>';}).join('')+'</tbody></table>';}
+  function renderClients(items){
+    var e=g('clients-tbl');
+    if(!items.length){e.innerHTML='<p style="padding:16px;color:#444;font-size:13px;">No clients yet.</p>';return;}
+    e.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Phone</th><th>Actions</th></tr></thead><tbody>'+
+      items.map(function(c){
+        var uid=c.authUid||c.id;
+        return '<tr>'+
+          '<td style="font-weight:600;color:#ddd;">'+esc(c.name||'')+'</td>'+
+          '<td style="color:#888;">'+esc(c.email||'')+'</td>'+
+          '<td><span class="badge bgo">'+esc(c.type||'Client')+'</span></td>'+
+          '<td style="color:#555;">'+esc(c.phone||'—')+'</td>'+
+          '<td class="tda">'+
+            '<button class="btn bgh xs" onclick="openDetail(''+c.id+'',''+c.name.replace(/\/g,'\\').replace(/'/g,"\'")+'',''+esc(c.type||'Client')+'',''+uid+'')"><i class="fa-solid fa-folder-open"></i> Manage</button>'+
+            '<button class="btn bgh xs" onclick="editClient(''+c.id+'')"><i class="fa-solid fa-pen"></i></button>'+
+            '<button class="btn br xs" onclick="delClient(''+c.id+'')"><i class="fa-solid fa-trash"></i></button>'+
+          '</td></tr>';
+      }).join('')+'</tbody></table>';
+  }
   window.filterClients=function(){var q=g('client-search').value.toLowerCase();renderClients(allClients.filter(function(c){return(c.name||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q);}));};
 
   g('add-client-btn').addEventListener('click',function(){openClientModal({});});
@@ -568,8 +585,8 @@ document.addEventListener('DOMContentLoaded', function() {
   window.openDetail=openDetail; window.editClient=editClient; window.delClient=delClient;
 
   // ── CLIENT DETAIL ──────────────────────────────────────────────────
-  function openDetail(id,name,type){
-    selId=id; selName=name;
+  function openDetail(id,name,type,authUid){
+    selId=authUid||id; selName=name;
     g('clients-lv').style.display='none'; g('clients-dv').style.display='block';
     g('detail-name').textContent=name; g('detail-type').textContent=type;
     loadCQS(); loadNotes(); switchSub('releases');
