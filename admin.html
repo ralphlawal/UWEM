@@ -1,7 +1,10 @@
 <!DOCTYPE html>
+<!-- v2 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>NUR FUTURA — Admin Panel</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -144,7 +147,7 @@ tbody td{padding:11px 14px;font-size:13px;color:#bbb;vertical-align:middle;}
     <div class="asub">Admin Panel</div>
     <input type="email" id="auth-email" placeholder="Admin Email" autocomplete="email">
     <input type="password" id="auth-pass" placeholder="Password" autocomplete="current-password">
-    <button class="abtn" id="login-btn" type="button"><i class="fa-solid fa-lock-open"></i> Enter Panel</button>
+    <button class="abtn" id="login-btn" type="button" onclick="(window._adminLogin||function(){})();"><i class="fa-solid fa-lock-open"></i> Enter Panel</button>
     <div class="aerr" id="auth-err"></div>
     <div class="ahint">Credentials from<br><strong style="color:var(--gold);">Firebase Console → Authentication</strong></div>
   </div>
@@ -375,6 +378,8 @@ tbody td{padding:11px 14px;font-size:13px;color:#bbb;vertical-align:middle;}
 <div id="toast"><i class="fa-solid fa-check-circle"></i><span id="toast-msg"></span></div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // DOMContentLoaded fired - attaching listeners now
+  console.log('DOMContentLoaded fired, attaching admin listeners...');
 
   // ── FIREBASE INIT ──────────────────────────────────────────────────
   if (!firebase.apps.length) {
@@ -417,6 +422,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function fsList(col) { return db.collection(col).get().then(function(s){return s.docs.map(function(d){return Object.assign({id:d.id},d.data());});}).catch(function(){return [];}); }
 
   // ── AUTH ───────────────────────────────────────────────────────────
+  window._adminLogin = function() {
+    document.getElementById('login-btn').dispatchEvent(new Event('click'));
+  };
   g('login-btn').addEventListener('click', function() {
     var email=g('auth-email').value.trim(), pass=g('auth-pass').value;
     var errEl=g('auth-err'), btn=g('login-btn');
@@ -556,15 +564,16 @@ document.addEventListener('DOMContentLoaded', function() {
     e.innerHTML='<table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Phone</th><th>Actions</th></tr></thead><tbody>'+
       items.map(function(c){
         var uid=c.authUid||c.id;
+        var jid=JSON.stringify(c.id), juid=JSON.stringify(uid);
         return '<tr>'+
           '<td style="font-weight:600;color:#ddd;">'+esc(c.name||'')+'</td>'+
           '<td style="color:#888;">'+esc(c.email||'')+'</td>'+
           '<td><span class="badge bgo">'+esc(c.type||'Client')+'</span></td>'+
           '<td style="color:#555;">'+esc(c.phone||'—')+'</td>'+
           '<td class="tda">'+
-            '<button class="btn bgh xs" onclick="openDetail(''+c.id+'',''+c.name.replace(/\/g,'\\').replace(/'/g,"\'")+'',''+esc(c.type||'Client')+'',''+uid+'')"><i class="fa-solid fa-folder-open"></i> Manage</button>'+
-            '<button class="btn bgh xs" onclick="editClient(''+c.id+'')"><i class="fa-solid fa-pen"></i></button>'+
-            '<button class="btn br xs" onclick="delClient(''+c.id+'')"><i class="fa-solid fa-trash"></i></button>'+
+            '<button class="btn bgh xs" onclick="openDetailById('+jid+','+juid+')"><i class="fa-solid fa-folder-open"></i> Manage</button>'+
+            '<button class="btn bgh xs" onclick="editClient('+jid+')"><i class="fa-solid fa-pen"></i></button>'+
+            '<button class="btn br xs" onclick="delClient('+jid+')"><i class="fa-solid fa-trash"></i></button>'+
           '</td></tr>';
       }).join('')+'</tbody></table>';
   }
@@ -585,6 +594,12 @@ document.addEventListener('DOMContentLoaded', function() {
   window.openDetail=openDetail; window.editClient=editClient; window.delClient=delClient;
 
   // ── CLIENT DETAIL ──────────────────────────────────────────────────
+  function openDetailById(id,uid){
+    var c=allClients.find(function(x){return x.id===id;});
+    if(c) openDetail(id, c.name||'', c.type||'Client', uid||c.authUid||id);
+  }
+  window.openDetailById=openDetailById;
+
   function openDetail(id,name,type,authUid){
     selId=authUid||id; selName=name;
     g('clients-lv').style.display='none'; g('clients-dv').style.display='block';
