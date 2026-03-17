@@ -377,6 +377,8 @@ tbody td{padding:11px 14px;font-size:13px;color:#bbb;vertical-align:middle;}
 <div id="modal-wrap"></div>
 <div id="toast"><i class="fa-solid fa-check-circle"></i><span id="toast-msg"></span></div>
 <script>
+
+
 document.addEventListener('DOMContentLoaded', function() {
   // DOMContentLoaded fired - attaching listeners now
   console.log('DOMContentLoaded fired, attaching admin listeners...');
@@ -585,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
   g('broadcast-btn').addEventListener('click',function(){if(!allClients.length){toast('Open Clients tab first','error');return;}window._mSave=function(){var text=g('bc-msg')&&g('bc-msg').value.trim();if(!text){toast('Enter a message','error');return;}toast('Sending...','loading');var batch=db.batch();allClients.forEach(function(c){var ref=db.collection('nf_messages').doc();batch.set(ref,{clientUid:c.id,text:text,from:'admin',read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});});batch.commit().then(function(){closeModal();toast('Sent to '+allClients.length+' clients! ✓');}).catch(function(e){toast('Error: '+e.message,'error');});};g('modal-wrap').innerHTML='<div class="mov" onclick="if(event.target===this)closeModal()"><div class="mbox"><button class="mclose" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button><div class="mtitle"><i class="fa-solid fa-broadcast-tower"></i> Broadcast to All Clients</div><div class="tip">Message sent to all <strong>'+allClients.length+'</strong> client(s).</div><div class="fg"><label>Message</label><textarea id="bc-msg" rows="4"></textarea></div><div class="fa-row" style="margin-top:14px;"><button class="btn bg" onclick="window._mSave()"><i class="fa-solid fa-broadcast-tower"></i> Send to All</button><button class="btn bgh" onclick="closeModal()">Cancel</button></div></div></div>';});
 
   function openClientModal(data){
-    window._mSave=function(){var name=g('cm-name').value.trim(),email=g('cm-email').value.trim(),type=g('cm-type').value,phone=g('cm-phone').value.trim(),uid=g('cm-uid')&&g('cm-uid').value.trim();if(!name||!email){toast('Name and email required','error');return;}toast('Saving...','loading');var docId=data.id||uid||email.replace(/[^a-zA-Z0-9]/g,'_');db.collection('nf_clients').doc(docId).set({name:name,email:email,type:type,phone:phone},{merge:true}).then(function(){closeModal();loadClientsTable();toast('Client saved! ✓');}).catch(function(e){toast('Error: '+e.message,'error');});};
+    window._mSave=function(){var name=g('cm-name').value.trim(),email=g('cm-email').value.trim(),type=g('cm-type').value,phone=g('cm-phone').value.trim(),uid=g('cm-uid')&&g('cm-uid').value.trim();if(!name||!email){toast('Name and email required','error');return;}toast('Saving...','loading');var docId=data.id||uid||email.replace(/[^a-zA-Z0-9]/g,'_');db.collection('nf_clients').doc(docId).set({name:name,email:email,type:type,phone:phone,authUid:docId},{merge:true}).then(function(){closeModal();loadClientsTable();toast('Client saved! ✓');}).catch(function(e){toast('Error: '+e.message,'error');});};
     g('modal-wrap').innerHTML='<div class="mov" onclick="if(event.target===this)closeModal()"><div class="mbox"><button class="mclose" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button><div class="mtitle"><i class="fa-solid fa-user-plus"></i> '+(data.id?'Edit':'Add')+' Client</div><div class="g2"><div class="fg"><label>Full Name</label><input id="cm-name" value="'+esc(data.name||'')+'"></div><div class="fg"><label>Email</label><input type="email" id="cm-email" value="'+esc(data.email||'')+'"></div><div class="fg"><label>Type</label><select id="cm-type"><option '+(data.type==='Artist'?'selected':'')+'>Artist</option><option '+(data.type==='Brand'?'selected':'')+'>Brand</option><option value="Client" '+((!data.type||data.type==='Client')?'selected':'')+'>Client</option></select></div><div class="fg"><label>Phone</label><input id="cm-phone" value="'+esc(data.phone||'')+'"></div></div>'+(data.id?'':'<div class="fg" style="margin-top:10px;"><label>Firebase Auth UID</label><input id="cm-uid" placeholder="Paste UID from Firebase Console → Auth"></div>')+
     '<div class="tip" style="margin-top:10px;"><strong>Setup:</strong> Create user in Firebase Console → Authentication → Add User first. The UID must match.</div><div class="fa-row" style="margin-top:14px;"><button class="btn bg" onclick="window._mSave()"><i class="fa-solid fa-floppy-disk"></i> Save</button><button class="btn bgh" onclick="closeModal()">Cancel</button></div></div></div>';
   }
@@ -596,7 +598,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── CLIENT DETAIL ──────────────────────────────────────────────────
   function openDetailById(id,uid){
     var c=allClients.find(function(x){return x.id===id;});
-    if(c) openDetail(id, c.name||'', c.type||'Client', uid||c.authUid||id);
+    if(c){
+      openDetail(id, c.name||'', c.type||'Client', uid||c.authUid||id);
+    } else {
+      // Client not in cache - load directly from Firestore
+      db.collection('nf_clients').doc(id).get().then(function(snap){
+        var data = snap.exists ? snap.data() : {name:'Client',type:'Client'};
+        openDetail(id, data.name||'', data.type||'Client', uid||data.authUid||id);
+      }).catch(function(e){
+        // Even if load fails, open detail with id
+        openDetail(id, id, 'Client', uid||id);
+      });
+    }
   }
   window.openDetailById=openDetailById;
 
@@ -689,6 +702,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 }); // end DOMContentLoaded
+
+
 </script>
 </body>
 </html>
