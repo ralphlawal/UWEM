@@ -896,7 +896,7 @@ document.addEventListener('DOMContentLoaded', function() {
       '<div class="fg"><label>Description</label><textarea id="m-desc">' + esc(data.desc || '') + '</textarea></div>' +
       '<div class="fg"><label>Tags (comma separated)</label><input id="m-tags" value="' + esc(data.tags || '') + '"></div>' +
       '<div class="mfooter">' +
-        '<button class="btn bg" onclick="saveServiceModal(' + JSON.stringify(data.id || '') + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
+        '<button class="btn bg" onclick="saveServiceModal(' + "'" + (data.id || '') + "'" + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
         '<button class="btn bgh" onclick="closeModal()">Cancel</button>' +
       '</div></div></div>'
     );
@@ -950,7 +950,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '<div class="fg"><label>Audio Snippet</label><input id="m-audio" value="' + esc(data.audio || '') + '" placeholder="mp3/name.mp3"></div>' +
       '</div>' +
       '<div class="mfooter">' +
-        '<button class="btn bg" onclick="saveArtistModal(' + JSON.stringify(data.id || '') + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
+        '<button class="btn bg" onclick="saveArtistModal(' + "'" + (data.id || '') + "'" + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
         '<button class="btn bgh" onclick="closeModal()">Cancel</button>' +
       '</div></div></div>'
     );
@@ -996,7 +996,7 @@ document.addEventListener('DOMContentLoaded', function() {
       '<div class="fg"><label>Quote</label><textarea id="m-quote">' + esc(data.quote || '') + '</textarea></div>' +
       '<div class="fg"><label>Client Name</label><input id="m-client" value="' + esc(data.client || '') + '"></div>' +
       '<div class="mfooter">' +
-        '<button class="btn bg" onclick="saveReviewModal(' + JSON.stringify(data.id || '') + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
+        '<button class="btn bg" onclick="saveReviewModal(' + "'" + (data.id || '') + "'" + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
         '<button class="btn bgh" onclick="closeModal()">Cancel</button>' +
       '</div></div></div>'
     );
@@ -1051,9 +1051,9 @@ document.addEventListener('DOMContentLoaded', function() {
           '<td style="color:#666;">' + esc(c.phone || '--') + '</td>' +
           '<td>' + (hasUid ? '<span class="badge bgg">\u2713 Yes</span>' : '<span class="badge bggr">\u26A0 No</span>') + '</td>' +
           '<td class="tda">' +
-            '<button class="btn bgh xs" onclick="openClientDetail(' + JSON.stringify(c.id) + ')"><i class="fa-solid fa-folder-open"></i> Manage</button>' +
-            '<button class="btn bgh xs" onclick="openEditClientModal(' + JSON.stringify(c.id) + ')"><i class="fa-solid fa-pen"></i></button>' +
-            '<button class="btn br xs" onclick="deleteClient(' + JSON.stringify(c.id) + ')"><i class="fa-solid fa-trash"></i></button>' +
+            '<button class="btn bgh xs" onclick="openClientDetail(' + "'" + c.id + "'" + ')"><i class="fa-solid fa-folder-open"></i> Manage</button>' +
+            '<button class="btn bgh xs" onclick="openEditClientModal(' + "'" + c.id + "'" + ')"><i class="fa-solid fa-pen"></i></button>' +
+            '<button class="btn br xs" onclick="deleteClient(' + "'" + c.id + "'" + ')"><i class="fa-solid fa-trash"></i></button>' +
           '</td></tr>';
       }).join('') + '</tbody></table>';
   }
@@ -1122,7 +1122,7 @@ document.addEventListener('DOMContentLoaded', function() {
       '</div>' +
       '<div class="fg" style="margin-top:12px;"><label>Auth UID (doc ID)</label><input id="edit-uid" value="' + esc(c.authUid || c.id) + '" placeholder="Firebase Auth UID"></div>' +
       '<div class="mfooter">' +
-        '<button class="btn bg" onclick="saveEditClient(' + JSON.stringify(id) + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
+        '<button class="btn bg" onclick="saveEditClient(' + "'" + id + "'" + ')"><i class="fa-solid fa-floppy-disk"></i> Save</button>' +
         '<button class="btn bgh" onclick="closeModal()">Cancel</button>' +
       '</div></div></div>'
     );
@@ -1295,7 +1295,7 @@ document.addEventListener('DOMContentLoaded', function() {
             '<td style="font-size:11px;color:#666;">' + esc(Object.keys(r.platforms || {}).join(', ') || '--') + '</td>' +
             '<td style="color:var(--gold);">' + (r.royalties ? '\u20A6' + Number(r.royalties).toLocaleString() : '--') + '</td>' +
             '<td class="tda">' +
-              '<button class="btn bgh xs" onclick="toggleRelStatus(' + JSON.stringify(r.id) + ',' + JSON.stringify(r.status || 'pending') + ')">' + (r.status === 'active' ? '\u23F8' : '\u25B6') + '</button>' +
+              '<button class="btn bgh xs" onclick="toggleRelStatus(' + "'" + r.id + "'" + ',' + "'" + (r.status || 'pending') + "'" + ')">' + (r.status === 'active' ? '\u23F8' : '\u25B6') + '</button>' +
               btn('bgh xs', 'fa-pen', 'editRelease(' + JSON.stringify(r.id) + ')') +
               btn('br xs',  'fa-trash', 'delClientItem("nf_releases",' + JSON.stringify(r.id) + ')') +
             '</td></tr>';
@@ -1341,7 +1341,7 @@ document.addEventListener('DOMContentLoaded', function() {
       '<div class="fg" style="margin-top:11px;"><label>Cover Art URL</label><input id="r-cover" value="' + esc(data.cover || '') + '" placeholder="https://..."></div>' +
       '<div class="fg" style="margin-top:11px;"><label>Platforms &amp; Stream Links</label><div id="plats-wrap" style="margin-top:6px;">' + platHTML + '</div></div>' +
       '<div class="mfooter">' +
-        '<button class="btn bg" onclick="saveReleaseModal(' + JSON.stringify(data.id || '') + ')"><i class="fa-solid fa-floppy-disk"></i> Save Release</button>' +
+        '<button class="btn bg" onclick="saveReleaseModal(' + "'" + (data.id || '') + "'" + ')"><i class="fa-solid fa-floppy-disk"></i> Save Release</button>' +
         '<button class="btn bgh" onclick="closeModal()">Cancel</button>' +
       '</div></div></div>'
     );
@@ -1410,7 +1410,7 @@ document.addEventListener('DOMContentLoaded', function() {
             '<td><span class="badge bgo">' + esc(c.status || 'pending') + '</span></td>' +
             '<td style="color:#888;">' + done + '/' + ms.length + '</td>' +
             '<td class="tda">' +
-              '<button class="btn bgh xs" onclick="cycleCampaign(' + JSON.stringify(c.id) + ',' + JSON.stringify(c.status || 'pending') + ')"><i class="fa-solid fa-rotate"></i></button>' +
+              '<button class="btn bgh xs" onclick="cycleCampaign(' + "'" + c.id + "'" + ',' + "'" + (c.status || 'pending') + "'" + ')"><i class="fa-solid fa-rotate"></i></button>' +
               btn('bgh xs', 'fa-pen', 'editCampaign(' + JSON.stringify(c.id) + ')') +
               btn('br xs',  'fa-trash', 'delClientItem("nf_campaigns",' + JSON.stringify(c.id) + ')') +
             '</td></tr>';
@@ -1450,7 +1450,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '<button type="button" class="btn bgh sm" style="margin-top:7px;" onclick="addMilestone()"><i class="fa-solid fa-plus"></i> Add Milestone</button>' +
       '</div>' +
       '<div class="mfooter">' +
-        '<button class="btn bg" onclick="saveCampaignModal(' + JSON.stringify(data.id || '') + ')"><i class="fa-solid fa-floppy-disk"></i> Save Campaign</button>' +
+        '<button class="btn bg" onclick="saveCampaignModal(' + "'" + (data.id || '') + "'" + ')"><i class="fa-solid fa-floppy-disk"></i> Save Campaign</button>' +
         '<button class="btn bgh" onclick="closeModal()">Cancel</button>' +
       '</div></div></div>'
     );
@@ -1564,7 +1564,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return '<div class="file-row"><div><div style="font-weight:600;color:#ddd;">' + esc(f.name || '') + '</div><div style="font-size:11px;color:#555;">' + fmtDate(f.uploadDate) + '</div></div>' +
           '<div style="display:flex;gap:5px;">' +
             '<a href="' + esc(f.url || '#') + '" target="_blank" class="btn bgh xs"><i class="fa-solid fa-external-link-alt"></i></a>' +
-            '<button class="btn br xs" onclick="delClientItem(\'nf_files\',' + JSON.stringify(f.id) + ')"><i class="fa-solid fa-trash"></i></button>' +
+            '<button class="btn br xs" onclick="delClientItem(\'nf_files\',' + "'" + f.id + "'" + ')"><i class="fa-solid fa-trash"></i></button>' +
           '</div></div>';
       }).join('') + '</div>';
     }).catch(function(e) { el.innerHTML = '<p style="padding:14px;color:var(--red);">Error: ' + esc(e.message) + '</p>'; });
@@ -1596,7 +1596,7 @@ document.addEventListener('DOMContentLoaded', function() {
             '<td><span class="badge ' + (st === 'paid' ? 'bgg' : st === 'overdue' ? 'bgr' : 'bgo') + '">' + esc(st) + '</span></td>' +
             '<td>' + fmtDate(inv.dueDate) + '</td>' +
             '<td class="tda">' +
-              (st !== 'paid' ? '<button class="btn bgh xs" style="color:var(--green);" onclick="markInvoicePaid(' + JSON.stringify(inv.id) + ')"><i class="fa-solid fa-check"></i> Paid</button>' : '') +
+              (st !== 'paid' ? '<button class="btn bgh xs" style="color:var(--green);" onclick="markInvoicePaid(' + "'" + inv.id + "'" + ')"><i class="fa-solid fa-check"></i> Paid</button>' : '') +
               btn('bgh xs', 'fa-pen', 'editInvoice(' + JSON.stringify(inv.id) + ')') +
               btn('br xs',  'fa-trash', 'delClientItem("nf_invoices",' + JSON.stringify(inv.id) + ')') +
             '</td></tr>';
@@ -1626,7 +1626,7 @@ document.addEventListener('DOMContentLoaded', function() {
       '</div>' +
       '<div class="fg" style="margin-top:11px;"><label>Invoice File URL (optional)</label><input id="i-url" value="' + esc(data.fileUrl || '') + '" placeholder="https://..."></div>' +
       '<div class="mfooter">' +
-        '<button class="btn bg" onclick="saveInvoiceModal(' + JSON.stringify(data.id || '') + ')"><i class="fa-solid fa-floppy-disk"></i> Save Invoice</button>' +
+        '<button class="btn bg" onclick="saveInvoiceModal(' + "'" + (data.id || '') + "'" + ')"><i class="fa-solid fa-floppy-disk"></i> Save Invoice</button>' +
         '<button class="btn bgh" onclick="closeModal()">Cancel</button>' +
       '</div></div></div>'
     );
