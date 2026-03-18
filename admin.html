@@ -514,6 +514,7 @@ tbody td{padding:11px 13px;font-size:13px;color:#bbb;vertical-align:middle;}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  try {
 
   /* -- FIREBASE ------------------------------------------------------- */
   if (!firebase.apps.length) {
@@ -1706,6 +1707,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return '<button class="btn ' + cls + '" onclick="' + onclick + '"><i class="fa-solid ' + icon + '"></i></button>';
   }
 
+  } catch(err) {
+    alert('SCRIPT ERROR: ' + err.message + '\n\nLine: ' + (err.lineNumber || err.line || '?') + '\n\nStack: ' + (err.stack || '').substring(0, 300));
+  }
 }); // end DOMContentLoaded
 </script>
 </body>
