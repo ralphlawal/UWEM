@@ -735,9 +735,9 @@ document.addEventListener('DOMContentLoaded', function() {
     fsSet('site', 'hero', {
       h1: g('hero-h1').value, h2: g('hero-h2').value,
       sub: g('hero-sub').value, bg: g('hero-bg').value,
-      s1n: g('s1n').value, s1l: g('s1l').value,
-      s2n: g('s2n').value, s2l: g('s2l').value,
-      s3n: g('s3n').value, s3l: g('s3l').value
+      s1n: g('hero-s1n').value, s1l: g('hero-s1l').value,
+      s2n: g('hero-s2n').value, s2l: g('hero-s2l').value,
+      s3n: g('hero-s3n').value, s3l: g('hero-s3l').value
     }).then(function() { loadHeroForm(); toast('Hero published!'); });
   });
   g('reload-hero').addEventListener('click', loadHeroForm);
