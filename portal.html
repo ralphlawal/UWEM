@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function g(id){ return document.getElementById(id); }
   function esc(t){ var d=document.createElement('div'); d.appendChild(document.createTextNode(t||'')); return d.innerHTML; }
-  function fmtDate(ts){ if(!ts) return '—'; try{ var d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }catch(e){return '—';} }
+  function fmtDate(ts){ if(!ts) return '\u2014'; try{ var d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }catch(e){return '\u2014';} }
   function fmtTime(ts){ if(!ts) return ''; try{ var d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }catch(e){return '';} }
   function initials(n){ return ((n||'?').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().substring(0,2))||'?'; }
   function sortByTs(arr,f,desc){
@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
     g('ptyp').textContent=type;
     g('welcome-msg').textContent='Welcome back, '+name.split(' ')[0]+' \uD83D\uDC4B';
     g('p-name').textContent=name; g('p-email').textContent=clientData.email||currentUser.email;
-    g('p-phone').textContent=clientData.phone||'—'; g('p-type').textContent=type;
+    g('p-phone').textContent=clientData.phone||'\u2014'; g('p-type').textContent=type;
   }
 
   function loadAll(){ loadDashboard(); loadReleases(); loadCampaigns(); loadFiles(); loadInvoices(); watchUnread(); }
@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
       srel.slice(0,2).forEach(function(r){acts.push({c:'g',f:'fa-compact-disc',t:'Release: '+r.title,s:fmtDate(r.releaseDate)});});
       camps.filter(function(c){return c.status==='active';}).slice(0,2).forEach(function(c){acts.push({c:'gr',f:'fa-rocket',t:'Campaign: '+c.title,s:'Active'});});
       g('dash-act').innerHTML=acts.length?acts.slice(0,5).map(function(a){return '<div style="display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);"><div class="si '+a.c+'" style="flex-shrink:0;width:32px;height:32px;border-radius:8px;"><i class="fa-solid '+a.f+'"></i></div><div><div style="font-size:13px;font-weight:600;color:#ddd;">'+esc(a.t)+'</div><div style="font-size:11px;color:var(--dim);margin-top:2px;">'+a.s+'</div></div></div>';}).join(''):'<div class="empty" style="padding:16px;"><i class="fa-solid fa-clock-rotate-left"></i><p>No recent activity</p></div>';
-    }).catch(function(e){ console.error('Dashboard:',e.code,e.message); g('dash-stats').innerHTML='<p style="color:var(--red);padding:14px;font-size:13px;">Error: '+esc(e.code)+' — '+esc(e.message)+'</p>'; });
+    }).catch(function(e){ console.error('Dashboard:',e.code,e.message); g('dash-stats').innerHTML='<p style="color:var(--red);padding:14px;font-size:13px;">Error: '+esc(e.code)+' \u2014 '+esc(e.message)+'</p>'; });
   }
 
   // RELEASES
@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }).catch(function(e){ console.error('Campaigns:',e.code); g('camps-list').innerHTML='<div class="empty"><i class="fa-solid fa-rocket"></i><h3>Error: '+esc(e.code)+'</h3></div>'; });
   }
 
-  // MESSAGES — real-time, no orderBy (avoids composite index)
+  // MESSAGES \u2014 real-time, no orderBy (avoids composite index)
   function loadMessages(){
     if(msgUnsub){msgUnsub();msgUnsub=null;}
     var uid=currentUser.uid, listEl=g('msgs-list');
@@ -598,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mark admin messages read
     db.collection('nf_messages').where('clientUid','==',uid).where('from','==','admin').where('read','==',false).get()
       .then(function(snap){snap.docs.forEach(function(d){d.ref.update({read:true});});});
-    // Live listener — clientUid == currentUser.uid (THE chat key)
+    // Live listener \u2014 clientUid == currentUser.uid (THE chat key)
     msgUnsub=db.collection('nf_messages').where('clientUid','==',uid)
       .onSnapshot(function(snap){
         var msgs=sortByTs(snap.docs.map(function(d){return Object.assign({id:d.id},d.data());}), 'timestamp', false);
@@ -663,7 +663,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var paid=items.filter(function(i){return i.status==='paid';}).reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
       g('inv-list').innerHTML='<div class="is"><div class="isc"><div class="il">Outstanding</div><div class="iv" style="color:var(--warn);">\u20A6'+pend.toLocaleString()+'</div></div><div class="isc"><div class="il">Paid</div><div class="iv" style="color:var(--green);">\u20A6'+paid.toLocaleString()+'</div></div></div>'+
         '<div style="overflow-x:auto;"><table><thead><tr><th>Invoice</th><th>Date</th><th>Due</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>'+
-        items.map(function(inv){var st=inv.status||'pending';return '<tr><td style="font-weight:600;color:#ddd;">'+esc(inv.title||'Invoice')+'</td><td>'+fmtDate(inv.date)+'</td><td>'+fmtDate(inv.dueDate)+'</td><td style="font-family:\'Playfair Display\',serif;font-size:15px;">\u20A6'+Number(inv.amount||0).toLocaleString()+'</td><td><span class="sb '+esc(st)+'">'+esc(st)+'</span></td><td>'+(inv.fileUrl?'<a href="'+inv.fileUrl+'" target="_blank" class="dl"><i class="fa-solid fa-download"></i> PDF</a>':'—')+'</td></tr>';}).join('')+'</tbody></table></div>';
+        items.map(function(inv){var st=inv.status||'pending';return '<tr><td style="font-weight:600;color:#ddd;">'+esc(inv.title||'Invoice')+'</td><td>'+fmtDate(inv.date)+'</td><td>'+fmtDate(inv.dueDate)+'</td><td style="font-family:\'Playfair Display\',serif;font-size:15px;">\u20A6'+Number(inv.amount||0).toLocaleString()+'</td><td><span class="sb '+esc(st)+'">'+esc(st)+'</span></td><td>'+(inv.fileUrl?'<a href="'+inv.fileUrl+'" target="_blank" class="dl"><i class="fa-solid fa-download"></i> PDF</a>':'\u2014')+'</td></tr>';}).join('')+'</tbody></table></div>';
     }).catch(function(e){g('inv-list').innerHTML='<div class="empty"><i class="fa-solid fa-file-invoice-dollar"></i><h3>Error: '+esc(e.code)+'</h3></div>';});
   }
 

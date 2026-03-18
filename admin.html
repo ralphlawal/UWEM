@@ -515,7 +515,7 @@ tbody td{padding:11px 13px;font-size:13px;color:#bbb;vertical-align:middle;}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-  /* ── FIREBASE ─────────────────────────────────────────────────────── */
+  /* -- FIREBASE ------------------------------------------------------- */
   if (!firebase.apps.length) {
     firebase.initializeApp({
       apiKey:            "AIzaSyA5RUfGUA68-RNyMZPlxaVYj85h5OiJdJw",
@@ -529,13 +529,13 @@ document.addEventListener('DOMContentLoaded', function() {
   var auth = firebase.auth();
   var db   = firebase.firestore();
 
-  /* ── STATE ────────────────────────────────────────────────────────── */
+  /* -- STATE ---------------------------------------------------------- */
   var selClientId   = null;
   var selClientName = '';
   var admMsgUnsub   = null;
   var allClients    = [];
 
-  /* ── HELPERS ──────────────────────────────────────────────────────── */
+  /* -- HELPERS -------------------------------------------------------- */
   function g(id) { return document.getElementById(id); }
 
   function esc(t) {
@@ -545,11 +545,11 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function fmtDate(ts) {
-    if (!ts) return '—';
+    if (!ts) return '--';
     try {
       var d = ts.toDate ? ts.toDate() : new Date(ts);
       return d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-    } catch(e) { return '—'; }
+    } catch(e) { return '--'; }
   }
 
   function fmtTime(ts) {
@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function() { return []; });
   }
 
-  /* ── AUTH ─────────────────────────────────────────────────────────── */
+  /* -- AUTH ----------------------------------------------------------- */
   g('login-btn').addEventListener('click', function() {
     var email = g('auth-email').value.trim();
     var pass  = g('auth-pass').value;
@@ -648,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  /* ── MOBILE / SIDEBAR ─────────────────────────────────────────────── */
+  /* -- MOBILE / SIDEBAR ----------------------------------------------- */
   g('mob-btn').addEventListener('click', function() {
     g('sidebar').classList.add('open');
     g('sb-overlay').classList.add('on');
@@ -658,7 +658,7 @@ document.addEventListener('DOMContentLoaded', function() {
     g('sb-overlay').classList.remove('on');
   });
 
-  /* ── TAB SWITCHING ────────────────────────────────────────────────── */
+  /* -- TAB SWITCHING -------------------------------------------------- */
   document.querySelectorAll('.nav-btn[data-tab]').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var name = btn.getAttribute('data-tab');
@@ -672,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  /* ── INIT ─────────────────────────────────────────────────────────── */
+  /* -- INIT ----------------------------------------------------------- */
   function initAdmin() {
     loadDashboard();
     loadHeroForm();
@@ -688,7 +688,7 @@ document.addEventListener('DOMContentLoaded', function() {
     watchUnread();
   }
 
-  /* ── DASHBOARD ────────────────────────────────────────────────────── */
+  /* -- DASHBOARD ------------------------------------------------------ */
   function loadDashboard() {
     Promise.all([fsList('artists'), fsList('reviews'), fsList('services'), fsList('nf_clients')])
       .then(function(results) {
@@ -721,7 +721,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return '<div class="sc ' + col + '"><div class="si ' + col + '"><i class="fa-solid ' + icon + '"></i></div><div class="sv">' + val + '</div><div class="sl">' + lbl + '</div></div>';
   }
 
-  /* ── SITE FORMS ───────────────────────────────────────────────────── */
+  /* -- SITE FORMS ----------------------------------------------------- */
   function loadHeroForm() {
     fsGet('site', 'hero').then(function(d) {
       d = d || {};
@@ -865,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fsSet('site', 'visibility', obj).then(function() { toast('Visibility saved!'); });
   });
 
-  /* ── SERVICES ────────────────────────────────────────────────────── */
+  /* -- SERVICES ------------------------------------------------------ */
   function loadServicesTable() {
     fsList('services').then(function(items) {
       if (!items.length) { g('services-list').innerHTML = '<p class="empty-row">No services yet.</p>'; return; }
@@ -914,7 +914,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   };
 
-  /* ── ARTISTS ─────────────────────────────────────────────────────── */
+  /* -- ARTISTS ------------------------------------------------------- */
   function loadArtistsTable() {
     fsList('artists').then(function(items) {
       if (!items.length) { g('artists-list').innerHTML = '<p class="empty-row">No artists yet.</p>'; return; }
@@ -924,8 +924,8 @@ document.addEventListener('DOMContentLoaded', function() {
           return '<tr>' +
             '<td><img class="timg" src="' + esc(a.img || '') + '" onerror="this.style.opacity=0.2"></td>' +
             '<td style="font-weight:700;color:var(--gold);">' + esc(a.name || '') + '</td>' +
-            '<td>' + (a.ig && a.ig !== '#' ? '<span class="badge bgg">\u2713</span>' : '<span class="badge bggr">—</span>') + '</td>' +
-            '<td>' + (a.spotify && a.spotify !== '#' ? '<span class="badge bgg">\u2713</span>' : '<span class="badge bggr">—</span>') + '</td>' +
+            '<td>' + (a.ig && a.ig !== '#' ? '<span class="badge bgg">\u2713</span>' : '<span class="badge bggr">--</span>') + '</td>' +
+            '<td>' + (a.spotify && a.spotify !== '#' ? '<span class="badge bgg">\u2713</span>' : '<span class="badge bggr">--</span>') + '</td>' +
             '<td class="tda">' +
               btn('bgh xs', 'fa-pen', 'editArtist(' + JSON.stringify(a.id) + ')') +
               btn('br xs',  'fa-trash', 'delDoc("artists",' + JSON.stringify(a.id) + ',loadArtistsTable)') +
@@ -968,7 +968,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   };
 
-  /* ── REVIEWS ─────────────────────────────────────────────────────── */
+  /* -- REVIEWS ------------------------------------------------------- */
   function loadReviewsTable() {
     fsList('reviews').then(function(items) {
       if (!items.length) { g('reviews-list').innerHTML = '<p class="empty-row">No reviews yet.</p>'; return; }
@@ -1014,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   };
 
-  /* ── SHARED DELETE ───────────────────────────────────────────────── */
+  /* -- SHARED DELETE ------------------------------------------------- */
   window.delDoc = function(col, id, reloadFn) {
     if (!confirm('Delete this item? This cannot be undone.')) return;
     toast('Deleting...', 'loading');
@@ -1026,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', function() {
   window.loadArtistsTable  = loadArtistsTable;
   window.loadReviewsTable  = loadReviewsTable;
 
-  /* ── CLIENTS LIST ────────────────────────────────────────────────── */
+  /* -- CLIENTS LIST -------------------------------------------------- */
   function loadClientsTable() {
     db.collection('nf_clients').get().then(function(snap) {
       allClients = snap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); });
@@ -1047,7 +1047,7 @@ document.addEventListener('DOMContentLoaded', function() {
           '<td style="font-weight:600;color:#ddd;">' + esc(c.name || '') + '</td>' +
           '<td style="color:#888;">' + esc(c.email || '') + '</td>' +
           '<td><span class="badge bgo">' + esc(c.type || 'Client') + '</span></td>' +
-          '<td style="color:#666;">' + esc(c.phone || '—') + '</td>' +
+          '<td style="color:#666;">' + esc(c.phone || '--') + '</td>' +
           '<td>' + (hasUid ? '<span class="badge bgg">\u2713 Yes</span>' : '<span class="badge bggr">\u26A0 No</span>') + '</td>' +
           '<td class="tda">' +
             '<button class="btn bgh xs" onclick="openClientDetail(' + JSON.stringify(c.id) + ')"><i class="fa-solid fa-folder-open"></i> Manage</button>' +
@@ -1203,11 +1203,11 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e) { toast('Error: ' + e.message, 'error'); });
   };
 
-  /* ── CLIENT DETAIL VIEW ──────────────────────────────────────────── */
+  /* -- CLIENT DETAIL VIEW -------------------------------------------- */
   window.openClientDetail = function(id) {
     var c = allClients.find(function(x) { return x.id === id; });
     if (!c) {
-      // Not in cache — fetch from Firestore
+      // Not in cache -- fetch from Firestore
       db.collection('nf_clients').doc(id).get().then(function(snap) {
         if (snap.exists) showClientDetail(Object.assign({id: id}, snap.data()));
       }).catch(function(e) { toast('Could not load client: ' + e.message, 'error'); });
@@ -1277,7 +1277,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (name === 'messages') loadAdminChat();
   }
 
-  /* ── RELEASES (client detail) ────────────────────────────────────── */
+  /* -- RELEASES (client detail) -------------------------------------- */
   function loadReleasesForClient() {
     var el = g('rel-list');
     el.innerHTML = '<div class="loading"><span class="spin"></span></div>';
@@ -1291,8 +1291,8 @@ document.addEventListener('DOMContentLoaded', function() {
           return '<tr>' +
             '<td style="font-weight:600;color:#ddd;">' + esc(r.title || '') + '</td>' +
             '<td><span class="badge ' + (r.status === 'active' ? 'bgg' : 'bgo') + '">' + esc(r.status || 'pending') + '</span></td>' +
-            '<td style="font-size:11px;color:#666;">' + esc(Object.keys(r.platforms || {}).join(', ') || '—') + '</td>' +
-            '<td style="color:var(--gold);">' + (r.royalties ? '\u20A6' + Number(r.royalties).toLocaleString() : '—') + '</td>' +
+            '<td style="font-size:11px;color:#666;">' + esc(Object.keys(r.platforms || {}).join(', ') || '--') + '</td>' +
+            '<td style="color:var(--gold);">' + (r.royalties ? '\u20A6' + Number(r.royalties).toLocaleString() : '--') + '</td>' +
             '<td class="tda">' +
               '<button class="btn bgh xs" onclick="toggleRelStatus(' + JSON.stringify(r.id) + ',' + JSON.stringify(r.status || 'pending') + ')">' + (r.status === 'active' ? '\u23F8' : '\u25B6') + '</button>' +
               btn('bgh xs', 'fa-pen', 'editRelease(' + JSON.stringify(r.id) + ')') +
@@ -1392,7 +1392,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e) { toast('Error: ' + e.message, 'error'); });
   };
 
-  /* ── CAMPAIGNS (client detail) ───────────────────────────────────── */
+  /* -- CAMPAIGNS (client detail) ------------------------------------- */
   function loadCampaignsForClient() {
     var el = g('camp-list');
     el.innerHTML = '<div class="loading"><span class="spin"></span></div>';
@@ -1502,7 +1502,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e) { toast('Error: ' + e.message, 'error'); });
   };
 
-  /* ── ADMIN CHAT ───────────────────────────────────────────────────── */
+  /* -- ADMIN CHAT ----------------------------------------------------- */
   function loadAdminChat() {
     if (admMsgUnsub) { admMsgUnsub(); admMsgUnsub = null; }
     var listEl = g('chat-list');
@@ -1522,7 +1522,7 @@ document.addEventListener('DOMContentLoaded', function() {
           var isAdmin = m.from === 'admin';
           return '<div style="display:flex;flex-direction:column;align-items:' + (isAdmin ? 'flex-end' : 'flex-start') + ';gap:2px;margin-bottom:6px;">' +
             '<div class="' + (isAdmin ? 'amsg-out' : 'amsg-in') + '">' + esc(m.text) + '</div>' +
-            '<div class="amsg-time">' + (isAdmin ? 'You' : selClientName) + ' · ' + fmtTime(m.timestamp) + '</div>' +
+            '<div class="amsg-time">' + (isAdmin ? 'You' : selClientName) + ' . ' + fmtTime(m.timestamp) + '</div>' +
           '</div>';
         }).join('');
         listEl.scrollTop = listEl.scrollHeight;
@@ -1552,7 +1552,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e) { btn.disabled = false; g('adm-msg-inp').value = text; toast('Send failed: ' + e.message, 'error'); });
   }
 
-  /* ── FILES (client detail) ───────────────────────────────────────── */
+  /* -- FILES (client detail) ----------------------------------------- */
   function loadFilesForClient() {
     var el = g('file-list');
     el.innerHTML = '<div class="loading"><span class="spin"></span></div>';
@@ -1579,7 +1579,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e) { toast('Error: ' + e.message, 'error'); });
   });
 
-  /* ── INVOICES (client detail) ────────────────────────────────────── */
+  /* -- INVOICES (client detail) -------------------------------------- */
   function loadInvoicesForClient() {
     var el = g('inv-list');
     el.innerHTML = '<div class="loading"><span class="spin"></span></div>';
@@ -1662,7 +1662,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e) { toast('Error: ' + e.message, 'error'); });
   };
 
-  /* ── SHARED CLIENT-ITEM DELETE ───────────────────────────────────── */
+  /* -- SHARED CLIENT-ITEM DELETE ------------------------------------- */
   window.delClientItem = function(col, id) {
     if (!confirm('Delete this item?')) return;
     toast('Deleting...', 'loading');
@@ -1678,7 +1678,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .catch(function(e) { toast('Error: ' + e.message, 'error'); });
   };
 
-  /* ── SUB-TAB LOAD TRIGGER ────────────────────────────────────────── */
+  /* -- SUB-TAB LOAD TRIGGER ------------------------------------------ */
   // When sub-tabs are clicked, load corresponding data
   document.querySelectorAll('.sub-tab-btn').forEach(function(b) {
     b.addEventListener('click', function() {
@@ -1690,7 +1690,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  /* ── UNREAD BADGE ────────────────────────────────────────────────── */
+  /* -- UNREAD BADGE -------------------------------------------------- */
   function watchUnread() {
     db.collection('nf_messages').where('from','==','client').where('read','==',false)
       .onSnapshot(function(snap) {
@@ -1701,7 +1701,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }, function() {});
   }
 
-  /* ── UTILITY ─────────────────────────────────────────────────────── */
+  /* -- UTILITY ------------------------------------------------------- */
   function btn(cls, icon, onclick) {
     return '<button class="btn ' + cls + '" onclick="' + onclick + '"><i class="fa-solid ' + icon + '"></i></button>';
   }
