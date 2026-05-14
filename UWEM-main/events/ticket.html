@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Ticket — Nur Futura Events</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root{--brand:#8B2C00;--gold:#f5b041;--gold-light:#f8cc7a;--dark:#0a0a0a;--card-bg:#141414;--card2:#1c1c1c;--light:#f4f4f4;--muted:#888;--border:rgba(255,255,255,0.06);--gold-border:rgba(245,176,65,0.15);--green:#34d399;}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--light);min-height:100vh;-webkit-font-smoothing:antialiased;}
+    .noise-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:900;opacity:.07;background:url('https://grainy-gradients.vercel.app/noise.svg');}
+
+    /* ── HEADER ── */
+    header{background:rgba(10,10,10,.9);backdrop-filter:blur(12px);padding:15px 30px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+    .header-logo{font-family:'Playfair Display',serif;font-size:22px;display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;}
+    .header-nav{display:flex;gap:20px;align-items:center;}
+    .header-nav a{color:#ccc;text-decoration:none;font-weight:500;font-size:.9rem;transition:color .3s;display:flex;align-items:center;gap:.4rem;}
+    .header-nav a:hover{color:var(--gold);}
+    .btn-back{background:rgba(139,44,0,.15);border:1px solid var(--brand);color:#e88a5a;padding:7px 14px;border-radius:50px;font-weight:600;display:flex;gap:8px;align-items:center;text-decoration:none;transition:.3s;font-size:.85rem;}
+    .btn-back:hover{background:var(--brand);color:#fff;}
+    @media(max-width:640px){header{padding:14px 16px;}.header-nav a:not(.btn-back){display:none;}}
+
+    /* ── PAGE WRAP ── */
+    .page-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem;}
+    .page-header{text-align:center;margin-bottom:2rem;}
+    .success-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);padding:.35rem 1rem;border-radius:50px;font-size:.72rem;font-weight:700;color:var(--green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.85rem;}
+    .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;margin-bottom:.4rem;}
+    .page-header h1 span{color:var(--gold);}
+    .page-header p{color:var(--muted);font-size:.875rem;}
+
+    /* ── TICKET PREVIEW ── */
+    .ticket-preview-wrap{display:flex;justify-content:center;margin-bottom:2rem;}
+    #ticketEl{width:340px;min-width:340px;max-width:340px;background:#0a0a0a;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(245,176,65,.3),0 24px 60px rgba(0,0,0,.8);font-family:'Inter',sans-serif;}
+    .ticket-flyer{width:100%;height:185px;object-fit:cover;object-position:center 15%;display:block;}
+    .ticket-flyer-fade{height:36px;margin-top:-36px;background:linear-gradient(to bottom,transparent,#0a0a0a);position:relative;z-index:1;}
+    .ticket-gold-bar{height:3px;background:linear-gradient(90deg,var(--brand),var(--gold),var(--gold-light),var(--gold),#a03500);}
+    .ticket-body{padding:.9rem 1rem .8rem;background:linear-gradient(180deg,#141414 0%,#0a0a0a 100%);position:relative;}
+    .ticket-body::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(245,176,65,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(245,176,65,.025) 1px,transparent 1px);background-size:22px 22px;}
+    .ticket-body>*{position:relative;z-index:1;}
+    .ticket-top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;}
+    .ticket-brand{font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.12rem;}
+    .ticket-event-name{font-family:'Playfair Display',serif;font-size:.88rem;font-weight:700;line-height:1.2;color:#fff;}
+    .ticket-free-badge{background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.45);color:var(--green);padding:.22rem .55rem;border-radius:50px;font-size:.55rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;margin-top:.1rem;}
+    .ticket-thin-div{height:1px;background:linear-gradient(90deg,transparent,rgba(245,176,65,.22),transparent);margin:.55rem 0;}
+    .ticket-details-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin-bottom:.65rem;}
+    .tdlabel{font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(136,136,136,.75);margin-bottom:.12rem;}
+    .tdval{font-size:.67rem;font-weight:600;color:#f4f4f4;line-height:1.3;}
+    .tdval.gold{color:var(--gold);}
+    .ticket-attendee-row{background:rgba(245,176,65,.06);border:1px solid rgba(245,176,65,.18);border-radius:9px;padding:.65rem .75rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.6rem;}
+    .ta-label{font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(136,136,136,.7);margin-bottom:.15rem;}
+    .ta-name{font-family:'Playfair Display',serif;font-size:.8rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:.12rem;}
+    .ta-email{font-size:.58rem;color:var(--muted);}
+    #qrCodeEl{width:64px;height:64px;flex-shrink:0;}
+    #qrCodeEl canvas,#qrCodeEl img{width:64px!important;height:64px!important;border-radius:4px;display:block;}
+    .ticket-tear{display:flex;align-items:center;margin:0 -.85rem;}
+    .tear-circle{width:16px;height:16px;border-radius:50%;background:#0a0a0a;flex-shrink:0;margin:0 -8px;z-index:2;}
+    .tear-line{flex:1;border-top:1.5px dashed rgba(245,176,65,.18);}
+    .ticket-bottom{margin-top:.6rem;}
+    .ticket-code-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:.45rem;}
+    .tc-label{font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(136,136,136,.7);margin-bottom:.12rem;}
+    .tc-val{font-family:'Playfair Display',serif;font-size:.85rem;font-weight:700;color:var(--gold);letter-spacing:.05em;}
+    .tc-org{font-size:.48rem;color:rgba(136,136,136,.4);text-transform:uppercase;letter-spacing:.07em;text-align:right;line-height:1.5;}
+    .ticket-socials{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(245,176,65,.1);padding-top:.45rem;margin-top:.4rem;}
+    .ts-item{font-size:.48rem;color:rgba(136,136,136,.6);}
+    .ticket-tagline{text-align:center;font-family:'Playfair Display',serif;font-size:.56rem;font-weight:700;color:rgba(245,176,65,.45);letter-spacing:.14em;text-transform:uppercase;margin-top:.45rem;padding-top:.45rem;border-top:1px solid rgba(245,176,65,.07);}
+
+    /* ── CODE ROW ── */
+    .code-row{display:flex;justify-content:center;margin-bottom:1.5rem;}
+    .code-box{display:flex;align-items:center;gap:.75rem;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:.85rem 1.25rem;width:100%;max-width:380px;}
+    .code-label{font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.12rem;}
+    .code-val{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--gold);letter-spacing:.07em;}
+    .copy-btn{background:rgba(245,176,65,.1);border:1px solid rgba(245,176,65,.3);color:var(--gold);padding:.4rem .85rem;border-radius:50px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+    .copy-btn:hover{background:rgba(245,176,65,.2);}
+    .copy-btn.ok{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.1);}
+
+    /* ── DOWNLOAD BUTTONS ── */
+    .dl-section{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-bottom:2.5rem;}
+    .dl-label{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+    .dl-btns{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;}
+    .dl-btn{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 2rem;border-radius:50px;font-family:'Inter',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;border:none;transition:all .25s;text-decoration:none;min-width:180px;justify-content:center;}
+    .dl-btn.png{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#000;box-shadow:0 6px 24px rgba(245,176,65,.3);}
+    .dl-btn.png:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 10px 32px rgba(245,176,65,.45);}
+    .dl-btn.pdf{background:transparent;color:var(--gold);border:1.5px solid rgba(245,176,65,.35);}
+    .dl-btn.pdf:hover:not(:disabled){background:rgba(245,176,65,.08);border-color:var(--gold);transform:translateY(-3px);}
+    .dl-btn.verify-lnk{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,.08);font-size:.82rem;min-width:auto;}
+    .dl-btn.verify-lnk:hover{color:var(--light);border-color:rgba(255,255,255,.2);}
+    .dl-btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
+
+    /* ── STATES ── */
+    .loading-state,.error-state{text-align:center;padding:4rem 2rem;}
+    .spin{width:44px;height:44px;border:3px solid rgba(245,176,65,.2);border-top-color:var(--gold);border-radius:50%;animation:rot .8s linear infinite;margin:0 auto 1rem;}
+    @keyframes rot{to{transform:rotate(360deg);}}
+    .error-state h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);margin-bottom:.75rem;}
+    .error-state p{color:var(--muted);margin-bottom:1.5rem;}
+    .err-retrieve{background:var(--card-bg);border:1px solid var(--gold-border);border-radius:12px;padding:1.25rem;max-width:380px;margin:0 auto 1.5rem;}
+    .err-retrieve h3{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--gold);margin-bottom:.3rem;}
+    .err-retrieve p{font-size:.8rem;color:var(--muted);margin-bottom:.85rem;}
+    .err-row{display:flex;gap:.6rem;}
+    .err-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.65rem .85rem;color:var(--light);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s;}
+    .err-input:focus{border-color:var(--gold);}
+    .err-btn{background:var(--brand);color:#fff;border:none;cursor:pointer;padding:.65rem 1rem;border-radius:7px;font-weight:600;font-size:.82rem;white-space:nowrap;transition:background .2s;}
+    .err-btn:hover{background:#a03500;}
+    .err-result{margin-top:.85rem;font-size:.8rem;display:none;}
+    .err-back{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:#000;padding:.75rem 1.5rem;border-radius:50px;text-decoration:none;font-weight:700;}
+
+    @media(max-width:400px){#ticketEl{width:300px;min-width:300px;}.dl-btn{min-width:150px;padding:.85rem 1.25rem;}}
+  </style>
+</head>
+<body>
+<div class="noise-overlay"></div>
+
+<header>
+  <a href="../Index.html" class="header-logo">
+    <img src="../images/logo.png" alt="NUR Futura" height="36"> NUR FUTURA
+  </a>
+  <nav class="header-nav">
+    <a href="index.html"><i class="fa-solid fa-arrow-left"></i> All Events</a>
+    <a href="../Index.html" class="btn-back"><i class="fa-solid fa-house"></i> Main Site</a>
+  </nav>
+</header>
+
+<div id="loadingState" class="loading-state">
+  <div class="spin"></div>
+  <p style="color:var(--muted)">Preparing your ticket...</p>
+</div>
+
+<div id="errorState" class="error-state" style="display:none">
+  <h2>No Ticket Found</h2>
+  <p>Retrieve your ticket by entering your registration email below.</p>
+  <div class="err-retrieve">
+    <h3>Find My Ticket</h3>
+    <p>Enter your registration email to recover your ticket.</p>
+    <div class="err-row">
+      <input class="err-input" id="errEmail" type="email" placeholder="your@email.com"/>
+      <button class="err-btn" onclick="lookupByEmail()">Find</button>
+    </div>
+    <div id="errResult" class="err-result"></div>
+  </div>
+  <a href="index.html" class="err-back"><i class="fa-solid fa-calendar-days"></i> Browse Events</a>
+</div>
+
+<div id="mainContent" class="page-wrap" style="display:none">
+  <div class="page-header">
+    <div class="success-badge"><i class="fa-solid fa-circle-check"></i> Registration Confirmed</div>
+    <h1>Your Ticket is <span>Ready!</span></h1>
+    <p>Download as PNG or PDF. Your ticket is also saved on this device.</p>
+  </div>
+
+  <div class="ticket-preview-wrap">
+    <div id="ticketEl">
+      <img class="ticket-flyer" id="ticketFlyer"
+        src="https://res.cloudinary.com/dco9drzzp/image/upload/v1778698384/f3ca630a-f2d7-44df-ad8d-231737df83ab_vopt1w.jpg"
+        alt="Event Flyer" crossorigin="anonymous"/>
+      <div class="ticket-flyer-fade"></div>
+      <div class="ticket-gold-bar"></div>
+      <div class="ticket-body">
+        <div class="ticket-top-row">
+          <div>
+            <div class="ticket-brand">Nur Futura Events</div>
+            <div class="ticket-event-name" id="tEventName">Loading...</div>
+          </div>
+          <div class="ticket-free-badge" id="tTicketType">FREE TICKET</div>
+        </div>
+        <div class="ticket-thin-div"></div>
+        <div class="ticket-details-grid">
+          <div><div class="tdlabel">Date</div><div class="tdval" id="tDate">-</div></div>
+          <div><div class="tdlabel">Time</div><div class="tdval gold" id="tTime">-</div></div>
+          <div><div class="tdlabel">Venue</div><div class="tdval" id="tVenue">-</div></div>
+        </div>
+        <div class="ticket-attendee-row">
+          <div style="min-width:0">
+            <div class="ta-label">Registered Attendee</div>
+            <div class="ta-name" id="tName">-</div>
+            <div class="ta-email" id="tEmail">-</div>
+          </div>
+          <div id="qrCodeEl"></div>
+        </div>
+        <div class="ticket-tear">
+          <div class="tear-circle"></div>
+          <div class="tear-line"></div>
+          <div class="tear-circle"></div>
+        </div>
+        <div class="ticket-bottom">
+          <div class="ticket-code-row">
+            <div>
+              <div class="tc-label">Ticket Code</div>
+              <div class="tc-val" id="tCode">-</div>
+            </div>
+            <div class="tc-org" id="tOrg">Nur Futura<br/>Marketing 2026</div>
+          </div>
+          <div class="ticket-socials">
+            <div class="ts-item">IG: @nur.futura</div>
+            <div class="ts-item">nurfuturamarketing.com.ng</div>
+          </div>
+          <div class="ticket-tagline">Nur Futura Events &mdash; Where Every Moment Matters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-row">
+    <div class="code-box">
+      <div style="flex:1;min-width:0">
+        <div class="code-label">Your Ticket Code</div>
+        <div class="code-val" id="codeDisplay">-</div>
+      </div>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copy</button>
+    </div>
+  </div>
+
+  <div class="dl-section">
+    <div class="dl-label">Save Your Ticket</div>
+    <div class="dl-btns">
+      <button class="dl-btn png" id="pngBtn" onclick="downloadPNG()">
+        <i class="fa-solid fa-download"></i> Download Image
+      </button>
+      <button class="dl-btn pdf" id="pdfBtn" onclick="downloadPDF()">
+        <i class="fa-solid fa-file-pdf"></i> Download PDF
+      </button>
+      <a href="verify.html" class="dl-btn verify-lnk">
+        <i class="fa-solid fa-shield-check"></i> Verify Ticket
+      </a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const app = initializeApp({apiKey:"AIzaSyB9hpB1f3tQHY6PyYDGfi53VH7nwspY1QY",authDomain:"nurfuturamarketing.firebaseapp.com",projectId:"nurfuturamarketing",storageBucket:"nurfuturamarketing.firebasestorage.app",messagingSenderId:"805451562623",appId:"1:805451562623:web:1839373fc99f51d3f6894a"});
+  const db = getFirestore(app);
+
+  let ticketData = JSON.parse(sessionStorage.getItem("nfe_ticket")||"null")
+                || JSON.parse(localStorage.getItem("nfe_last_ticket")||"null");
+
+  function populate(data) {
+    document.getElementById("tEventName").textContent = data.eventName||"-";
+    document.getElementById("tDate").textContent      = data.eventDate||"-";
+    document.getElementById("tTime").textContent      = data.eventTime||"-";
+    document.getElementById("tVenue").textContent     = data.eventVenue||"Online";
+    document.getElementById("tName").textContent      = data.name||"-";
+    document.getElementById("tEmail").textContent     = data.email||"-";
+    document.getElementById("tCode").textContent      = data.ticketCode||"-";
+    document.getElementById("codeDisplay").textContent= data.ticketCode||"-";
+    if (data.organizer) {
+      document.getElementById("tOrg").innerHTML = data.organizer.replace(/[·•]/g,"<br/>") + "<br/>2026";
+    }
+    if (data.bannerUrl) document.getElementById("ticketFlyer").src = data.bannerUrl;
+    const qrEl = document.getElementById("qrCodeEl");
+    qrEl.innerHTML = "";
+    new QRCode(qrEl, {
+      text:"NF|"+data.ticketCode+"|"+data.name+"|"+data.email,
+      width:64,height:64,
+      colorDark:"#f5b041",colorLight:"#141414",
+      correctLevel:QRCode.CorrectLevel.M
+    });
+  }
+
+  function loadImg(src) {
+    return new Promise(res => {
+      const img = new Image(); img.crossOrigin="anonymous";
+      img.onload=()=>res(img); img.onerror=()=>res(null);
+      img.src = src+(src.includes("?")?"&":"?")+"_r="+Date.now();
+    });
+  }
+
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+    ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+    ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+    ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+  }
+
+  function splitText(ctx,text,maxW){
+    const words=String(text).split(" "),lines=[];let cur="";
+    for(const w of words){const test=cur?cur+" "+w:w;if(ctx.measureText(test).width>maxW&&cur){lines.push(cur);cur=w;}else{cur=test;}}
+    if(cur)lines.push(cur);return lines.length?lines:["-"];
+  }
+
+  async function buildCanvas() {
+    await document.fonts.ready;
+    const W=1080,PAD=70;
+    const canvas=document.createElement("canvas");canvas.width=W;canvas.height=1400;
+    const ctx=canvas.getContext("2d");
+    ctx.fillStyle="#0a0a0a";ctx.fillRect(0,0,W,1400);
+    ctx.strokeStyle="rgba(245,176,65,0.025)";ctx.lineWidth=1;
+    for(let x=0;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,1400);ctx.stroke();}
+    for(let y=0;y<1400;y+=28){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    const FLYER_H=520;
+    const flyer=await loadImg(ticketData.bannerUrl||"");
+    if(flyer){
+      const scale=Math.max(W/flyer.width,FLYER_H/flyer.height);
+      const iw=flyer.width*scale,ih=flyer.height*scale,ix=(W-iw)/2,iy=0;
+      ctx.save();ctx.rect(0,0,W,FLYER_H);ctx.clip();ctx.drawImage(flyer,ix,iy,iw,ih);ctx.restore();
+    } else {
+      const g=ctx.createLinearGradient(0,0,W,FLYER_H);
+      g.addColorStop(0,"#1a1a1a");g.addColorStop(1,"#0a0a0a");
+      ctx.fillStyle=g;ctx.fillRect(0,0,W,FLYER_H);
+    }
+    const fade=ctx.createLinearGradient(0,FLYER_H-120,0,FLYER_H);
+    fade.addColorStop(0,"rgba(10,10,10,0)");fade.addColorStop(1,"rgba(10,10,10,1)");
+    ctx.fillStyle=fade;ctx.fillRect(0,FLYER_H-120,W,120);
+    const bar=ctx.createLinearGradient(0,0,W,0);
+    bar.addColorStop(0,"#8B2C00");bar.addColorStop(.3,"#f5b041");
+    bar.addColorStop(.5,"#f8cc7a");bar.addColorStop(.7,"#f5b041");bar.addColorStop(1,"#a03500");
+    ctx.fillStyle=bar;ctx.fillRect(0,FLYER_H,W,7);
+    let y=FLYER_H+54;
+    ctx.fillStyle="#f5b041";ctx.font='600 20px "Inter",system-ui,sans-serif';
+    ctx.fillText("NUR FUTURA EVENTS",PAD,y);
+    const badge="FREE TICKET";
+    ctx.font='700 19px "Inter",system-ui,sans-serif';
+    const bw=ctx.measureText(badge).width+34,bx=W-PAD-bw,by=y-22,bh=34;
+    roundRect(ctx,bx,by,bw,bh,17);
+    ctx.fillStyle="rgba(52,211,153,0.14)";ctx.fill();
+    ctx.strokeStyle="rgba(52,211,153,0.5)";ctx.lineWidth=1.5;ctx.stroke();
+    ctx.fillStyle="#34d399";ctx.textAlign="center";ctx.fillText(badge,bx+bw/2,by+22);ctx.textAlign="left";
+    y+=48;
+    ctx.fillStyle="#ffffff";ctx.font='700 54px "Playfair Display",Georgia,serif';
+    const nameLines=splitText(ctx,ticketData.eventName||"Event",W-PAD*2-20);
+    nameLines.forEach(l=>{ctx.fillText(l,PAD,y);y+=64;});
+    y+=16;
+    const dg=ctx.createLinearGradient(PAD,0,W-PAD,0);
+    dg.addColorStop(0,"transparent");dg.addColorStop(.5,"rgba(245,176,65,0.28)");dg.addColorStop(1,"transparent");
+    ctx.fillStyle=dg;ctx.fillRect(PAD,y,W-PAD*2,1);y+=36;
+    const cols=[{label:"DATE",val:ticketData.eventDate||"-",gold:false},{label:"TIME",val:ticketData.eventTime||"-",gold:true},{label:"VENUE",val:ticketData.eventVenue||"Online",gold:false}];
+    const colW=(W-PAD*2)/3,colStartY=y;let maxColH=0;
+    cols.forEach((c,i)=>{
+      const cx=PAD+i*colW;
+      ctx.fillStyle="rgba(136,136,136,0.7)";ctx.font='500 17px "Inter",system-ui,sans-serif';ctx.fillText(c.label,cx,colStartY);
+      ctx.fillStyle=c.gold?"#f5b041":"#f4f4f4";ctx.font='600 24px "Inter",system-ui,sans-serif';
+      const vlines=splitText(ctx,c.val,colW-20);
+      vlines.forEach((l,li)=>ctx.fillText(l,cx,colStartY+34+li*30));
+      maxColH=Math.max(maxColH,34+vlines.length*30);
+    });
+    y+=maxColH+48;
+    const BOX_H=170;
+    roundRect(ctx,PAD,y,W-PAD*2,BOX_H,18);
+    ctx.fillStyle="rgba(245,176,65,0.06)";ctx.fill();
+    ctx.strokeStyle="rgba(245,176,65,0.2)";ctx.lineWidth=1.5;ctx.stroke();
+    const QR_SIZE=130,QR_PAD=20,textMaxW=W-PAD*2-QR_SIZE-QR_PAD-30;
+    ctx.fillStyle="rgba(136,136,136,0.7)";ctx.font='500 16px "Inter",system-ui,sans-serif';
+    ctx.fillText("REGISTERED ATTENDEE",PAD+26,y+32);
+    ctx.fillStyle="#ffffff";ctx.font='700 34px "Playfair Display",Georgia,serif';
+    let nd=(ticketData.name||"-").toUpperCase();
+    while(ctx.measureText(nd).width>textMaxW&&nd.length>1)nd=nd.slice(0,-1);
+    if(nd!==(ticketData.name||"-").toUpperCase())nd+="…";
+    ctx.fillText(nd,PAD+26,y+78);
+    ctx.fillStyle="#888";ctx.font='400 22px "Inter",system-ui,sans-serif';
+    ctx.fillText(ticketData.email||"",PAD+26,y+116);
+    const qrCanvas=document.querySelector("#qrCodeEl canvas");
+    if(qrCanvas){
+      const qx=W-PAD-QR_SIZE-10,qy=y+(BOX_H-QR_SIZE)/2;
+      roundRect(ctx,qx-8,qy-8,QR_SIZE+16,QR_SIZE+16,10);
+      ctx.fillStyle="#141414";ctx.fill();
+      ctx.drawImage(qrCanvas,qx,qy,QR_SIZE,QR_SIZE);
+    }
+    y+=BOX_H+40;
+    const CR=24;
+    ctx.fillStyle="#0a0a0a";
+    ctx.beginPath();ctx.arc(0,y+CR,CR+2,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(W,y+CR,CR+2,0,Math.PI*2);ctx.fill();
+    ctx.setLineDash([14,11]);ctx.strokeStyle="rgba(245,176,65,0.2)";ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(CR,y+CR);ctx.lineTo(W-CR,y+CR);ctx.stroke();
+    ctx.setLineDash([]);
+    y+=CR*2+38;
+    ctx.fillStyle="rgba(136,136,136,0.7)";ctx.font='500 17px "Inter",system-ui,sans-serif';
+    ctx.fillText("TICKET CODE",PAD,y);y+=38;
+    ctx.fillStyle="#f5b041";ctx.font='700 46px "Playfair Display",Georgia,serif';
+    ctx.fillText(ticketData.ticketCode||"-",PAD,y);
+    ctx.fillStyle="rgba(136,136,136,0.4)";ctx.font='400 18px "Inter",system-ui,sans-serif';
+    ctx.textAlign="right";
+    ctx.fillText("NUR FUTURA MARKETING",W-PAD,y-12);
+    ctx.fillText("2026",W-PAD,y+14);ctx.textAlign="left";
+    y+=52;
+    ctx.fillStyle="rgba(245,176,65,0.12)";ctx.fillRect(PAD,y,W-PAD*2,1);y+=30;
+    ctx.fillStyle="rgba(136,136,136,0.55)";ctx.font='400 20px "Inter",system-ui,sans-serif';
+    ctx.fillText("IG: @nur.futura",PAD,y);
+    ctx.textAlign="right";ctx.fillText("nurfuturamarketing.com.ng",W-PAD,y);ctx.textAlign="left";
+    y+=40;
+    ctx.fillStyle="rgba(245,176,65,0.08)";ctx.fillRect(PAD,y,W-PAD*2,1);y+=34;
+    ctx.fillStyle="rgba(245,176,65,0.5)";ctx.font='700 24px "Playfair Display",Georgia,serif';
+    ctx.textAlign="center";ctx.fillText("NUR FUTURA EVENTS — WHERE EVERY MOMENT MATTERS",W/2,y);ctx.textAlign="left";
+    y+=50;
+    const finalH=y;
+    const final=document.createElement("canvas");final.width=W;final.height=finalH;
+    final.getContext("2d").drawImage(canvas,0,0);
+    return final;
+  }
+
+  window.downloadPNG = async function() {
+    const btn=document.getElementById("pngBtn");
+    btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+    try {
+      const canvas=await buildCanvas();
+      const a=document.createElement("a");
+      a.download="NF-Ticket-"+ticketData.ticketCode+".png";
+      a.href=canvas.toDataURL("image/png");a.click();
+    } catch(e){console.error(e);alert("Download failed: "+e.message);}
+    btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-download"></i> Download Image';
+  };
+
+  window.downloadPDF = async function() {
+    const btn=document.getElementById("pdfBtn");
+    btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+    try {
+      const canvas=await buildCanvas();
+      const {jsPDF}=window.jspdf;
+      const mmW=canvas.width*0.264583,mmH=canvas.height*0.264583;
+      const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:[mmW,mmH]});
+      pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,mmW,mmH,"","FAST");
+      pdf.save("NF-Ticket-"+ticketData.ticketCode+".pdf");
+    } catch(e){console.error(e);alert("PDF failed: "+e.message);}
+    btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-file-pdf"></i> Download PDF';
+  };
+
+  window.copyCode = function() {
+    navigator.clipboard.writeText(ticketData?.ticketCode||"").then(()=>{
+      const b=document.getElementById("copyBtn");
+      b.textContent="Copied!";b.classList.add("ok");
+      setTimeout(()=>{b.textContent="Copy";b.classList.remove("ok");},2000);
+    });
+  };
+
+  window.lookupByEmail = async function() {
+    const email=document.getElementById("errEmail").value.trim().toLowerCase();
+    const res=document.getElementById("errResult");
+    if(!email||!email.includes("@")){res.style.display="block";res.innerHTML='<span style="color:#f87171">Enter a valid email.</span>';return;}
+    res.style.display="block";res.innerHTML='<span style="color:var(--muted)">Searching...</span>';
+    try {
+      const q=query(collection(db,"tickets"),where("email","==",email),orderBy("createdAt","desc"),limit(5));
+      const snap=await getDocs(q);
+      if(snap.empty){res.innerHTML='<span style="color:#f87171">No tickets found for that email.</span>';return;}
+      const tickets=snap.docs.map(d=>d.data());
+      res.innerHTML=tickets.map(t=>`
+        <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:.75rem;margin-top:.5rem">
+          <div style="font-family:'Playfair Display',serif;color:var(--gold);font-size:.88rem;margin-bottom:.2rem">${t.ticketCode}</div>
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:.5rem">${t.eventName||""} - ${t.eventDate||""}</div>
+          <button onclick="loadTicket(event.currentTarget)" data-t="${encodeURIComponent(JSON.stringify(t))}"
+            style="background:var(--brand);color:#fff;border:none;cursor:pointer;padding:.35rem .85rem;border-radius:50px;font-size:.75rem;font-weight:600">
+            View Ticket
+          </button>
+        </div>`).join("");
+    } catch(e){res.innerHTML='<span style="color:#f87171">Lookup failed.</span>';}
+  };
+
+  window.loadTicket = function(btn) {
+    const data=JSON.parse(decodeURIComponent(btn.dataset.t));
+    sessionStorage.setItem("nfe_ticket",JSON.stringify(data));
+    localStorage.setItem("nfe_last_ticket",JSON.stringify(data));
+    ticketData=data;populate(data);
+    document.getElementById("errorState").style.display="none";
+    document.getElementById("mainContent").style.display="block";
+    document.getElementById("loadingState").style.display="none";
+  };
+
+  window.addEventListener("DOMContentLoaded",()=>{
+    if(!ticketData){
+      document.getElementById("loadingState").style.display="none";
+      document.getElementById("errorState").style.display="block";
+      return;
+    }
+    populate(ticketData);
+    setTimeout(()=>{
+      document.getElementById("loadingState").style.display="none";
+      document.getElementById("mainContent").style.display="block";
+    },400);
+  });
+</script>
+</body>
+</html>

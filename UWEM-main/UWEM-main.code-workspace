@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "UWEM-main",
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "UWEM-main"
+	}
+}
